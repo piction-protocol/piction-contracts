@@ -7,37 +7,37 @@ import "../utils/ValidValue.sol";
 
 contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
 
-  // accounts
-  // contents
-  mapping (string => address) private managers;
+  // AccountsManager
+  // ContentsManager
+  mapping (string => address) private addressList;
 
   /**
-    * @dev PIC 발행
-    * @param name 설정하고자 하는 Manager 이름
-    * @param manager 설정하고자 하는 Manager Address
+    * @dev Address 설정
+    * @param contractName 설정하고자 하는 Address 이름
+    * @param pictionAddress 설정하고자 하는 Address
     */
-  function setManager(
-      string name, 
-      address manager
+  function setAddress(
+      string contractName, 
+      address pictionAddress
   )
      external 
      onlyOwner 
-     validAddress(manager) 
+     validAddress(pictionAddress) 
   {
-      managers[name] = manager;
+      addressList[contractName] = pictionAddress;
 
-      emit SetManager(msg.sender, name, manager, TimeLib.currentTime());
+      emit SetAddress(msg.sender, contractName, pictionAddress, TimeLib.currentTime());
   }
 
   /**
-    * @dev Manager Address 조회
-    * @param name 조회하고자 하는 Manager 이름
+    * @dev Address 조회
+    * @param contractName 조회하고자 하는 Address 이름
     */
-  function getManager(string name) 
+  function getAddress(string contractName) 
       external 
       view 
-      returns(address manager) {
+      returns(address pictionAddress) {
 
-      manager = managers[name];
+      pictionAddress = addressList[contractName];
   }
 }
