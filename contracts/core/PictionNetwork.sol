@@ -18,31 +18,31 @@ contract PictionNetwork is IPictionNetwork, Ownable {
 
   /**
     * @dev PIC 발행
-    * @param manager 설정하고자 하는 Manager 이름
-    * @param managerAddr 설정하고자 하는 Manager Address
+    * @param name 설정하고자 하는 Manager 이름
+    * @param manager 설정하고자 하는 Manager Address
     */
   function setManager(
-      string manager, 
-      address managerAddr
+      string name, 
+      address manager
   )
      external 
      onlyOwner 
-     validAddress(managerAddr) 
+     validAddress(manager) 
   {
-      managers[manager] = managerAddr;
+      managers[name] = manager;
 
-      emit SetManager(msg.sender, manager, managerAddr, TimeLib.currentTime());
+      emit SetManager(msg.sender, name, manager, TimeLib.currentTime());
   }
 
   /**
     * @dev Manager Address 조회
-    * @param manager 조회하고자 하는 Manager 이름
+    * @param name 조회하고자 하는 Manager 이름
     */
-  function getManager(string manager) 
+  function getManager(string name) 
       external 
       view 
-      returns(address managerAddr) {
+      returns(address manager) {
 
-      managerAddr = managers[manager];
+      manager = managers[name];
   }
 }

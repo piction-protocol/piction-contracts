@@ -1,14 +1,14 @@
 pragma solidity ^0.4.24;
 
 interface IPictionNetwork {
-    function setManager(string manager, address managerAddr) external;
+    function setManager(string name, address manager) external;
 
-    function getManager(string manager) external view returns (address managerAddr);
+    function getManager(string name) external view returns (address manager);
 
     event SetManager(
         address indexed from,
-        string manager,
-        address managerAddr,
+        string name,
+        address manager,
         uint256 timestamp
     );
 }
