@@ -12,8 +12,7 @@ module.exports = {
         from: '', // enter your publickey
         network_id: '1001', // Baobab network id
         gas: 8000000, 
-        gasPrice: 25000000000, 
-
+        gasPrice: 25000000000
     }
   }
 };
