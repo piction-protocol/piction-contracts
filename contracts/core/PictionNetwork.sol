@@ -6,8 +6,8 @@ import "../utils/TimeLib.sol";
 
 contract PictionNetwork is IPictionNetwork, Ownable {
 
-  // Accounts
-  // Contents
+  // accounts
+  // contents
   mapping (string => address) private managers;
 
   modifier validAddress(address addr) {

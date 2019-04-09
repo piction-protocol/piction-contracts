@@ -18,11 +18,11 @@ contract("PictionNetwork", function (accounts) {
           });
 
         it("set managers", async () => {
-            await pictionNetwork.setManager("Accounts", AccountsManager, {from: owner})
-            await pictionNetwork.setManager("Contents", ContentsManager, {from: owner})
+            await pictionNetwork.setManager("accounts", AccountsManager, {from: owner})
+            await pictionNetwork.setManager("contents", ContentsManager, {from: owner})
 
-            const accountsManager = await pictionNetwork.getManager("Accounts")
-            const contentsManager = await pictionNetwork.getManager("Contents")
+            const accountsManager = await pictionNetwork.getManager("accounts")
+            const contentsManager = await pictionNetwork.getManager("contents")
             
             accountsManager.should.be.equal(AccountsManager)
             contentsManager.should.be.equal(ContentsManager)
