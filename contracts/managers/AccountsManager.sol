@@ -4,6 +4,7 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IAccountsStorage.sol";
+import "../interfaces/IAccountsManager.sol";
 import "../utils/ValidValue.sol";
 import "../utils/TimeLib.sol";
 
@@ -12,13 +13,13 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     string public constant STORAGE_NAME = "AccountsStorage";
 
     IPictionNetwork private pictionNetwork;
-    IAccountStorage private accountStorage;
+    IAccountsStorage private accountsStorage;
 
     mapping (string => string) private accounts;
 
     constructor(address piction) validAddress(piction) {
         pictionNetwork = IPictionNetwork(piction);
-        accountStorage = IAccountStorage(pictionNetwork.getAddress(STORAGE_NAME));
+        accountsStorage = IAccountsStorage(pictionNetwork.getAddress(STORAGE_NAME));
     }
 
     /**
@@ -29,10 +30,10 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     */
     function createAccount(string id, string hash, string json) external onlyOwner {
         require(availableId(id), "Account creation failed: Invalid user id");
-        require(!_isEmptyString(accountStorage.getStringField(hash)), "Account creation failed: Invalid hash string");
+        require(!_isEmptyString(accountsStorage.getStringField(hash)), "Account creation failed: Invalid hash string");
 
         accounts[id] = hash;
-        accountStorage.setStringField(hash, json);
+        accountsStorage.setStringField(hash, json);
         
         emit CreateAccount(msg.sender, id, TimeLib.currentTime());
     }
@@ -52,7 +53,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     {
         if(!_isEmptyString(accounts[id]) 
             && _compareString(accounts[id], hash) 
-            && _compareString(json, accountStorage.getStringField(hash))) 
+            && _compareString(json, accountsStorage.getStringField(hash))) 
         {
             isValid = true;
         }
@@ -63,7 +64,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     * @param id 사용자 계정 id
     * @return isAvailable id 사용 가능 여부
     */
-    function availableId(string id) public onlyOwner validString(id) validString(hash) view returns(bool isAvailable) {
+    function availableId(string id) public onlyOwner validString(id) view returns(bool isAvailable) {
         return _isEmptyString(accounts[id]);
     }
 
