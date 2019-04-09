@@ -3,18 +3,13 @@ pragma solidity ^0.4.24;
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "../interfaces/IPictionNetwork.sol";
 import "../utils/TimeLib.sol";
+import "../utils/ValidValue.sol";
 
-contract PictionNetwork is IPictionNetwork, Ownable {
+contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
 
   // accounts
   // contents
   mapping (string => address) private managers;
-
-  modifier validAddress(address addr) {
-      require(addr != address(0), "Invaild address: Address 0 is not allowed.");
-      require(addr != address(this), "Invaild address: Same address as User Adoption Pool contact");
-      _;
-  }
 
   /**
     * @dev PIC 발행
