@@ -1,0 +1,19 @@
+{
+    "name": "piction-contracts",
+    "version": "",
+    "description": "",
+    "author": "",
+    "scripts": {},
+    "dependencies": {
+      "openzeppelin-solidity": "2.0.0",
+      "caver-js": "^0.0.2-r"
+    },
+    "devDependencies": {
+      "bignumber.js": "^7.2.1",
+      "chai": "^4.1.2",
+      "chai-as-promised": "^7.1.1",
+      "chai-bignumber": "^2.0.2",
+      "truffle-flattener": "^1.2.5"
+    }
+  }
+  
