@@ -3,10 +3,10 @@ pragma solidity ^0.4.24;
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 import "../interfaces/IPictionNetwork.sol";
-import "../interfaces/IAccountsStorage.sol";
+import "../interfaces/IStorage.sol";
 import "../utils/ValidValue.sol";
 
-contract AccountsStorage is IAccountsStorage, Ownable, ValidValue {
+contract AccountsStorage is IStorage, Ownable, ValidValue {
 
     string public constant MANAGER_NAME = "AccountsManager";
 

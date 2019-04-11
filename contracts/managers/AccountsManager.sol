@@ -3,7 +3,7 @@ pragma solidity ^0.4.24;
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 import "../interfaces/IPictionNetwork.sol";
-import "../interfaces/IAccountsStorage.sol";
+import "../interfaces/IStorage.sol";
 import "../interfaces/IAccountsManager.sol";
 import "../utils/ValidValue.sol";
 import "../utils/TimeLib.sol";
@@ -13,13 +13,13 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     string public constant STORAGE_NAME = "AccountsStorage";
 
     IPictionNetwork private pictionNetwork;
-    IAccountsStorage private accountsStorage;
+    IStorage private accountsStorage;
 
     mapping (string => string) private accounts;
 
     constructor(address piction) validAddress(piction) {
         pictionNetwork = IPictionNetwork(piction);
-        accountsStorage = IAccountsStorage(pictionNetwork.getAddress(STORAGE_NAME));
+        accountsStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
     }
 
     /**
