@@ -2,9 +2,11 @@ pragma solidity ^0.4.24;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
+import "../interfaces/IStorage.sol";
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IAccountsStorage.sol";
 import "../interfaces/IAccountsManager.sol";
+
 import "../utils/ValidValue.sol";
 import "../utils/TimeLib.sol";
 import "../utils/StringLib.sol";
@@ -16,6 +18,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     string public constant UPDATE_TAG = "UpdateAccount";
     string public constant DELETE_TAG = "DeleteAccount";
 
+    IStorage private iStorage;
     IPictionNetwork private pictionNetwork;
     IAccountsStorage private accountsStorage;
 
@@ -23,6 +26,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
         pictionNetwork = IPictionNetwork(piction);
 
         require(pictionNetwork.getAddress(STORAGE_NAME) != address(0), "AccountManager deploy failed: Check Piction Network account storage address");
+        iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
         accountsStorage = IAccountsStorage(pictionNetwork.getAddress(STORAGE_NAME));
     }
 
@@ -39,11 +43,11 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     {
         require(availableId(id), "Account creation failed: Invalid user id");
         require(availableAddress(sender), "Account creation failed: Invalid public address");
-        require(StringLib.isEmptyString(accountsStorage.getStringValue(hash)), "Account creation failed: Invalid hash string");
+        require(StringLib.isEmptyString(iStorage.getStringValue(hash)), "Account creation failed: Invalid hash string");
         
-        accountsStorage.setBooleanValue(id, true, CREATE_TAG);
+        iStorage.setBooleanValue(id, true, CREATE_TAG);
         accountsStorage.setAddressRegistration(sender, hash);
-        accountsStorage.setStringValue(hash, rawData, CREATE_TAG);
+        iStorage.setStringValue(hash, rawData, CREATE_TAG);
     }
 
     /**
@@ -59,7 +63,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     {
         require(accountValidation(id, hash, rawData), "Account update failed: Invalid account info");
         
-        accountsStorage.setStringValue(hash, rawData, UPDATE_TAG);
+        iStorage.setStringValue(hash, rawData, UPDATE_TAG);
     }
 
     /**
@@ -75,9 +79,9 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     {
         require(accountValidation(id, hash, rawData), "Account delete failed: Invalid account info");
 
-        accountsStorage.setStringValue(hash, "", DELETE_TAG);
+        iStorage.setStringValue(hash, "", DELETE_TAG);
         accountsStorage.setAddressRegistration(sender, "");
-        accountsStorage.setBooleanValue(id, false, DELETE_TAG);
+        iStorage.setBooleanValue(id, false, DELETE_TAG);
     }
 
     /**
@@ -94,8 +98,8 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
         view 
         returns(bool isValid) 
     {
-        if(!accountsStorage.getBooleanValue(id)
-            && StringLib.compareString(rawData, accountsStorage.getStringValue(hash))
+        if(!iStorage.getBooleanValue(id)
+            && StringLib.compareString(rawData, iStorage.getStringValue(hash))
             && StringLib.compareString(hash, accountsStorage.getAddressRegistration(sender)))
         {
             isValid = true;
@@ -108,7 +112,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     * @return isAvailable 사용 가능 여부
     */
     function availableId(string id) public onlyOwner validString(id) view returns(bool isAvailable) {
-        return !accountsStorage.getBooleanValue(id);
+        return !iStorage.getBooleanValue(id);
     }
 
     /**
@@ -127,7 +131,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     * @return isAvailable 사용 가능 여부
     */
     function availableHash(string hash) public onlyOwner validString(hash) view returns(bool isAvailable) {
-        string memory rawData = accountsStorage.getStringValue(hash);
+        string memory rawData = iStorage.getStringValue(hash);
         return StringLib.isEmptyString(rawData);
     }
 }
