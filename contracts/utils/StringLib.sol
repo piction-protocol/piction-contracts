@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-contract StringLib {
+library StringLib {
     /**
     * @dev 빈 문자열 확인 함수
     * @param value 확인하고자 하는 string value
