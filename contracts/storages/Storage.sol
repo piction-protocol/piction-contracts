@@ -2,8 +2,6 @@ pragma solidity ^0.4.24;
 
 import "../interfaces/IStorage.sol";
 
-import "../utils/TimeLib.sol";
-
 contract Storage is IStorage {
 
     mapping (string => uint256) private uintValue;
@@ -21,7 +19,7 @@ contract Storage is IStorage {
     function setBooleanValue(string key, bool value, string tag) public {
         booleanValue[key] = value;
         
-        emit SetBooleanValue(tag, key, TimeLib.currentTime());
+        emit SetBooleanValue(tag, key);
     }
 
     /**
@@ -33,7 +31,7 @@ contract Storage is IStorage {
     function setBytesValue(string key, bytes value, string tag) public {
         bytesValue[key] = value;
 
-        emit SetBytesValue(tag, key, TimeLib.currentTime());
+        emit SetBytesValue(tag, key);
     }
 
     /**
@@ -45,7 +43,7 @@ contract Storage is IStorage {
     function setStringValue(string key, string value, string tag) public {
         stringValue[key] = value;
 
-        emit SetStringValue(tag, key, TimeLib.currentTime());
+        emit SetStringValue(tag, key);
     }
 
     /**
@@ -57,7 +55,7 @@ contract Storage is IStorage {
     function setUintValue(string key, uint256 value, string tag) public  {
         uintValue[key] = value;
 
-        emit SetUintValue(tag, key, TimeLib.currentTime());
+        emit SetUintValue(tag, key);
     }
 
     /**
@@ -69,7 +67,7 @@ contract Storage is IStorage {
     function setAddressValue(string key, address value, string tag) public {
         addressValue[key] = value;
 
-        emit SetAddressValue(tag, key, TimeLib.currentTime());
+        emit SetAddressValue(tag, key);
     }
 
     /**
