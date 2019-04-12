@@ -3,31 +3,26 @@ pragma solidity ^0.4.24;
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 import "./Storage.sol";
-
 import "../interfaces/IPictionNetwork.sol";
-import "../interfaces/IAccountsStorage.sol";
-
 import "../utils/ValidValue.sol";
 
-contract AccountsStorage is Storage, IAccountsStorage, Ownable, ValidValue {
+contract AccountsStorage is Storage, Ownable, ValidValue {
 
     string public constant MANAGER_NAME = "AccountsManager";
 
     IPictionNetwork private pictionNetwork;
 
-    mapping (address => string) private addressRegistration;
-
-    modifier onlyAccountsManager(address manager) {
-        require(manager != address(0), "Invaild address: Address 0 is not allowed.");
-        require(manager != address(this), "Invaild address: Same address as AccountsStorage contact");
-        require(pictionNetwork.getAddress(MANAGER_NAME) == manager, "Invalid address: Access denied.");
+    modifier onlyAccountsManager(address sender) {
+        require(sender != address(0), "Invaild address: Address 0 is not allowed.");
+        require(sender != address(this), "Invaild address: Same address as AccountsStorage contact");
+        require(pictionNetwork.getAddress(MANAGER_NAME) == sender, "Invalid address: Access denied.");
         _;
     }
 
-    modifier readOnlyRole(address addr) {
-        require(addr != address(0), "Invaild address: Address 0 is not allowed.");
-        require(addr != address(this), "Invaild address: Same address as AccountsStorage contact");
-        require(pictionNetwork.getAddress(MANAGER_NAME) == addr, "Invalid address: Access denied.");
+    modifier readOnlyRole(address sender) {
+        require(sender != address(0), "Invaild address: Address 0 is not allowed.");
+        require(sender != address(this), "Invaild address: Same address as AccountsStorage contact");
+        require(pictionNetwork.getAddress(MANAGER_NAME) == sender, "Invalid address: Access denied.");
         
         // Piction network에 read only 계정의 주소가 확정되면 설정
         // require(pictionNetwork.getAddress("") == addr, "Invalid address: Access denied.");
@@ -76,26 +71,5 @@ contract AccountsStorage is Storage, IAccountsStorage, Ownable, ValidValue {
 
     function getAddressValue(string key) public readOnlyRole(msg.sender) view returns(address value) {
         return super.getAddressValue(key);
-    }
-
-    /**
-    * @dev 계정의 public address 설정
-    * @param sender 계정의 주소
-    * @param hash 사용자 고유 hash
-    */
-    function setAddressRegistration(address sender, string hash) 
-        public 
-        onlyAccountsManager(msg.sender) validAddress(sender) validString(hash) 
-    {
-        addressRegistration[sender] = hash;
-    }
-
-    /**
-    * @dev 주소 등록 여부 조회
-    * @param sender 조회하고자 하는 public address
-    * @return hash sender로 등록된 hash
-    */
-    function getAddressRegistration(address sender) public readOnlyRole(msg.sender) view returns(string hash) {
-        return addressRegistration[sender];
     }
 }
