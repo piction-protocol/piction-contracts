@@ -11,9 +11,9 @@ contract IStorage {
     function getUintValue(string key) public view returns(uint256 value);
     function getAddressValue(string key) public view returns(address value);
     function getBytesValue(string key) public view returns(bytes value);
-    event SetBooleanValue(string indexed tag, string indexed key, uint256 timestamp);
-    event SetStringValue(string indexed tag, string indexed key, uint256 timestamp);
-    event SetUintValue(string indexed tag, string indexed key, uint256 timestamp);
-    event SetAddressValue(string indexed tag, string indexed key, uint256 timestamp);
-    event SetBytesValue(string indexed tag, string indexed key, uint256 timestamp);
+    event SetBooleanValue(string tag, string key);
+    event SetStringValue(string tag, string key);
+    event SetUintValue(string tag, string key);
+    event SetAddressValue(string tag, string key);
+    event SetBytesValue(string tag, string key);
 }
