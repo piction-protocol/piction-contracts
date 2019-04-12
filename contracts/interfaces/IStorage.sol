@@ -11,6 +11,11 @@ contract IStorage {
     function getUintValue(string key) public view returns(uint256 value);
     function getAddressValue(string key) public view returns(address value);
     function getBytesValue(string key) public view returns(bytes value);
+    function deleteBooleanValue(string key, bool value, string tag) public;
+    function deleteStringValue(string key, string value, string tag) public;
+    function deleteUintValue(string key, uint256 value, string tag) public;
+    function deleteAddressValue(string key, address value, string tag) public;
+    function deleteBytesValue(string key, bytes value, string tag) public;
     event SetBooleanValue(string tag, string key);
     event SetStringValue(string tag, string key);
     event SetUintValue(string tag, string key);
