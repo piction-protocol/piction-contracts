@@ -2,101 +2,74 @@ pragma solidity ^0.4.24;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
+import "./Storage.sol";
 import "../interfaces/IPictionNetwork.sol";
-import "../interfaces/IStorage.sol";
 import "../utils/ValidValue.sol";
 
-contract AccountsStorage is IStorage, Ownable, ValidValue {
+contract AccountsStorage is Storage, Ownable, ValidValue {
 
     string public constant MANAGER_NAME = "AccountsManager";
 
     IPictionNetwork private pictionNetwork;
 
-    mapping (string => uint256) private uint_field;
-    mapping (string => string)  private string_field;
-    mapping (string => address) private address_field;
-    mapping (string => bool)    private boolean_field;
-
-    modifier onlyAccountsManager(address manager) {
-        require(manager != address(0), "Invaild address: Address 0 is not allowed.");
-        require(manager != address(this), "Invaild address: Same address as AccountsStorage contact");
-        require(pictionNetwork.getAddress(MANAGER_NAME) == manager, "Invalid address: Access denied.");
+    modifier onlyAccountsManager(address sender) {
+        require(sender != address(0), "Invaild address: Address 0 is not allowed.");
+        require(sender != address(this), "Invaild address: Same address as AccountsStorage contact");
+        require(pictionNetwork.getAddress(MANAGER_NAME) == sender, "Invalid address: Access denied.");
         _;
     }
 
-    constructor(address piction) validAddress(piction) {
+    modifier readOnlyRole(address sender) {
+        require(sender != address(0), "Invaild address: Address 0 is not allowed.");
+        require(sender != address(this), "Invaild address: Same address as AccountsStorage contact");
+        require(pictionNetwork.getAddress(MANAGER_NAME) == sender, "Invalid address: Access denied.");
+        
+        // Piction network에 read only 계정의 주소가 확정되면 설정
+        // require(pictionNetwork.getAddress("") == addr, "Invalid address: Access denied.");
+        _;
+    }
+
+    constructor(address piction) public validAddress(piction) {
         pictionNetwork = IPictionNetwork(piction);
     }
     
-    /**
-    * @dev boolean mapping data 설정
-    * @param key 설정하고자 하는 boolean_field key
-    * @param value 설정하고자 하는 boolean_field value
-    */
-    function setBooleanField(string key, bool value) external onlyAccountsManager(msg.sender) {
-        boolean_field[key] = value;
+    function setBooleanValue(string key, bool value, string tag) public onlyAccountsManager(msg.sender) {
+        super.setBooleanValue(key, value, tag);
     }
 
-    /**
-    * @dev string mapping data 설정
-    * @param key 설정하고자 하는 string_field key
-    * @param value 설정하고자 하는 string_field value
-    */
-    function setStringField(string key, string value) external onlyAccountsManager(msg.sender) {
-        string_field[key] = value;
+    function setBytesValue(string key, bytes value, string tag) public onlyAccountsManager(msg.sender)  {
+        super.setBytesValue(key, value, tag);
     }
 
-    /**
-    * @dev uint mapping data 설정
-    * @param key 설정하고자 하는 uint_field key
-    * @param value 설정하고자 하는 utin_field value
-    */
-    function setUintField(string key, uint256 value) external onlyAccountsManager(msg.sender) {
-        uint_field[key] = value;
+    function setStringValue(string key, string value, string tag) public onlyAccountsManager(msg.sender) {
+        super.setStringValue(key, value, tag);
     }
 
-    /**
-    * @dev address mapping data 설정
-    * @param key 설정하고자 하는 address_field key
-    * @param value 설정하고자 하는 address_field value
-    */
-    function setAddressField(string key, address value) external onlyAccountsManager(msg.sender)  {
-        address_field[key] = value;
+    function setUintValue(string key, uint256 value, string tag) public onlyAccountsManager(msg.sender) {
+        super.setUintValue(key, value, tag);
     }
 
-    /**
-    * @dev boolean mapping data 조회
-    * @param key 조회 하는 boolean_field key
-    * @return value key에 해당하는 boolean value
-    */
-    function getBooleanField(string key) external onlyAccountsManager(msg.sender) view returns(bool value) {
-        value = boolean_field[key];
+    function setAddressValue(string key, address value, string tag) public onlyAccountsManager(msg.sender)  {
+        super.setAddressValue(key, value, tag);
     }
 
-    /**
-    * @dev string mapping data 조회
-    * @param key 조회 하는 string_field key
-    * @return value key에 해당하는 string value
-    */
-    function getStringField(string key) external onlyAccountsManager(msg.sender) view returns(string value) {
-        value = string_field[key];
+    function getBooleanValue(string key) public readOnlyRole(msg.sender) view returns(bool value) {
+        return super.getBooleanValue(key);
     }
 
-    /**
-    * @dev uint mapping data 조회
-    * @param key 조회 하는 uint_field key
-    * @return value key에 해당하는 uint256 value
-    */
-    function getUintField(string key) external onlyAccountsManager(msg.sender) view returns(uint256 value) {
-        value = uint_field[key];
+    function getBytesValue(string key) public readOnlyRole(msg.sender) view returns(bytes value) {
+        return super.getBytesValue(key);
     }
 
-    /**
-    * @dev address mapping data 조회
-    * @param key 조회 하는 address_field key
-    * @return value key에 해당하는 address value
-    */
-    function getAddressField(string key) external onlyAccountsManager(msg.sender) view returns(address value) {
-        value = address_field[key];
+    function getStringValue(string key) public readOnlyRole(msg.sender) view returns(string value) {
+        return super.getStringValue(key);
+    }
+
+    function getUintValue(string key) public readOnlyRole(msg.sender) view returns(uint256 value) {
+        return super.getUintValue(key);
+    }
+
+    function getAddressValue(string key) public readOnlyRole(msg.sender) view returns(address value) {
+        return super.getAddressValue(key);
     }
 }
