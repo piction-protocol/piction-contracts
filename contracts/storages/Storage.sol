@@ -118,11 +118,10 @@ contract Storage is IStorage {
     /**
     * @dev boolean mapping data 삭제
     * @param key 삭제하고자 하는 booleanValue key
-    * @param value 삭제하고자 하는 booleanValue value
     * @param tag mapping 변수 삭제 tag
     */
-    function deleteBooleanValue(string key, bool value, string tag) public {
-        booleanValue[key] = value;
+    function deleteBooleanValue(string key, string tag) public {
+        delete booleanValue[key];
         
         emit SetBooleanValue(tag, key);
     }
@@ -130,11 +129,10 @@ contract Storage is IStorage {
     /**
     * @dev bytes mapping data 삭제
     * @param key 삭제하고자 하는 bytesValue key
-    * @param value 삭제하고자 하는 bytesValue value
     * @param tag mapping 변수 삭제 tag
     */
-    function deleteBytesValue(string key, bytes value, string tag) public {
-        bytesValue[key] = value;
+    function deleteBytesValue(string key, string tag) public {
+        delete bytesValue[key];
 
         emit SetBytesValue(tag, key);
     }
@@ -142,11 +140,10 @@ contract Storage is IStorage {
     /**
     * @dev string mapping data 삭제
     * @param key 삭제하고자 하는 stringValue key
-    * @param value 삭제하고자 하는 stringValue value
     * @param tag mapping 변수 삭제 tag
     */
-    function deleteStringValue(string key, string value, string tag) public {
-        stringValue[key] = value;
+    function deleteStringValue(string key, string tag) public {
+        delete stringValue[key];
 
         emit SetStringValue(tag, key);
     }
@@ -154,11 +151,10 @@ contract Storage is IStorage {
     /**
     * @dev uint mapping data 삭제
     * @param key 삭제하고자 하는 uintValue key
-    * @param value 삭제하고자 하는 utinValue value
     * @param tag mapping 변수 삭제 tag
     */
-    function deleteUintValue(string key, uint256 value, string tag) public  {
-        uintValue[key] = value;
+    function deleteUintValue(string key, string tag) public  {
+        delete uintValue[key];
 
         emit SetUintValue(tag, key);
     }
@@ -166,11 +162,10 @@ contract Storage is IStorage {
     /**
     * @dev address mapping data 삭제
     * @param key 삭제하고자 하는 addressValue key
-    * @param value 삭제하고자 하는 addressValue value
     * @param tag mapping 변수 삭제 tag
     */
-    function deleteAddressValue(string key, address value, string tag) public {
-        addressValue[key] = value;
+    function deleteAddressValue(string key, string tag) public {
+        delete addressValue[key];
 
         emit SetAddressValue(tag, key);
     }
