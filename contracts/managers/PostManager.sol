@@ -12,10 +12,10 @@ contract PostManager is Ownable, ValidValue {
 
     string public constant STORAGE_NAME = "ContentsStorage";
 
-    address pictionNetwork;
+    IPictionNetwork pictionNetwork;
 
     constructor(address piction) {
-        pictionNetwork = piction;
+        pictionNetwork = IPictionNetwork(piction);
     }
 
     /**
@@ -23,18 +23,8 @@ contract PostManager is Ownable, ValidValue {
      * @param rawData Post 정보
      */
     function createPost(string contentHash, string postHash, string rawData) external {
-        //todo 접근제한
-
         //인스턴스 생성
-        IContentsStorage contentStorage = IContentsStorage(IPictionNetwork(pictionNetwork).getAddress(STORAGE_NAME));
-
-        //Content 있는지 확인
-        require(contentStorage.isDuplicatedContent(msg.sender, contentHash), "createPost : Content Not Match.");
-
-        //Post 중복 체크
-        require(contentStorage.isDuplicatedPost(msg.sender, contentHash), "createPost : Post Duplicated.");
-        
-        contentStorage.setPost(contentHash, postHash, rawData, "createPost");
+        IContentsStorage contentStorage = IContentsStorage(pictionNetwork.getAddress(STORAGE_NAME));
         
         //todo event??
     }
