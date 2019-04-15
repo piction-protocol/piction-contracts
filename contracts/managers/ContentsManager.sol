@@ -33,19 +33,18 @@ contract ContentsManager is Ownable, ValidValue {
         validString(contentsHash)
         validString(rawData)
     {
-        //todo Call
-        //IAccountManager accountManager = IAccountManager(pictionNetwork.getAddress(ACCOUNT_NAME));
-        //require(msg.sender == accountManager.getUserAddress(userHash), "createContents : Not Match Sender");
-
-        //if contents Deploy
+        IAccountManager accountManager = IAccountManager(pictionNetwork.getAddress(ACCOUNT_NAME));
+        require(msg.sender == accountManager.getUserAddress(userHash), "createContents : Not Match Sender");
 
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
 
-        require(iStorage.getAddressValue(contentsHash) == address(0) ,"createContents : Already address.")
-        require(StringLib.isEmptyString(iStorage.getStringValue(contentsHash)),"createContents : Already rawdata.")
+        require(iStorage.getAddressValue(contentsHash) == address(0) ,"createContents : Already address.");
+        require(StringLib.isEmptyString(iStorage.getStringValue(contentsHash)),"createContents : Already rawdata.");
 
         iStorage.setAddressValue(contentsHash, msg.sender, CREATE_TAG);
         iStorage.setStringValue(contentsHash, rawData, CREATE_TAG);
+
+        //if necessary, deploy contract.
     }
 
     /**
@@ -60,9 +59,8 @@ contract ContentsManager is Ownable, ValidValue {
         validString(contentsHash)
         validString(rawData)
     {
-        //todo Call
-        //IAccountManager accountManager = IAccountManager(pictionNetwork.getAddress(ACCOUNT_NAME));
-        //require(msg.sender == accountManager.getUserAddress(userHash), "updatecontents : Not Match Sender");
+        IAccountManager accountManager = IAccountManager(pictionNetwork.getAddress(ACCOUNT_NAME));
+        require(msg.sender == accountManager.getUserAddress(userHash), "updatecontents : Not Match Sender");
 
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
         
@@ -80,16 +78,15 @@ contract ContentsManager is Ownable, ValidValue {
         validString(userHash) 
         validString(contentsHash)
     {
-        //todo Call
-        //IAccountManager accountManager = IAccountManager(pictionNetwork.getAddress(ACCOUNT_NAME));
-        //require(msg.sender == accountManager.getUserAddress(userHash) 
-        //    || isOwner(msg.sender), "removeContents : Not Match Sender");
+        IAccountManager accountManager = IAccountManager(pictionNetwork.getAddress(ACCOUNT_NAME));
+        require(msg.sender == accountManager.getUserAddress(userHash) 
+            || isOwner(msg.sender), "removeContents : Not Match Sender");
 
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
 
-        //require(iStorage.getAddressValue(contentsHash) == msg.sender
-        //    || isOwner(msg.sender) ,"removeContents : Content Not Match User.");
-        //require(!StringLib.isEmptyString(iStorage.getStringValue(contentsHash)),"updateContents : rawdata Empty");
+        require(iStorage.getAddressValue(contentsHash) == msg.sender
+            || isOwner(msg.sender) ,"removeContents : Content Not Match User.");
+        require(!StringLib.isEmptyString(iStorage.getStringValue(contentsHash)),"updateContents : Rawdata Empty");
 
         iStorage.deleteAddressValue(contentsHash, DELETE_TAG);
         iStorage.deleteStringValue(contentsHash, DELETE_TAG);
@@ -111,6 +108,22 @@ contract ContentsManager is Ownable, ValidValue {
 
         writer = iStorage.getAddressValue(contentsHash);
         require(writer != address(0), "getWriter : Address 0");
+    }
+
+    /**
+     * @dev 콘텐츠의 정보 조회
+     * @param contentsHash 콘텐츠의 유일 값
+     * @return rawData 콘텐츠 정보
+     */
+    function getContentsRawData(string contentsHash)
+        external
+        validString(contentsHash)
+        returns(string rawData)
+    {
+        IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
+
+        rawData = iStorage.getStringValue(contentsHash);
+        require(!StringLib.isEmptyString(rawData),"getContentsRawData : RawData Empty.");
     }
 
 }

@@ -6,6 +6,7 @@ interface IContentsManager {
     function removeContents(string userHash, string contentsHash) external;
     
     function getWriter(string contentsHash) external returns(address writer);
-
+    function getContentsRawData(string contentsHash) external returns(string rawData);
+    
     event RemoveContents(address indexed sender, string userHash, string contentsHash);
 }
