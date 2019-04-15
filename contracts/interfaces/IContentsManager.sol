@@ -1,7 +1,11 @@
 pragma solidity ^0.4.24;
 
 interface IContentsManager {
-    function createContent(string userHash, string contentHash, string rawData) external;
+    function createContents(string userHash, string contentsHash, string rawData) external;
+    function updateContents(string userHash, string contentsHash, string rawData) external;
+    function removeContents(string userHash, string contentsHash) external;
     
-    function getWriter(string contentHash) external returns(address writer);
+    function getWriter(string contentsHash) external returns(address writer);
+
+    event RemoveContents(address indexed sender, string userHash, string contentsHash);
 }
