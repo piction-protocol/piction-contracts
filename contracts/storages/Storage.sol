@@ -114,4 +114,59 @@ contract Storage is IStorage {
     function getAddressValue(string key) public view returns(address value) {
         value = addressValue[key];
     }
+
+    /**
+    * @dev boolean mapping data 삭제
+    * @param key 삭제하고자 하는 booleanValue key
+    * @param tag mapping 변수 삭제 tag
+    */
+    function deleteBooleanValue(string key, string tag) public {
+        delete booleanValue[key];
+        
+        emit SetBooleanValue(tag, key);
+    }
+
+    /**
+    * @dev bytes mapping data 삭제
+    * @param key 삭제하고자 하는 bytesValue key
+    * @param tag mapping 변수 삭제 tag
+    */
+    function deleteBytesValue(string key, string tag) public {
+        delete bytesValue[key];
+
+        emit SetBytesValue(tag, key);
+    }
+
+    /**
+    * @dev string mapping data 삭제
+    * @param key 삭제하고자 하는 stringValue key
+    * @param tag mapping 변수 삭제 tag
+    */
+    function deleteStringValue(string key, string tag) public {
+        delete stringValue[key];
+
+        emit SetStringValue(tag, key);
+    }
+
+    /**
+    * @dev uint mapping data 삭제
+    * @param key 삭제하고자 하는 uintValue key
+    * @param tag mapping 변수 삭제 tag
+    */
+    function deleteUintValue(string key, string tag) public  {
+        delete uintValue[key];
+
+        emit SetUintValue(tag, key);
+    }
+
+    /**
+    * @dev address mapping data 삭제
+    * @param key 삭제하고자 하는 addressValue key
+    * @param tag mapping 변수 삭제 tag
+    */
+    function deleteAddressValue(string key, string tag) public {
+        delete addressValue[key];
+
+        emit SetAddressValue(tag, key);
+    }
 }

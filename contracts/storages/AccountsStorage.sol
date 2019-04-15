@@ -72,4 +72,24 @@ contract AccountsStorage is Storage, Ownable, ValidValue {
     function getAddressValue(string key) public readOnlyRole(msg.sender) view returns(address value) {
         return super.getAddressValue(key);
     }
+
+    function deleteBooleanValue(string key, string tag) public onlyAccountsManager(msg.sender) {
+        super.deleteBooleanValue(key, tag);
+    }
+
+    function deleteBytesValue(string key, string tag) public onlyAccountsManager(msg.sender)  {
+        super.deleteBytesValue(key, tag);
+    }
+
+    function deleteStringValue(string key, string tag) public onlyAccountsManager(msg.sender) {
+        super.deleteStringValue(key, tag);
+    }
+
+    function deleteUintValue(string key, string tag) public onlyAccountsManager(msg.sender) {
+        super.deleteUintValue(key, tag);
+    }
+
+    function deleteAddressValue(string key, string tag) public onlyAccountsManager(msg.sender)  {
+        super.deleteAddressValue(key, tag);
+    }
 }
