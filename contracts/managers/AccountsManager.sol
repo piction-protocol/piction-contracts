@@ -11,7 +11,8 @@ import "../utils/TimeLib.sol";
 import "../utils/StringLib.sol";
 
 contract AccountsManager is IAccountsManager, Ownable, ValidValue {
-    
+    using StringLib for string;
+
     string public constant STORAGE_NAME = "AccountsStorage";
     string public constant CREATE_TAG = "CreateAccount";
     string public constant UPDATE_TAG = "UpdateAccount";
@@ -40,7 +41,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     {
         require(availableId(id), "Account creation failed: Already exists user id");
         require(iStorage.getAddressValue(userHash) == address(0), "Account creation failed: Already exists user hash and address");
-        require(StringLib.isEmptyString(iStorage.getStringValue(userHash)), "Account creation failed: Already exists userHash and raw data");
+        require(iStorage.getStringValue(userHash).isEmptyString(), "Account creation failed: Already exists userHash and raw data");
         
         iStorage.setBooleanValue(id, true, CREATE_TAG);
         iStorage.setAddressValue(userHash, sender, CREATE_TAG);
@@ -60,7 +61,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     {
         require(!availableId(id), "Update account failed: Invalid user id");
         require(iStorage.getAddressValue(userHash) == sender, "Update account failed: Invalid user hash and address");
-        require(!StringLib.isEmptyString(iStorage.getStringValue(userHash)), "Update account failed: Invalid user hash and raw data");
+        require(!iStorage.getStringValue(userHash).isEmptyString(), "Update account failed: Invalid user hash and raw data");
         
         iStorage.setStringValue(userHash, rawData, UPDATE_TAG);
     }
@@ -78,8 +79,8 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     {
         require(!availableId(id), "Delete account failed: Invalid user id");
         require(iStorage.getAddressValue(userHash) == sender, "Delete account failed: Invalid user hash and address");
-        require(!StringLib.isEmptyString(iStorage.getStringValue(userHash)), "Delete account failed: Invalid user hash and raw data");
-        require(StringLib.compareString(iStorage.getStringValue(userHash), rawData), "Delete account failed: Invalid user hash and raw data");
+        require(!iStorage.getStringValue(userHash).isEmptyString(), "Delete account failed: Invalid user hash and raw data");
+        require(iStorage.getStringValue(userHash).compareString(rawData), "Delete account failed: Invalid user hash and raw data");
 
         iStorage.deleteBooleanValue(id, DELETE_TAG);
         iStorage.deleteAddressValue(userHash, DELETE_TAG);
@@ -101,7 +102,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     * @return isAvailable 사용 가능 여부
     */
     function availableUserHash(string userHash) public validString(userHash) view returns(bool isAvailable) {
-        return (StringLib.isEmptyString(iStorage.getStringValue(userHash)) && iStorage.getAddressValue(userHash) == address(0));
+        return (iStorage.getStringValue(userHash).isEmptyString() && iStorage.getAddressValue(userHash) == address(0));
     }
 
     /**
@@ -125,6 +126,6 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
         view 
         returns(bool isValid) 
     {
-        return StringLib.compareString(iStorage.getStringValue(userHash), rawData);
+        return iStorage.getStringValue(userHash).compareString(rawData);
     }
 }
