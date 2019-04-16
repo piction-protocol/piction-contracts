@@ -26,9 +26,9 @@ contract("AccountsStorage", function (accounts) {
         it("set accounts manager address", async () => {
             await pictionNetwork.setAddress("AccountsManager", accountsManager, {from: owner}).should.be.fulfilled;
 
-            const registedAccountsManager = await pictionNetwork.getAddress("AccountsManager").should.be.fulfilled;
+            const registeredAccountsManager = await pictionNetwork.getAddress("AccountsManager").should.be.fulfilled;
 
-            registedAccountsManager.should.be.equal(accountsManager);
+            registeredAccountsManager.should.be.equal(accountsManager);
         });
 
         it("set default mapping variable", async () => {

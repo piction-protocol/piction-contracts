@@ -27,11 +27,11 @@ contract("PictionNetwork", function (accounts) {
             await pictionNetwork.setAddress("AccountsManager", accountsManager, {from: owner}).should.be.fulfilled;
             await pictionNetwork.setAddress("ContentsManager", contentsManager, {from: owner}).should.be.fulfilled;
 
-            const registedAccountsManager = await pictionNetwork.getAddress("AccountsManager").should.be.fulfilled;
-            const registedContentsManager = await pictionNetwork.getAddress("ContentsManager").should.be.fulfilled;
+            const registeredAccountsManager = await pictionNetwork.getAddress("AccountsManager").should.be.fulfilled;
+            const registeredContentsManager = await pictionNetwork.getAddress("ContentsManager").should.be.fulfilled;
             
-            registedAccountsManager.should.be.equal(accountsManager);
-            registedContentsManager.should.be.equal(contentsManager);
+            registeredAccountsManager.should.be.equal(accountsManager);
+            registeredContentsManager.should.be.equal(contentsManager);
         });
 
         it("get invalid address", async () => {
@@ -43,9 +43,9 @@ contract("PictionNetwork", function (accounts) {
         it("set rate", async () => {
             await pictionNetwork.setRate("UserAdoptionPool", userAdoptionPoolRate).should.be.fulfilled;
 
-            const registedUserAdoptionPoolRate = await pictionNetwork.getRate("UserAdoptionPool").should.be.fulfilled;
+            const registeredUserAdoptionPoolRate = await pictionNetwork.getRate("UserAdoptionPool").should.be.fulfilled;
 
-            new BigNumber(userAdoptionPoolRate).should.be.bignumber.equal(registedUserAdoptionPoolRate);
+            new BigNumber(userAdoptionPoolRate).should.be.bignumber.equal(registeredUserAdoptionPoolRate);
         });
     });
 });

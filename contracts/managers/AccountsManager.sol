@@ -120,7 +120,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     * @param rawData 사용자 계정 정보
     * @return isValid 검증 결과
     */
-    function accountVaildation(string userHash, string rawData) 
+    function accountValidation(string userHash, string rawData)
         external 
         onlyOwner validString(userHash) validString(rawData) 
         view 
