@@ -49,8 +49,6 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
         iStorage.setStringValue(contentsHash, userHash, CREATE_TAG);
 
-        emit CreateContents(msg.sender, userHash, contentsHash);
-
         //if necessary, deploy contract.
     }
 
@@ -74,8 +72,6 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         require(!StringLib.isEmptyString(iStorage.getStringValue(contentsHash)),"updateContents : rawdata Empty");
 
         iStorage.setStringValue(contentsHash, rawData, UPDATE_TAG);
-
-        emit UpdateContents(msg.sender, userHash, contentsHash);
     }
 
     /**
@@ -100,8 +96,6 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
 
         iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
         iStorage.deleteStringValue(contentsHash, DELETE_TAG);
-
-        emit RemoveContents(msg.sender, userHash, contentsHash);
     }
 
     /**
@@ -158,4 +152,20 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         require(!StringLib.isEmptyString(rawData),"getContentsRawData : RawData Empty.");
     }
 
+    /**
+     * @dev 콘텐츠와 유저의 연결성 확인
+     * @param contentsHash 확인하고자 하는 콘텐츠 유일 값
+     * @return userHash 유저의 유일 값
+     */
+    function getUserHash(string contentsHash) 
+        external 
+        view 
+        validString(contentsHash)
+        returns(string userHash) 
+    {
+        IStorage iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
+        
+        userHash = iStorage.getStringValue(contentsHash);
+        require(!StringLib.isEmptyString(userHash),"getUserHash : UserHash Empty.");
+    }
 }

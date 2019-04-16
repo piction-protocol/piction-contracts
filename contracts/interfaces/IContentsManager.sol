@@ -7,8 +7,5 @@ interface IContentsManager {
     
     function getWriter(string contentsHash) external view returns(address writer);
     function getContentsRawData(string contentsHash) external view returns(string rawData);
-
-    event CreateContents(address indexed sender, string userHash, string contentsHash);
-    event UpdateContents(address indexed sender, string userHash, string contentsHash);
-    event RemoveContents(address indexed sender, string userHash, string contentsHash);
+    function getUserHash(string contentsHash) external view returns(string contentsHash);
 }

@@ -8,7 +8,6 @@ import "../interfaces/IContentsManager.sol";
 import "../interfaces/IPostManager.sol";
 import "../interfaces/IStorage.sol";
 import "../utils/ValidValue.sol";
-import "../utils/TimeLib.sol";
 import "../utils/StringLib.sol";
 
 contract PostManager is Ownable, ValidValue, IPostManager {
@@ -53,8 +52,6 @@ contract PostManager is Ownable, ValidValue, IPostManager {
 
         iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
         iStorage.setStringValue(postHash, contentsHash, CREATE_TAG);
-
-        emit CreatePost(msg.sender, userHash, contentsHash, postHash);
     }
 
     /**
@@ -79,8 +76,6 @@ contract PostManager is Ownable, ValidValue, IPostManager {
         require(!StringLib.isEmptyString(iStorage.getStringValue(postHash)),"updatePost : rawdata Empty");
         
         iStorage.setStringValue(postHash, rawData, UPDATE_TAG);
-
-        emit UpdatePost(msg.sender, userHash, contentsHash, postHash);
     }
 
     /**
@@ -107,8 +102,6 @@ contract PostManager is Ownable, ValidValue, IPostManager {
 
         iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
         iStorage.deleteStringValue(postHash, DELETE_TAG);
-
-        emit RemovePost(msg.sender, userHash, contentsHash, postHash);
     }
 
     //TODO MovePost 다른 콘텐츠로 Post 이동
@@ -156,7 +149,8 @@ contract PostManager is Ownable, ValidValue, IPostManager {
      * @return rawData 콘텐츠 정보
      */
     function getPostRawData(string postHash)
-        external view
+        external 
+        view
         validString(postHash)
         returns(string memory rawData)
     {
@@ -164,5 +158,22 @@ contract PostManager is Ownable, ValidValue, IPostManager {
 
         rawData = iStorage.getStringValue(postHash);
         require(!StringLib.isEmptyString(rawData),"getPostRawData : RawData Empty.");
+    }
+
+    /**
+     * @dev Post와 콘텐츠의 연결성 확인
+     * @param postHash 확인하고자 하는 Post 유일 값
+     * @return contentsHash 콘텐츠의 유일 값
+     */
+    function getContentsHash(string postHash) 
+        external
+        view 
+        validString(postHash)
+        returns(string contentsHash) 
+    {
+        IStorage iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
+
+        contentsHash = iStorage.getStringValue(postHash);
+        require(!StringLib.isEmptyString(contentsHash),"getContentsHash : ContentsHash Empty.");
     }
 }
