@@ -24,7 +24,7 @@ contract RelationStorage is Storage, Ownable, ValidValue {
     modifier readOnlyRole(address sender) {
         require(sender != address(0), "Invaild address: Address 0 is not allowed.");
         require(sender != address(this), "Invaild address: Same address as RelationStorage contact");
-        require(pictionNetwork.getAddress(MANAGER_NAME) == sender 
+        require(pictionNetwork.getAddress(CONTENTS_MANAGER_NAME) == sender 
             || pictionNetwork.getAddress(POST_MANAGER_NAME) == sender, "Invalid address: Access denied.");
         
         // Piction network에 read only 계정의 주소가 확정되면 설정
