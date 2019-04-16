@@ -10,6 +10,7 @@ import "../utils/ValidValue.sol";
 import "../utils/StringLib.sol";
 
 contract ContentsManager is Ownable, ValidValue, IContentsManager {
+    using StringLib for string;
 
     string public constant STORAGE_NAME = "ContentsStorage";
     string public constant RELATION_NAME = "RelationStorage";
@@ -41,7 +42,7 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
 
         require(iStorage.getAddressValue(contentsHash) == address(0) ,"createContents : Already address.");
-        require(StringLib.isEmptyString(iStorage.getStringValue(contentsHash)),"createContents : Already rawdata.");
+        require(iStorage.getStringValue(contentsHash).isEmptyString(),"createContents : Already rawdata.");
 
         iStorage.setAddressValue(contentsHash, msg.sender, CREATE_TAG);
         iStorage.setStringValue(contentsHash, rawData, CREATE_TAG);
@@ -69,7 +70,7 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
         
         require(isContentsUser(contentsHash) ,"updateContents : Not Match User.");
-        require(!StringLib.isEmptyString(iStorage.getStringValue(contentsHash)),"updateContents : rawdata Empty");
+        require(!iStorage.getStringValue(contentsHash).isEmptyString(),"updateContents : rawdata Empty");
 
         iStorage.setStringValue(contentsHash, rawData, UPDATE_TAG);
     }
@@ -89,7 +90,7 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
 
         require(isContentsUser(contentsHash) || isOwner() ,"removeContents : Content Not Match User.");
-        require(!StringLib.isEmptyString(iStorage.getStringValue(contentsHash)),"updateContents : Rawdata Empty");
+        require(!iStorage.getStringValue(contentsHash).isEmptyString(),"updateContents : Rawdata Empty");
 
         iStorage.deleteAddressValue(contentsHash, DELETE_TAG);
         iStorage.deleteStringValue(contentsHash, DELETE_TAG);
@@ -149,7 +150,7 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
 
         rawData = iStorage.getStringValue(contentsHash);
-        require(!StringLib.isEmptyString(rawData),"getContentsRawData : RawData Empty.");
+        require(!rawData.isEmptyString(),"getContentsRawData : RawData Empty.");
     }
 
     /**
@@ -166,6 +167,6 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         IStorage iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
         
         userHash = iStorage.getStringValue(contentsHash);
-        require(!StringLib.isEmptyString(userHash),"getUserHash : UserHash Empty.");
+        require(!userHash.isEmptyString(),"getUserHash : UserHash Empty.");
     }
 }

@@ -11,6 +11,7 @@ import "../utils/ValidValue.sol";
 import "../utils/StringLib.sol";
 
 contract PostManager is Ownable, ValidValue, IPostManager {
+    using StringLib for string;
 
     string public constant STORAGE_NAME = "ContentsStorage";
     string public constant RELATION_NAME = "RelationStorage";
@@ -45,7 +46,7 @@ contract PostManager is Ownable, ValidValue, IPostManager {
 
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
         require(iStorage.getAddressValue(postHash) == address(0) ,"createPost : Already address.");
-        require(StringLib.isEmptyString(iStorage.getStringValue(postHash)),"createPost : Already rawdata.");
+        require(iStorage.getStringValue(postHash).isEmptyString(),"createPost : Already rawdata.");
 
         iStorage.setAddressValue(postHash, msg.sender, CREATE_TAG);
         iStorage.setStringValue(postHash, rawData, CREATE_TAG);
@@ -73,7 +74,7 @@ contract PostManager is Ownable, ValidValue, IPostManager {
 
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
         require(iStorage.getAddressValue(postHash) == msg.sender ,"updatePost : Not Match User.");
-        require(!StringLib.isEmptyString(iStorage.getStringValue(postHash)),"updatePost : rawdata Empty");
+        require(!iStorage.getStringValue(postHash).isEmptyString(),"updatePost : rawdata Empty");
         
         iStorage.setStringValue(postHash, rawData, UPDATE_TAG);
     }
@@ -95,7 +96,7 @@ contract PostManager is Ownable, ValidValue, IPostManager {
 
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
         require(iStorage.getAddressValue(postHash) == msg.sender || isOwner() ,"deletePost : Not Match User.");
-        require(!StringLib.isEmptyString(iStorage.getStringValue(postHash)),"deletePost : rawdata Empty");
+        require(!iStorage.getStringValue(postHash).isEmptyString(),"deletePost : rawdata Empty");
 
         iStorage.deleteAddressValue(postHash, DELETE_TAG);
         iStorage.deleteStringValue(postHash, DELETE_TAG);
@@ -157,7 +158,7 @@ contract PostManager is Ownable, ValidValue, IPostManager {
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
 
         rawData = iStorage.getStringValue(postHash);
-        require(!StringLib.isEmptyString(rawData),"getPostRawData : RawData Empty.");
+        require(!rawData.isEmptyString(),"getPostRawData : RawData Empty.");
     }
 
     /**
@@ -174,6 +175,6 @@ contract PostManager is Ownable, ValidValue, IPostManager {
         IStorage iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
 
         contentsHash = iStorage.getStringValue(postHash);
-        require(!StringLib.isEmptyString(contentsHash),"getContentsHash : ContentsHash Empty.");
+        require(!contentsHash.isEmptyString(),"getContentsHash : ContentsHash Empty.");
     }
 }
