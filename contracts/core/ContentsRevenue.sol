@@ -32,7 +32,7 @@ contract ContentsRevenue is Ownable {
      * @param value 토큰 권리 위임 수량
      * @param token PXL 컨트랙트 주소
      * @param data 기타 파라미터 :
-                    [Content Hash 32]
+                    [Content Hash 66]
                     [Contents Distributor 20]
                     [Sale type 32]
                     [Supporter Pool Rate 32]
@@ -42,11 +42,10 @@ contract ContentsRevenue is Ownable {
         require(address(this) != from, "Invalid buyer address.");
         require(pictionNetwork.getAddress("PXL") == token, "Invalid Pixel token address.");
 
-        string memory contentHash = string(data.slice(0, 32));
-
-        address contentsDistributor = data.toAddress(32);
-        uint256 saleType = data.toUint(52);
-        uint256 supporterPoolRate = data.toUint(84);
+        string memory contentHash = string(data.slice(0, 66));
+        address contentsDistributor = data.toAddress(66);
+        uint256 saleType = data.toUint(86);
+        uint256 supporterPoolRate = data.toUint(118);
  
         IContentsManager contentsManager = IContentsManager(pictionNetwork.getAddress("ContentsManager"));
         
@@ -77,7 +76,7 @@ contract ContentsRevenue is Ownable {
         uint256 ecosystemFundAmount = amount.mul(pictionNetwork.getRate("EcosystemFund")).div(DECIMALS);
         uint256 supporterPoolAmount = amount.mul(supporterPoolRate).div(DECIMALS);
 
-        uint256 contentsProviderAmount = amount.sub(contentsDistributorAmount).sub(userAdoptionPoolAmount).sub(ecosystemFundAmount).sub(supporterPoolAmount);//.sub(depositPoolAmount).sub(marketerAmount).sub(translatorAmount);
+        uint256 contentsProviderAmount = amount.sub(contentsDistributorAmount).sub(userAdoptionPoolAmount).sub(ecosystemFundAmount).sub(supporterPoolAmount);
 
         if (contentsDistributorAmount > 0) {
             pxlToken.transfer(contentsDistributor, contentsDistributorAmount);
