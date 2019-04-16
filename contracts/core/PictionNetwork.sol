@@ -2,7 +2,6 @@ pragma solidity ^0.4.24;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "../interfaces/IPictionNetwork.sol";
-import "../utils/TimeLib.sol";
 import "../utils/ValidValue.sol";
 
 contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
@@ -17,7 +16,7 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
     // Connectors: ELEConnector, PICConnector
     mapping (string => address) private addressList;
 
-    // ContentsDistributor, UserAdoptionPool, DepositPool, EcosystemFund, SupporterPool, ContensProvider, Translator, Marketer
+    // ContentsDistributor, UserAdoptionPool, EcosystemFund, SupporterPool
     mapping (string => uint256) distributeRate;
 
     /**
