@@ -80,7 +80,7 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
      * @param userHash 삭제를 요청하는 유저의 유일한 값
      * @param contentsHash 삭제하고자 하는 콘텐츠의 유일한 값
      */
-    function removeContents(string userHash, string contentsHash)
+    function deleteContents(string userHash, string contentsHash)
         external
         validString(userHash) 
         validString(contentsHash)

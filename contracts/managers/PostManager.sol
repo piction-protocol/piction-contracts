@@ -20,6 +20,7 @@ contract PostManager is Ownable, ValidValue, IPostManager {
     string public constant CREATE_TAG = "createPost";
     string public constant UPDATE_TAG = "updatePost";
     string public constant DELETE_TAG = "deletePost";
+    string public constant MOVE_TAG = "movePost";
 
     IPictionNetwork pictionNetwork;
 
@@ -80,12 +81,12 @@ contract PostManager is Ownable, ValidValue, IPostManager {
     }
 
     /**
-     * @dev Post 생성
-     * @param userHash Post 생성하는 유저의 유일 값
-     * @param contentsHash Post 생성하는 콘텐츠의 유일 값
+     * @dev Post 삭제
+     * @param userHash Post 생성한 유저의 유일 값
+     * @param contentsHash Post 생성한 콘텐츠의 유일 값
      * @param postHash 생성되는 Post의 유일 값
      */
-    function removePost(string userHash, string contentsHash, string postHash)
+    function deletePost(string userHash, string contentsHash, string postHash)
         external
         validString(userHash)
         validString(contentsHash)
@@ -105,7 +106,34 @@ contract PostManager is Ownable, ValidValue, IPostManager {
         iStorage.deleteStringValue(postHash, DELETE_TAG);
     }
 
-    //TODO MovePost 다른 콘텐츠로 Post 이동
+    /**
+     * @dev Post 이동
+     * @param userHash Post 생성하는 유저의 유일 값
+     * @param beforContentsHash Post가 있는 콘텐츠의 유일 값
+     * @param afterContentsHash Post를 이동시키고자 하는 콘텐츠의 유일 값
+     * @param postHash 이동시키고자 하는 Post의 유일 값
+     */
+    function movePost(string userHash, string beforContentsHash, string afterContentsHash, string postHash) 
+        external 
+        validString(userHash)
+        validString(beforContentsHash)
+        validString(afterContentsHash)
+        validString(postHash)
+    {
+        require(isPictionUser(userHash), "movePost : Not Match Sender");
+        require(isContentsUser(beforContentsHash), "movePost : Contents Not Match Sender");
+        require(isContentsUser(afterContentsHash), "movePost : Contents Not Match Sender");
+
+        IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
+        require(iStorage.getAddressValue(postHash) == msg.sender,"movePost : Not Match User.");
+        require(!iStorage.getStringValue(postHash).isEmptyString(),"movePost : rawdata Empty");
+
+        iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
+        require(!iStorage.getStringValue(postHash).isEmptyString(),"movePost : contentsHash Empty");
+
+        iStorage.deleteStringValue(postHash, MOVE_TAG);
+        iStorage.setStringValue(postHash, afterContentsHash, MOVE_TAG);
+    }
 
     /**
      * @dev 픽션에 등록된 유저인지 확인
