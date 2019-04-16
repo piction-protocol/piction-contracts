@@ -8,5 +8,4 @@ contract IAccountsManager {
     function availableUserHash(string userHash) public view returns(bool isAvailable);
     function getUserAddress(string userHash) public view returns(address publicKey);
     function accountVaildation(string userHash, string rawData) external view returns(bool isValid);
-    event setAccount(address indexed pictionNetwork, address indexed user, string id, string tag);
 }
