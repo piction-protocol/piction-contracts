@@ -6,8 +6,8 @@ import "../utils/ValidValue.sol";
 
 contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
 
-    mapping (string => bool) private registedAddress;
-    mapping (string => bool) private registedRate;
+    mapping (string => bool) private registeredAddress;
+    mapping (string => bool) private registeredRate;
 
     // Managers: AccountsManager, ContentsManager
     // Core: ContentsRevenue
@@ -33,7 +33,7 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
         validAddress(pictionAddress) 
     {
         addressList[contractName] = pictionAddress;
-        registedAddress[contractName] = true;
+        registeredAddress[contractName] = true;
 
         emit SetAddress(msg.sender, contractName, pictionAddress);
     }
@@ -46,7 +46,7 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
         external 
         view 
         returns(address pictionAddress) {
-        require(registedAddress[contractName], "Unregisted contract");
+        require(registeredAddress[contractName], "Unregistered contract");
 
         pictionAddress = addressList[contractName];
     }
@@ -65,7 +65,7 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
         validRate(rate) 
     {
         distributeRate[contractName] = rate;
-        registedRate[contractName] = true;
+        registeredRate[contractName] = true;
 
         emit SetRate(msg.sender, contractName, rate);
     }
@@ -78,7 +78,7 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
         external 
         view 
         returns(uint256 rate) {
-        require(registedRate[contractName], "Unregisted contract");
+        require(registeredRate[contractName], "Unregistered contract");
 
         rate = distributeRate[contractName];
     }

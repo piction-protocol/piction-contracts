@@ -52,7 +52,7 @@ contract("AccountsManager", function(accounts) {
             let resultAvailableId = await manager.availableId(userId);
             let resultAvailableUserHash = await manager.availableUserHash(userHash);
             let resultUserAddress = await manager.getUserAddress(userHash);
-            let resultAccountValidation = await manager.accountVaildation(userHash, rawData);
+            let resultAccountValidation = await manager.accountValidation(userHash, rawData);
 
             resultAvailableId.should.be.equal(true);
             resultAvailableUserHash.should.be.equal(true);
@@ -65,7 +65,7 @@ contract("AccountsManager", function(accounts) {
             resultAvailableId = await manager.availableId(userId);
             resultAvailableUserHash = await manager.availableUserHash(userHash);
             resultUserAddress = await manager.getUserAddress(userHash);
-            resultAccountValidation = await manager.accountVaildation(userHash, rawData);
+            resultAccountValidation = await manager.accountValidation(userHash, rawData);
 
             resultAvailableId.should.be.equal(false);
             resultAvailableUserHash.should.be.equal(false);
@@ -77,7 +77,7 @@ contract("AccountsManager", function(accounts) {
             let resultAvailableId = await manager.availableId(userId);
             let resultAvailableUserHash = await manager.availableUserHash(userHash);
             let resultUserAddress = await manager.getUserAddress(userHash);
-            let resultAccountValidation = await manager.accountVaildation(userHash, rawData);
+            let resultAccountValidation = await manager.accountValidation(userHash, rawData);
 
             resultAvailableId.should.be.equal(false);
             resultAvailableUserHash.should.be.equal(false);
@@ -90,7 +90,7 @@ contract("AccountsManager", function(accounts) {
             resultAvailableId = await manager.availableId(userId);
             resultAvailableUserHash = await manager.availableUserHash(userHash);
             resultUserAddress = await manager.getUserAddress(userHash);
-            resultAccountValidation = await manager.accountVaildation(userHash, updateRawData);
+            resultAccountValidation = await manager.accountValidation(userHash, updateRawData);
 
             resultAvailableId.should.be.equal(false);
             resultAvailableUserHash.should.be.equal(false);
@@ -102,7 +102,7 @@ contract("AccountsManager", function(accounts) {
             let resultAvailableId = await manager.availableId(userId);
             let resultAvailableUserHash = await manager.availableUserHash(userHash);
             let resultUserAddress = await manager.getUserAddress(userHash);
-            let resultAccountValidation = await manager.accountVaildation(userHash, updateRawData);
+            let resultAccountValidation = await manager.accountValidation(userHash, updateRawData);
 
             resultAvailableId.should.be.equal(false);
             resultAvailableUserHash.should.be.equal(false);
@@ -115,7 +115,7 @@ contract("AccountsManager", function(accounts) {
             resultAvailableId = await manager.availableId(userId);
             resultAvailableUserHash = await manager.availableUserHash(userHash);
             resultUserAddress = await manager.getUserAddress(userHash);
-            resultAccountValidation = await manager.accountVaildation(userHash, updateRawData);
+            resultAccountValidation = await manager.accountValidation(userHash, updateRawData);
 
             resultAvailableId.should.be.equal(true);
             resultAvailableUserHash.should.be.equal(true);
