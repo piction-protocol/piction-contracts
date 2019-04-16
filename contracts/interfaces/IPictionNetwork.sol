@@ -12,14 +12,12 @@ interface IPictionNetwork {
     event SetAddress(
         address indexed from,
         string contractName,
-        address pictionAddress,
-        uint256 timestamp
+        address pictionAddress
     );
 
     event SetRate(
         address indexed from,
         string contractName,
-        uint256 rate,
-        uint256 timestamp
+        uint256 rate
     );
 }

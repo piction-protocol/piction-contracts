@@ -36,7 +36,7 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
         addressList[contractName] = pictionAddress;
         registedAddress[contractName] = true;
 
-        emit SetAddress(msg.sender, contractName, pictionAddress, TimeLib.currentTime());
+        emit SetAddress(msg.sender, contractName, pictionAddress);
     }
 
     /**
@@ -68,7 +68,7 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
         distributeRate[contractName] = rate;
         registedRate[contractName] = true;
 
-        emit SetRate(msg.sender, contractName, rate, TimeLib.currentTime());
+        emit SetRate(msg.sender, contractName, rate);
     }
 
     /**
