@@ -58,11 +58,6 @@ contract("TestValidValue", function (accounts) {
             await testValidValue.testValidRate(testRate).should.be.fulfilled;
         });
 
-        it("validRate: The ratio must be greater than 0.", async () => {
-            const testRate = 0 * decimals;
-            await testValidValue.testValidRate(testRate).should.be.rejected;
-        });
-
         it("validRate: The ratio must be less than 1.", async () => {
             const testRate = 1.1 * decimals;
             await testValidValue.testValidRate(testRate).should.be.rejected;

@@ -19,7 +19,6 @@ contract ValidValue {
 
   modifier validRate(uint256 rate) {
       uint256 validDecimals = 10 ** 18;
-      require(rate > 0, "Out of Range: The ratio must be greater than 0.");
       require(rate <= validDecimals, "Out of Range: The ratio must be less than 1.");
       _;
   }
