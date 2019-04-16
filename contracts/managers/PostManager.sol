@@ -14,6 +14,7 @@ import "../utils/StringLib.sol";
 contract PostManager is Ownable, ValidValue, IPostManager {
 
     string public constant STORAGE_NAME = "ContentsStorage";
+    string public constant RELATION_NAME = "RelationStorage";
     string public constant ACCOUNT_NAME = "AccountsManager";
     string public constant CONTENTS_NAME = "ContentsManager";
     string public constant CREATE_TAG = "createPost";
@@ -49,6 +50,9 @@ contract PostManager is Ownable, ValidValue, IPostManager {
 
         iStorage.setAddressValue(postHash, msg.sender, CREATE_TAG);
         iStorage.setStringValue(postHash, rawData, CREATE_TAG);
+
+        iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
+        iStorage.setStringValue(postHash, contentsHash, CREATE_TAG);
 
         emit CreatePost(msg.sender, userHash, contentsHash, postHash);
     }
@@ -98,8 +102,11 @@ contract PostManager is Ownable, ValidValue, IPostManager {
         require(iStorage.getAddressValue(postHash) == msg.sender || isOwner() ,"deletePost : Not Match User.");
         require(!StringLib.isEmptyString(iStorage.getStringValue(postHash)),"deletePost : rawdata Empty");
 
-        iStorage.deleteAddressValue(contentsHash, DELETE_TAG);
-        iStorage.deleteStringValue(contentsHash, DELETE_TAG);
+        iStorage.deleteAddressValue(postHash, DELETE_TAG);
+        iStorage.deleteStringValue(postHash, DELETE_TAG);
+
+        iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
+        iStorage.deleteStringValue(postHash, DELETE_TAG);
 
         emit RemovePost(msg.sender, userHash, contentsHash, postHash);
     }

@@ -12,6 +12,7 @@ import "../utils/StringLib.sol";
 contract ContentsManager is Ownable, ValidValue, IContentsManager {
 
     string public constant STORAGE_NAME = "ContentsStorage";
+    string public constant RELATION_NAME = "RelationStorage";
     string public constant ACCOUNT_NAME = "AccountsManager";
     string public constant CREATE_TAG = "createContents";
     string public constant UPDATE_TAG = "updateContents";
@@ -44,6 +45,9 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
 
         iStorage.setAddressValue(contentsHash, msg.sender, CREATE_TAG);
         iStorage.setStringValue(contentsHash, rawData, CREATE_TAG);
+
+        iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
+        iStorage.setStringValue(contentsHash, userHash, CREATE_TAG);
 
         emit CreateContents(msg.sender, userHash, contentsHash);
 
@@ -92,6 +96,9 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         require(!StringLib.isEmptyString(iStorage.getStringValue(contentsHash)),"updateContents : Rawdata Empty");
 
         iStorage.deleteAddressValue(contentsHash, DELETE_TAG);
+        iStorage.deleteStringValue(contentsHash, DELETE_TAG);
+
+        iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
         iStorage.deleteStringValue(contentsHash, DELETE_TAG);
 
         emit RemoveContents(msg.sender, userHash, contentsHash);
