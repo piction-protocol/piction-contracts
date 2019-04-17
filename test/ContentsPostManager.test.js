@@ -123,8 +123,8 @@ contract("manager", function (accounts) {
             writer.should.be.equal("0x0000000000000000000000000000000000000000");
 
             //삭제 검증 - RawData
-            await contentsManager.getContentsRawData.call("contentsHash", {from: user1})
-                .should.be.rejected;
+            raw = await contentsManager.getContentsRawData.call("contentsHash", {from: user1})
+                raw.should.be.equal("")
             
             //삭제 검증- UserHash
             await contentsManager.getUserHash.call("contentsHash", {from: user1})
@@ -143,8 +143,8 @@ contract("manager", function (accounts) {
             writer.should.be.equal("0x0000000000000000000000000000000000000000");
 
             //삭제 검증 - RawData
-            await contentsManager.getContentsRawData.call("contentsHash", {from: user1})
-                .should.be.rejected;
+            raw = await contentsManager.getContentsRawData.call("contentsHash", {from: user1})
+                raw.should.be.equal("")
             
             //삭제 검증- UserHash
             await contentsManager.getUserHash.call("contentsHash", {from: user1})

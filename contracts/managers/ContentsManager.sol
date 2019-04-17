@@ -147,9 +147,7 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         returns(string memory rawData)
     {
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
-
         rawData = iStorage.getStringValue(contentsHash);
-        require(!rawData.isEmptyString(),"getContentsRawData : RawData Empty.");
     }
 
     /**
