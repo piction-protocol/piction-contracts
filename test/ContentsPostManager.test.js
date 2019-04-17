@@ -120,7 +120,7 @@ contract("manager", function (accounts) {
             
             //삭제 검증- Address
             writer = await contentsManager.getWriter.call("contentsHash", {from: user1})
-            writer.should.be.equal("0x0000000000000000000000000000000000000000");
+                writer.should.be.equal("0x0000000000000000000000000000000000000000");
 
             //삭제 검증 - RawData
             raw = await contentsManager.getContentsRawData.call("contentsHash", {from: user1})
@@ -138,9 +138,9 @@ contract("manager", function (accounts) {
             await contentsManager.deleteContents("userHash", "contentsHash", {from: owner})
                 .should.be.fulfilled;
 
-            //삭제 검증- Address
+            //삭제 검증 - Address
             writer = await contentsManager.getWriter.call("contentsHash", {from: user1})
-            writer.should.be.equal("0x0000000000000000000000000000000000000000");
+                writer.should.be.equal("0x0000000000000000000000000000000000000000");
 
             //삭제 검증 - RawData
             raw = await contentsManager.getContentsRawData.call("contentsHash", {from: user1})
@@ -154,12 +154,145 @@ contract("manager", function (accounts) {
 
         it("postManager test start", async () => {
 
-            //Post 삭제된 Contents 기반 생성
-            //Post 생성
-            //Post Update
-            //Post Move 임의 Contents
-            //Post Move
-            //Post 삭제
+            //-- Post 생성 --
+            //삭제된 Contents 해시로 Post 생성 시도
+            await postManager.createPost("userHash", "contentsHash", "postHash", "postRawData", {from: user1})
+                .should.be.rejected;
+            
+            //테스트를 위한 콘텐츠 등록
+            await contentsManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user1})
+                .should.be.fulfilled;
+            
+            //비정상 유저 해시 입력
+            await postManager.createPost("fakeUserHash", "contentsHash", "postHash", "postRawData", {from: user1})
+                .should.be.rejected;
+            
+            //비정상 유저 Address 시도
+            await postManager.createPost("userHash", "contentsHash", "postHash", "postRawData", {from: user2})
+                .should.be.rejected;
+
+            //비정상 콘텐츠 해시
+            await postManager.createPost("userHash", "fakeContentsHash", "postHash", "postRawData", {from: user1})
+                .should.be.rejected;
+
+            //정상 Post 생성
+            await postManager.createPost("userHash", "contentsHash", "postHash", "postRawData", {from: user1})
+                .should.be.fulfilled;
+
+            //저장 값 검증 - Address
+            let writer = await postManager.getPostWriter.call("postHash", {from: user1});
+                writer.should.be.equal(user1);
+            
+            //저장 값 검증 - RawData
+            let raw = await postManager.getPostRawData.call("postHash", {from: user1});
+                raw.should.be.equal("postRawData");
+            
+            //저장 값 검증 - ContentHash
+            let cHash = await postManager.getContentsHash.call("postHash", {from: user1});
+                cHash.should.be.equal("contentsHash");
+
+            //중복 생성 검증
+            await postManager.createPost("userHash", "contentsHash", "postHash", "postRawData", {from: user1})
+                .should.be.rejected;
+
+            
+            //-- Post 업데이트 --
+            //비정상 유저 해시 입력
+            await postManager.updatePost("fakeUserHash", "contentsHash", "postHash", "postRawData", {from: user1})
+                .should.be.rejected;
+            
+            //비정상 유저 Address 시도
+            await postManager.updatePost("userHash", "contentsHash", "postHash", "postRawData", {from: user2})
+                .should.be.rejected;
+
+            //비정상 콘텐츠 해시
+            await postManager.updatePost("userHash", "fakeContentsHash", "postHash", "postRawData", {from: user1})
+                .should.be.rejected;
+
+            //정상 Post 업데이트
+            await postManager.updatePost("userHash", "contentsHash", "postHash", "postUpdateRawData", {from: user1})
+                .should.be.fulfilled;
+            
+            //저장 값 검증 - RawData
+            raw = await contentsManager.getContentsRawData.call("postHash", {from: user1});
+                raw.should.be.equal("postUpdateRawData");
+
+
+            //-- Post 이동 --
+            //테스트를 위한 임의 콘텐츠 등록
+            await contentsManager.createContents("userHash", "contentsHashTwo", "contentsRawDataTwo", {from: user1})
+                .should.be.fulfilled;
+
+            //비정상 유저 해시 입력
+            await postManager.movePost("fakeUserHash", "contentsHash", "contentsHashTwo", "postHash", {from: user1})
+                .should.be.rejected;
+            
+            //비정상 유저 Address 시도
+            await postManager.movePost("userHash", "contentsHash", "contentsHashTwo", "postHash", {from: user2})
+                .should.be.rejected;
+
+            // //비정상 콘텐츠 해시
+            await postManager.movePost("userHash", "fakeContentsHash", "contentsHashTwo", "postHash", {from: user1}).should.be.rejected;
+            await postManager.movePost("userHash", "contentsHash", "fakeContentsHashTwo", "postHash", {from: user1}).should.be.rejected;
+            await postManager.movePost("userHash", "fakeContentsHash", "fakeContentsHashTwo", "postHash", {from: user1}).should.be.rejected;
+
+            //정상 Post 이동
+            await postManager.movePost("userHash", "contentsHash", "contentsHashTwo", "postHash", {from: user1})
+                .should.be.fulfilled;
+
+            //저장 값 검증 - 이후 컨텐츠 해시
+            cHash = await postManager.getContentsHash.call("postHash", {from: user1});
+                cHash.should.be.equal("contentsHashTwo");
+
+
+            //-- Post 삭제--
+            //비정상 유저 해시 입력
+            await postManager.deletePost("fakeUserHash", "contentsHashTwo", "postHash", {from: user1})
+                .should.be.rejected;
+            
+            //비정상 유저 Address 시도
+            await postManager.deletePost("userHash", "contentsHashTwo", "postHash", {from: user2})
+                .should.be.rejected;
+
+            //비정상 콘텐츠 해시
+            await postManager.deletePost("userHash", "fakeContentsHashTwo", "postHash", {from: user1})
+                .should.be.rejected;
+                
+            //정상 Post 삭제
+            await postManager.deletePost("userHash", "contentsHashTwo", "postHash", {from: user1})
+                .should.be.fulfilled;
+            
+            //삭제 검증- Address
+            writer = await postManager.getPostWriter.call("postHash", {from: user1})
+                writer.should.be.equal("0x0000000000000000000000000000000000000000");
+
+            //삭제 검증 - RawData
+            raw = await postManager.getPostRawData.call("postHash", {from: user1})
+                raw.should.be.equal("")
+        
+            //삭제 검증- UserHash
+            cHash = await postManager.getContentsHash.call("postHash", {from: user1})
+                cHash.should.be.equal("");
+            
+            //Owner 테스트를 위한 Post 등록
+            await postManager.createPost("userHash", "contentsHashTwo", "postHash", "postRawData", {from: user1})
+                .should.be.fulfilled;
+            
+            //Owner Post 삭제
+            await postManager.deletePost("userHash", "contentsHashTwo", "postHash", {from: owner})
+                .should.be.fulfilled;
+            
+            //삭제 검증- Address
+            writer = await postManager.getPostWriter.call("postHash", {from: user1})
+                writer.should.be.equal("0x0000000000000000000000000000000000000000");
+
+            //삭제 검증 - RawData
+            raw = await postManager.getPostRawData.call("postHash", {from: user1})
+                raw.should.be.equal("")
+        
+            //삭제 검증- UserHash
+            cHash = await postManager.getContentsHash.call("postHash", {from: user1})
+                cHash.should.be.equal("");
         });
     });
 });
