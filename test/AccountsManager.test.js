@@ -28,19 +28,16 @@ contract("AccountsManager", function(accounts) {
     let manager;
 
     describe("AccountsManager", () => {
-        it("deploy contracts and initial setting contracts", async() => {
+        it("deploy contracts", async() => {
             pictionNetwork = await PictionNetwork.new({from: owner}).should.be.fulfilled;
             storage = await AccountsStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
-
-            manager = await AccountsManager.new(pictionNetwork.address, {from: owner}).should.be.rejected;
-
-            await pictionNetwork.setAddress(storageName, storage.address, {from: owner}).should.be.fulfilled;
-
-            manager = await AccountsManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
-            await pictionNetwork.setAddress(managerName, manager.address, {from: owner}).should.be.fulfilled;
+            manager = await AccountsManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;    
         }); 
 
         it("check piction network registration address ", async() => {
+            await pictionNetwork.setAddress(storageName, storage.address, {from: owner}).should.be.fulfilled;
+            await pictionNetwork.setAddress(managerName, manager.address, {from: owner}).should.be.fulfilled;
+
             const storageAddress = await pictionNetwork.getAddress(storageName).should.be.fulfilled;
             const managerAddress = await pictionNetwork.getAddress(managerName).should.be.fulfilled;
 

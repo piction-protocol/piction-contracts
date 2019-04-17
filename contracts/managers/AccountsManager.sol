@@ -18,14 +18,10 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     string public constant UPDATE_TAG = "UpdateAccount";
     string public constant DELETE_TAG = "DeleteAccount";
 
-    IStorage private iStorage;
     IPictionNetwork private pictionNetwork;
 
     constructor(address piction) public validAddress(piction) {
         pictionNetwork = IPictionNetwork(piction);
-
-        require(pictionNetwork.getAddress(STORAGE_NAME) != address(0), "AccountManager deploy failed: Check account storage address");
-        iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
     }
 
     /**
@@ -40,6 +36,9 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
         onlyOwner validString(id) validString(userHash) validString(rawData) validAddress(sender) 
     {
         require(availableId(id), "Account creation failed: Already exists user id");
+
+        IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
+
         require(iStorage.getAddressValue(userHash) == address(0), "Account creation failed: Already exists user hash and address");
         require(iStorage.getStringValue(userHash).isEmptyString(), "Account creation failed: Already exists userHash and raw data");
         
@@ -60,6 +59,9 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
         onlyOwner validString(id) validString(userHash) validString(rawData) validAddress(sender) 
     {
         require(!availableId(id), "Update account failed: Invalid user id");
+        
+        IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
+
         require(iStorage.getAddressValue(userHash) == sender, "Update account failed: Invalid user hash and address");
         require(!iStorage.getStringValue(userHash).isEmptyString(), "Update account failed: Invalid user hash and raw data");
         
@@ -78,6 +80,9 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
         onlyOwner validString(id) validString(userHash) validString(rawData) validAddress(sender) 
     {
         require(!availableId(id), "Delete account failed: Invalid user id");
+
+        IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
+
         require(iStorage.getAddressValue(userHash) == sender, "Delete account failed: Invalid user hash and address");
         require(!iStorage.getStringValue(userHash).isEmptyString(), "Delete account failed: Invalid user hash and raw data");
         require(iStorage.getStringValue(userHash).compareString(rawData), "Delete account failed: Invalid user hash and raw data");
@@ -93,7 +98,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     * @return isAvailable 사용 가능 여부
     */
     function availableId(string id) public validString(id) view returns(bool isAvailable) {
-        return !iStorage.getBooleanValue(id);
+        return !IStorage(pictionNetwork.getAddress(STORAGE_NAME)).getBooleanValue(id);
     }
 
     /**
@@ -102,6 +107,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     * @return isAvailable 사용 가능 여부
     */
     function availableUserHash(string userHash) public validString(userHash) view returns(bool isAvailable) {
+        IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
         return (iStorage.getStringValue(userHash).isEmptyString() && iStorage.getAddressValue(userHash) == address(0));
     }
 
@@ -111,7 +117,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     * @return publicKey 사용자 주소
     */
     function getUserAddress(string userHash) public validString(userHash) view returns(address publicKey) {
-        return iStorage.getAddressValue(userHash);
+        return IStorage(pictionNetwork.getAddress(STORAGE_NAME)).getAddressValue(userHash);
     }
 
     /**
@@ -126,6 +132,6 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
         view 
         returns(bool isValid) 
     {
-        return iStorage.getStringValue(userHash).compareString(rawData);
+        return IStorage(pictionNetwork.getAddress(STORAGE_NAME)).getStringValue(userHash).compareString(rawData);
     }
 }
