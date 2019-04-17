@@ -162,8 +162,6 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         returns(string userHash) 
     {
         IStorage iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
-        
         userHash = iStorage.getStringValue(contentsHash);
-        require(!userHash.isEmptyString(),"getUserHash : UserHash Empty.");
     }
 }

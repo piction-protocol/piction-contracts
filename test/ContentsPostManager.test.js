@@ -127,8 +127,8 @@ contract("manager", function (accounts) {
                 raw.should.be.equal("")
             
             //삭제 검증- UserHash
-            await contentsManager.getUserHash.call("contentsHash", {from: user1})
-                .should.be.rejected;
+            uHash = await contentsManager.getUserHash.call("contentsHash", {from: user1})
+                uHash.should.be.equal("");
             
             //owner 삭제 테스트를 위한 콘텐츠 업로드
             await contentsManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user1})
@@ -147,8 +147,8 @@ contract("manager", function (accounts) {
                 raw.should.be.equal("")
             
             //삭제 검증- UserHash
-            await contentsManager.getUserHash.call("contentsHash", {from: user1})
-                .should.be.rejected;
+            uHash = await contentsManager.getUserHash.call("contentsHash", {from: user1})
+                uHash.should.be.equal("");
             
         });
 
