@@ -8,6 +8,7 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
 
     mapping (string => bool) private registeredAddress;
     mapping (string => bool) private registeredRate;
+    mapping (address => ContentsDistributorInfo) private cdList;
 
     // Managers: AccountsManager, ContentsManager
     // Core: ContentsRevenue
@@ -18,6 +19,11 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
 
     // ContentsDistributor, UserAdoptionPool, EcosystemFund, SupporterPool
     mapping (string => uint256) distributeRate;
+
+    struct ContentsDistributorInfo {
+        string cdName;
+        uint256 rate;
+    }
 
     /**
       * @dev Address 설정
@@ -81,5 +87,40 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
         require(registeredRate[contractName], "Unregistered contract");
 
         rate = distributeRate[contractName];
+    }
+
+    /**
+      * @dev ContentsDistributor 설정
+      * @param cdName 설정하고자 하는 ContentsDistributor 이름
+      * @param cdAddress 설정하고자 하는 ContentsDistributor의 주소
+      * @param rate 설정하고자 하는 Rate
+      */
+    function setCDInfo(
+        string cdName,
+        address cdAddress,
+        uint256 rate
+    )
+        external
+        onlyOwner
+        validString(cdName)
+        validAddress(cdAddress)
+        validRate(rate)
+    {
+        cdList[cdAddress] = ContentsDistributorInfo(cdName, rate);
+
+        emit SetCDInfo(cdName, cdAddress, rate);
+    }
+
+    /**
+      * @dev ContentsDistributor 정보 조회
+      * @param cdAddress 조회하고자 하는 ContentsDistributor의 주소
+      */
+    function getCDInfo(address cdAddress)
+        external
+        view
+        returns(string cdName, uint256 rate)
+    {
+        cdName = cdList[cdAddress].cdName;
+        rate = cdList[cdAddress].rate;
     }
 }
