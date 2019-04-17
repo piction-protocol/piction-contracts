@@ -131,7 +131,6 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         returns(address writer) 
     {
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
-
         writer = iStorage.getAddressValue(contentsHash);
     }
 
