@@ -60,20 +60,53 @@ contract("manager", function (accounts) {
             //accountsManager 계정 생성
             await accountsManager.createAccount('0', 'userHash', 'accountRawData', user1, {from: owner}).should.be.fulfilled;
             
-            //콘텐츠 생성 검증
-            //비정상 유저 해시
-            await contentsManager.createContents("FakeUserHash", "contentsHash", "contentsRawData", {from: user1}).should.be.rejected;
-            //비정상 유저 Address
-            await contentsManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user2}).should.be.rejected;
+            //-- 콘텐츠 생성 검증 --
+            //비정상 유저 해시 입력
+            await contentsManager.createContents("FakeUserHash", "contentsHash", "contentsRawData", {from: user1})
+                .should.be.rejected;
+            //비정상 유저 Address 시도
+            await contentsManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user2})
+                .should.be.rejected;
 
-            //contentsManager 콘텐츠 생성
-            await contentsManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user1}).should.be.fulfilled;
+            //정상 콘텐츠 생성
+            await contentsManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user1})
+                .should.be.fulfilled;
+            //저장 값 검증 - Address
+            let writer = await contentsManager.getWriter.call("contentsHash", {from: user1});
+                writer.should.be.equal(user1);
 
-            //중복 생성
+            //저장 값 검증 - RawData
+            let raw = await contentsManager.getContentsRawData.call("contentsHash", {from: user1});
+                raw.should.be.equal("contentsRawData");
+            
+            //저장 값 검증 - UserHash
+            let uHash = await contentsManager.getUserHash.call("contentsHash", {from: user1});
+                uHash.should.be.equal("userHash");
 
-            //업데이트
+            //중복 생성 검증
+            await contentsManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user1})
+                .should.be.rejected;
+
+            
+            //-- 콘텐츠 업데이트 검증 --
+            //비정상 유저 해시 입력
+            await contentsManager.updateContents("FakeUserHash", "contentsHash", "contentsUpdateRawData", {from: user1})
+                .should.be.rejected;
+            //비정상 유저 Address 시도
+            await contentsManager.updateContents("userHash", "contentsHash", "contentsUpdateRawData", {from: user2})
+                .should.be.rejected;
+
+            //정상 콘텐츠 업데이트
+            await contentsManager.updateContents("userHash", "contentsHash", "contentsUpdateRawData", {from: user1})
+                .should.be.fulfilled;
+
+            //저장 값 검증 - RawData
+            raw = await contentsManager.getContentsRawData.call("contentsHash", {from: user1});
+                raw.should.be.equal("contentsUpdateRawData");
 
             //삭제
+
+
         });
 
         it("postManager test start", async () => {
