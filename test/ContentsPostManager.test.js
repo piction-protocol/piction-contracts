@@ -60,7 +60,7 @@ contract("manager", function (accounts) {
             //accountsManager 계정 생성
             await accountsManager.createAccount('0', 'userHash', 'accountRawData', user1, {from: owner}).should.be.fulfilled;
             
-            //-- 콘텐츠 생성 검증 --
+            //-- 콘텐츠 생성 --
             //비정상 유저 해시 입력
             await contentsManager.createContents("FakeUserHash", "contentsHash", "contentsRawData", {from: user1})
                 .should.be.rejected;
@@ -71,6 +71,7 @@ contract("manager", function (accounts) {
             //정상 콘텐츠 생성
             await contentsManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user1})
                 .should.be.fulfilled;
+            
             //저장 값 검증 - Address
             let writer = await contentsManager.getWriter.call("contentsHash", {from: user1});
                 writer.should.be.equal(user1);
@@ -88,7 +89,7 @@ contract("manager", function (accounts) {
                 .should.be.rejected;
 
             
-            //-- 콘텐츠 업데이트 검증 --
+            //-- 콘텐츠 업데이트 --
             //비정상 유저 해시 입력
             await contentsManager.updateContents("FakeUserHash", "contentsHash", "contentsUpdateRawData", {from: user1})
                 .should.be.rejected;
@@ -104,9 +105,51 @@ contract("manager", function (accounts) {
             raw = await contentsManager.getContentsRawData.call("contentsHash", {from: user1});
                 raw.should.be.equal("contentsUpdateRawData");
 
-            //삭제
 
+            //-- 콘텐츠 삭제 --
+            //비정상 유저 해시 입력
+            await contentsManager.deleteContents("FakeUserHash", "contentsHash", {from: user1})
+                .should.be.rejected;
+            //비정상 유저 Address 시도
+            await contentsManager.deleteContents("userHash", "contentsHash", {from: user2})
+                .should.be.rejected;
 
+            //정상 콘텐츠 삭제
+            await contentsManager.deleteContents("userHash", "contentsHash", {from: user1})
+                .should.be.fulfilled;
+            
+            //삭제 검증- Address
+            await contentsManager.getWriter.call("contentsHash", {from: user1})
+                .should.be.rejected;
+
+            //삭제 검증 - RawData
+            await contentsManager.getContentsRawData.call("contentsHash", {from: user1})
+                .should.be.rejected;
+            
+            //삭제 검증- UserHash
+            await contentsManager.getUserHash.call("contentsHash", {from: user1})
+                .should.be.rejected;
+            
+            //owner 삭제 테스트를 위한 콘텐츠 업로드
+            await contentsManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user1})
+                .should.be.fulfilled;
+
+            //owner 삭제
+            await contentsManager.deleteContents("userHash", "contentsHash", {from: owner})
+                .should.be.fulfilled;
+
+            //삭제 검증- Address
+            await contentsManager.getWriter.call("contentsHash", {from: user1})
+                .should.be.rejected;
+
+            //삭제 검증 - RawData
+            await contentsManager.getContentsRawData.call("contentsHash", {from: user1})
+                .should.be.rejected;
+            
+            //삭제 검증- UserHash
+            await contentsManager.getUserHash.call("contentsHash", {from: user1})
+                .should.be.rejected;
+            
         });
 
         it("postManager test start", async () => {
