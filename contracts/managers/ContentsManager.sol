@@ -85,12 +85,12 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         validString(userHash) 
         validString(contentsHash)
     {
-        require(isPictionUser(userHash) || isOwner(), "removeContents : Not Match Sender");
+        require(isPictionUser(userHash) || isOwner(), "deleteContents : Not Match Sender");
 
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
 
-        require(isContentsUser(contentsHash) || isOwner() ,"removeContents : Content Not Match User.");
-        require(!iStorage.getStringValue(contentsHash).isEmptyString(),"updateContents : Rawdata Empty");
+        require(isContentsUser(contentsHash) || isOwner() ,"deleteContents : Contents Not Match User.");
+        require(!iStorage.getStringValue(contentsHash).isEmptyString(),"deleteContents : Rawdata Empty");
 
         iStorage.deleteAddressValue(contentsHash, DELETE_TAG);
         iStorage.deleteStringValue(contentsHash, DELETE_TAG);
@@ -133,7 +133,6 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
 
         writer = iStorage.getAddressValue(contentsHash);
-        require(writer != address(0), "getWriter : Address 0");
     }
 
     /**
