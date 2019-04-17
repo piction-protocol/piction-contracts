@@ -42,8 +42,7 @@ contract ContentsRevenue is Ownable {
         require(address(this) != from, "Invalid buyer address.");
         require(pictionNetwork.getAddress("PXL") == token, "Invalid Pixel token address.");
         require(value > 0, "Received token must be greater than zero.");
-        require(pxlToken.balanceOf(from) >= value, "Check buyer token amount.");
-
+        
         string memory contentHash = string(data.slice(0, 66));
         IContentsManager contentsManager = IContentsManager(pictionNetwork.getAddress("ContentsManager"));
         address contentsProvider = contentsManager.getWriter(contentHash);
