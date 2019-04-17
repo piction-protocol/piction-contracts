@@ -41,22 +41,24 @@ contract ContentsRevenue is Ownable {
     function receiveApproval(address from, uint256 value, address token, bytes memory data) public {
         require(address(this) != from, "Invalid buyer address.");
         require(pictionNetwork.getAddress("PXL") == token, "Invalid Pixel token address.");
+        require(value > 0, "Received token must be greater than zero.");
+        require(pxlToken.balanceOf(from) >= value, "Check buyer token amount.");
 
         string memory contentHash = string(data.slice(0, 66));
+        IContentsManager contentsManager = IContentsManager(pictionNetwork.getAddress("ContentsManager"));
+        address contentsProvider = contentsManager.getWriter(contentHash);
+        require(contentsProvider != address(0));
+
+        string memory cdName;
         address contentsDistributor = data.toAddress(66);
+        (cdName, ) = pictionNetwork.getCDInfo(contentsDistributor);
+        require(bytes(cdName).length > 0);
+
         uint256 saleType = data.toUint(86);
         uint256 supporterPoolRate = data.toUint(118);
- 
-        IContentsManager contentsManager = IContentsManager(pictionNetwork.getAddress("ContentsManager"));
         
-        address contentsProvider = contentsManager.getWriter(contentHash);
-
-        if (value > 0) {
-            require(pxlToken.balanceOf(from) >= value, "Check buyer token amount.");
-            pxlToken.transferFrom(from, address(this), value);
-
-            _transferDistributePxl(from, contentsDistributor, supporterPoolRate, contentsProvider, value);
-        }
+        pxlToken.transferFrom(from, address(this), value);
+        _transferDistributePxl(from, contentsDistributor, supporterPoolRate, contentsProvider, value);
 
         // contentsManager.purchase(from, contentHash, saleType);
     }
@@ -71,7 +73,10 @@ contract ContentsRevenue is Ownable {
      *
      */
     function _transferDistributePxl(address from, address contentsDistributor, uint256 supporterPoolRate, address contentsProvider, uint256 amount) internal {
-        uint256 contentsDistributorAmount = amount.mul(pictionNetwork.getRate("ContentsDistributor")).div(DECIMALS);
+        uint256 cdRate;
+        (, cdRate) = pictionNetwork.getCDInfo(contentsDistributor);
+
+        uint256 contentsDistributorAmount = amount.mul(cdRate).div(DECIMALS);
         uint256 userAdoptionPoolAmount = amount.mul(pictionNetwork.getRate("UserAdoptionPool")).div(DECIMALS);
         uint256 ecosystemFundAmount = amount.mul(pictionNetwork.getRate("EcosystemFund")).div(DECIMALS);
         uint256 supporterPoolAmount = amount.mul(supporterPoolRate).div(DECIMALS);
