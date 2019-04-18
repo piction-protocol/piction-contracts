@@ -11,4 +11,10 @@ interface IPostManager {
     function getContentsHash(string postHash) external view returns(string contentsHash);
     function changeStorage(address cStorage, address rStorage) external;
     function changeManager(address aManager, address cManager) external;
+
+    function updateStorage() external;
+    function updateRefManager() external;
+
+    event UpdateStorage(address beforeStorage, address afterStorage);
+    event UpdateRefManager(address beforeManager, address afterManager);
 }

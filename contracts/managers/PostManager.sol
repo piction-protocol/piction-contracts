@@ -212,31 +212,43 @@ contract PostManager is Ownable, ValidValue, IPostManager {
     }
 
     /**
-     * @dev 저장소 주소 변경
-     * @param cStorage Contents 정보가 저장되는 주소
-     * @param rStorage Contents와 유저가 매핑되는 저장소 주소
+     * @dev 저장소 업데이트
      */
-    function changeStorage(address cStorage, address rStorage) 
-        validAddress(cStorage)
-        validAddress(rStorage)
-        external 
-        onlyOwner
+    function updateStorage() 
+        onlyOwner 
+        external
     {
+        address cStorage = pictionNetwork.getAddress(STORAGE_NAME);
+        require(cStorage != address(0), "PostManager updateStorage 0");
+
+        emit UpdateStorage(address(contentsStorage), cStorage);
+
+        address rStorage = pictionNetwork.getAddress(STORAGE_NAME);
+        require(rStorage != address(0), "PostManager updateStorage 1");
+
+        emit UpdateStorage(address(relationStorage), rStorage);
+
         contentsStorage = IStorage(cStorage);
         relationStorage = IStorage(rStorage);
     }
 
     /**
-     * @dev 참조하는 메니저 주소 변경
-     * @param aManager 유저 정보가 관리되는 주소
-     * @param cManager Contents 정보가 괸리되는 주소
+     * @dev 참조하는 Manager 업데이트
      */
-    function changeManager(address aManager, address cManager) 
-        validAddress(aManager)
-        validAddress(cManager)
-        external 
+    function updateRefManager()
         onlyOwner
+        external
     {
+        address aManager = pictionNetwork.getAddress(ACCOUNT_NAME);
+        require(aManager != address(0), "PostManager updateRefManager 0");
+        
+        emit UpdateRefManager(address(accountManager), aManager);
+        
+        address cManager = pictionNetwork.getAddress(CONTENTS_NAME);
+        require(cManager != address(0), "PostManager updateRefManager 1");
+
+        emit UpdateRefManager(address(contentsManager), cManager);
+
         accountManager = IAccountsManager(aManager);
         contentsManager = IContentsManager(cManager);
     }

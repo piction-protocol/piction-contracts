@@ -132,14 +132,17 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     }
 
     /**
-     * @dev 저장소 주소 변경
-     * @param aStorage User 정보가 저장되는 주소
+     * @dev 저장소 업데이트
      */
-    function changeStorage(address aStorage) 
-        validAddress(aStorage)
-        external 
-        onlyOwner
+    function updateStorage() 
+        onlyOwner 
+        external
     {
+        address aStorage = pictionNetwork.getAddress(STORAGE_NAME);
+        require(aStorage != address(0), "AccountsManager updateStorage 0");
+
+        emit UpdateStorage(address(iStorage), aStorage);
+
         iStorage = IStorage(aStorage);
     }
 }

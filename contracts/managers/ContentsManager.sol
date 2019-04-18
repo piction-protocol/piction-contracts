@@ -172,29 +172,38 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
     }
 
     /**
-     * @dev 저장소 주소 변경
-     * @param cStorage Contents 정보가 저장되는 주소
-     * @param rStorage Contents와 유저가 매핑되는 저장소 주소
+     * @dev 저장소 업데이트
      */
-    function changeStorage(address cStorage, address rStorage) 
-        validAddress(cStorage)
-        validAddress(rStorage)
-        external 
-        onlyOwner
+    function updateStorage() 
+        onlyOwner 
+        external
     {
+        address cStorage = pictionNetwork.getAddress(STORAGE_NAME);
+        require(cStorage != address(0), "ContentsManager updateStorage 0");
+
+        emit UpdateStorage(address(contentsStorage), cStorage);
+
+        address rStorage = pictionNetwork.getAddress(STORAGE_NAME);
+        require(rStorage != address(0), "ContentsManager updateStorage 1");
+
+        emit UpdateStorage(address(relationStorage), rStorage);
+
         contentsStorage = IStorage(cStorage);
         relationStorage = IStorage(rStorage);
     }
 
     /**
-     * @dev 참조하는 Manager 주소 변경
-     * @param aManager 유저 정보를 관리하는 주소
+     * @dev 참조하는 Manager 업데이트
      */
-    function changeManager(address aManager) 
-        validAddress(aManager)
-        external 
+    function updateRefManager()
         onlyOwner
+        external
     {
+        address aManager = pictionNetwork.getAddress(ACCOUNT_NAME);
+        require(aManager != address(0), "ContentsManager updateRefManager 0");
+
+        emit UpdateRefManager(address(accountManager), aManager);
+
         accountManager = IAccountsManager(aManager);
     }
 }
