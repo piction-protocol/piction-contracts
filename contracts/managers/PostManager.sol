@@ -33,16 +33,16 @@ contract PostManager is Ownable, ValidValue, IPostManager {
         pictionNetwork = IPictionNetwork(piction);
 
         address contents = pictionNetwork.getAddress(STORAGE_NAME);
-        require(contents != address(0), "ContentsManager deploy failed: Check contents storage address");
+        require(contents != address(0), "PostManager constructor 0");
 
         address relation = pictionNetwork.getAddress(RELATION_NAME);
-        require(relation != address(0), "ContentsManager deploy failed: Check relation storage address");
+        require(relation != address(0), "PostManager constructor 1");
 
         address aManager = pictionNetwork.getAddress(ACCOUNT_NAME);
-        require(aManager != address(0), "ContentsManager deploy failed: Check accounts manager address");
+        require(aManager != address(0), "PostManager constructor 2");
 
         address cManager = pictionNetwork.getAddress(CONTENTS_NAME);
-        require(cManager != address(0), "ContentsManager deploy failed: Check contents manager address");
+        require(cManager != address(0), "PostManager constructor 3");
 
         contentsStorage = IStorage(contents);
         relationStorage = IStorage(relation);
@@ -65,11 +65,11 @@ contract PostManager is Ownable, ValidValue, IPostManager {
         validString(postHash)
         validString(rawData)
     {
-        require(isPictionUser(userHash), "createPost : Not Match Sender");
-        require(isContentsUser(contentsHash), "createPost : Contents Not Match Sender");
+        require(isPictionUser(userHash), "PostManager createPost 0");
+        require(isContentsUser(contentsHash), "PostManager createPost 1");
 
-        require(contentsStorage.getAddressValue(postHash) == address(0) ,"createPost : Already address.");
-        require(contentsStorage.getStringValue(postHash).isEmptyString(),"createPost : Already rawdata.");
+        require(contentsStorage.getAddressValue(postHash) == address(0) ,"PostManager createPost 2");
+        require(contentsStorage.getStringValue(postHash).isEmptyString(), "PostManager createPost 3");
 
         contentsStorage.setAddressValue(postHash, msg.sender, CREATE_TAG);
         contentsStorage.setStringValue(postHash, rawData, CREATE_TAG);
@@ -91,11 +91,11 @@ contract PostManager is Ownable, ValidValue, IPostManager {
         validString(postHash)
         validString(rawData)
     {
-        require(isPictionUser(userHash), "updatePost : Not Match Sender");
-        require(isContentsUser(contentsHash), "updatePost : Contents Not Match Sender");
+        require(isPictionUser(userHash), "PostManager updatePost 0");
+        require(isContentsUser(contentsHash), "PostManager updatePost 1");
 
-        require(contentsStorage.getAddressValue(postHash) == msg.sender ,"updatePost : Not Match User.");
-        require(!contentsStorage.getStringValue(postHash).isEmptyString(),"updatePost : rawdata Empty");
+        require(contentsStorage.getAddressValue(postHash) == msg.sender, "PostManager updatePost 2");
+        require(!contentsStorage.getStringValue(postHash).isEmptyString(), "PostManager updatePost 3");
         
         contentsStorage.setStringValue(postHash, rawData, UPDATE_TAG);
     }
@@ -112,11 +112,11 @@ contract PostManager is Ownable, ValidValue, IPostManager {
         validString(contentsHash)
         validString(postHash)
     {
-        require(isPictionUser(userHash) || isOwner(), "deletePost : Not Match Sender");
-        require(isContentsUser(contentsHash) || isOwner(), "deletePost : Contents Not Match Sender");
+        require(isPictionUser(userHash) || isOwner(), "PostManager deletePost 0");
+        require(isContentsUser(contentsHash) || isOwner(), "PostManager deletePost 1");
 
-        require(contentsStorage.getAddressValue(postHash) == msg.sender || isOwner() ,"deletePost : Not Match User.");
-        require(!contentsStorage.getStringValue(postHash).isEmptyString(),"deletePost : rawdata Empty");
+        require(contentsStorage.getAddressValue(postHash) == msg.sender || isOwner(), "PostManager deletePost 2");
+        require(!contentsStorage.getStringValue(postHash).isEmptyString(), "PostManager deletePost 3");
 
         contentsStorage.deleteAddressValue(postHash, DELETE_TAG);
         contentsStorage.deleteStringValue(postHash, DELETE_TAG);
@@ -138,14 +138,14 @@ contract PostManager is Ownable, ValidValue, IPostManager {
         validString(afterContentsHash)
         validString(postHash)
     {
-        require(isPictionUser(userHash), "movePost : Not Match Sender");
-        require(isContentsUser(beforeContentsHash), "movePost : Contents Not Match Sender");
-        require(isContentsUser(afterContentsHash), "movePost : Contents Not Match Sender");
+        require(isPictionUser(userHash), "PostManager movePost 0");
+        require(isContentsUser(beforeContentsHash), "PostManager movePost 1");
+        require(isContentsUser(afterContentsHash), "PostManager movePost 2");
 
-        require(contentsStorage.getAddressValue(postHash) == msg.sender,"movePost : Not Match User.");
-        require(!contentsStorage.getStringValue(postHash).isEmptyString(),"movePost : rawdata Empty");
+        require(contentsStorage.getAddressValue(postHash) == msg.sender,"PostManager movePost 3");
+        require(!contentsStorage.getStringValue(postHash).isEmptyString(),"PostManager movePost 4");
 
-        require(!relationStorage.getStringValue(postHash).isEmptyString(),"movePost : contentsHash Empty");
+        require(!relationStorage.getStringValue(postHash).isEmptyString(),"PostManager movePost 5");
 
         relationStorage.deleteStringValue(postHash, MOVE_TAG);
         relationStorage.setStringValue(postHash, afterContentsHash, MOVE_TAG);

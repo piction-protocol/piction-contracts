@@ -31,13 +31,13 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         pictionNetwork = IPictionNetwork(piction);
 
         address contents = pictionNetwork.getAddress(STORAGE_NAME);
-        require(contents != address(0), "ContentsManager deploy failed: Check contents storage address");
+        require(contents != address(0), "ContentsManager constructor 0");
 
         address relation = pictionNetwork.getAddress(RELATION_NAME);
-        require(relation != address(0), "ContentsManager deploy failed: Check relation storage address");
+        require(relation != address(0), "ContentsManager constructor 1");
 
         address aManager = pictionNetwork.getAddress(ACCOUNT_NAME);
-        require(aManager != address(0), "ContentsManager deploy failed: Check accounts manager address");
+        require(aManager != address(0), "ContentsManager constructor 2");
 
         contentsStorage = IStorage(contents);
         relationStorage = IStorage(relation);
@@ -57,10 +57,10 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         validString(contentsHash)
         validString(rawData)
     {
-        require(isPictionUser(userHash), "createContents : Not Match Sender");
+        require(isPictionUser(userHash), "ContentsManager createContents 0");
 
-        require(contentsStorage.getAddressValue(contentsHash) == address(0) ,"createContents : Already address.");
-        require(contentsStorage.getStringValue(contentsHash).isEmptyString(),"createContents : Already rawdata.");
+        require(contentsStorage.getAddressValue(contentsHash) == address(0) ,"ContentsManager createContents 1");
+        require(contentsStorage.getStringValue(contentsHash).isEmptyString(),"ContentsManager createContents 2");
 
         contentsStorage.setAddressValue(contentsHash, msg.sender, CREATE_TAG);
         contentsStorage.setStringValue(contentsHash, rawData, CREATE_TAG);
@@ -82,10 +82,10 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         validString(contentsHash)
         validString(rawData)
     {
-        require(isPictionUser(userHash), "updatecontents : Not Match Sender");
+        require(isPictionUser(userHash), "ContentsManager updateContents 0");
 
-        require(isContentsUser(contentsHash) ,"updateContents : Not Match User.");
-        require(!contentsStorage.getStringValue(contentsHash).isEmptyString(),"updateContents : rawdata Empty");
+        require(isContentsUser(contentsHash) ,"ContentsManager updateContents 1");
+        require(!contentsStorage.getStringValue(contentsHash).isEmptyString(),"ContentsManager updateContents 2");
 
         contentsStorage.setStringValue(contentsHash, rawData, UPDATE_TAG);
     }
@@ -100,10 +100,10 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         validString(userHash) 
         validString(contentsHash)
     {
-        require(isPictionUser(userHash) || isOwner(), "deleteContents : Not Match Sender");
+        require(isPictionUser(userHash) || isOwner(), "ContentsManager deleteContents 0");
 
-        require(isContentsUser(contentsHash) || isOwner() ,"deleteContents : Contents Not Match User.");
-        require(!contentsStorage.getStringValue(contentsHash).isEmptyString(),"deleteContents : Rawdata Empty");
+        require(isContentsUser(contentsHash) || isOwner() ,"ContentsManager deleteContents 1");
+        require(!contentsStorage.getStringValue(contentsHash).isEmptyString(),"ContentsManager deleteContents 2");
 
         contentsStorage.deleteAddressValue(contentsHash, DELETE_TAG);
         contentsStorage.deleteStringValue(contentsHash, DELETE_TAG);
