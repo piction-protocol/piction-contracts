@@ -54,9 +54,15 @@ contract("manager", function (accounts) {
             await pictionNetwork.setAddress(tagContentsManager, contentsManager.address, {from: owner}).should.be.fulfilled;
             postManager = await PostManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
             await pictionNetwork.setAddress(tagPostManager, postManager.address, {from: owner}).should.be.fulfilled;
+
+            await accountsStorage.addOwner(accountsManager.address, {from: owner}).should.be.fulfilled;
+            await contentsStorage.addOwner(contentsManager.address, {from: owner}).should.be.fulfilled;
+            await contentsStorage.addOwner(postManager.address, {from: owner}).should.be.fulfilled;
+            await relationStorage.addOwner(contentsManager.address, {from: owner}).should.be.fulfilled;
+            await relationStorage.addOwner(postManager.address, {from: owner}).should.be.fulfilled;
         });
 
-        it("contentsManager test start", async () => {    
+        it("contentsManager test start", async () => {
             //accountsManager 계정 생성
             await accountsManager.createAccount('0', 'userHash', 'accountRawData', user1, {from: owner}).should.be.fulfilled;
             
