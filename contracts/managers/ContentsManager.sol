@@ -21,8 +21,28 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
 
     IPictionNetwork pictionNetwork;
 
+    IStorage private contentsStorage;
+    IStorage private relationStorage;
+
+    IAccountsManager private accountManager;
+
+
     constructor(address piction) public validAddress(piction) {
         pictionNetwork = IPictionNetwork(piction);
+
+        address contents = pictionNetwork.getAddress(STORAGE_NAME);
+        require(contents != address(0), "ContentsManager deploy failed: Check contents storage address");
+
+        address relation = pictionNetwork.getAddress(RELATION_NAME);
+        require(relation != address(0), "ContentsManager deploy failed: Check relation storage address");
+
+        address aManager = pictionNetwork.getAddress(ACCOUNT_NAME);
+        require(aManager != address(0), "ContentsManager deploy failed: Check accounts manager address");
+
+        contentsStorage = IStorage(contents);
+        relationStorage = IStorage(relation);
+
+        accountManager = IAccountsManager(aManager);
     }
 
     /**
@@ -39,16 +59,13 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
     {
         require(isPictionUser(userHash), "createContents : Not Match Sender");
 
-        IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
+        require(contentsStorage.getAddressValue(contentsHash) == address(0) ,"createContents : Already address.");
+        require(contentsStorage.getStringValue(contentsHash).isEmptyString(),"createContents : Already rawdata.");
 
-        require(iStorage.getAddressValue(contentsHash) == address(0) ,"createContents : Already address.");
-        require(iStorage.getStringValue(contentsHash).isEmptyString(),"createContents : Already rawdata.");
+        contentsStorage.setAddressValue(contentsHash, msg.sender, CREATE_TAG);
+        contentsStorage.setStringValue(contentsHash, rawData, CREATE_TAG);
 
-        iStorage.setAddressValue(contentsHash, msg.sender, CREATE_TAG);
-        iStorage.setStringValue(contentsHash, rawData, CREATE_TAG);
-
-        iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
-        iStorage.setStringValue(contentsHash, userHash, CREATE_TAG);
+        relationStorage.setStringValue(contentsHash, userHash, CREATE_TAG);
 
         //if necessary, deploy contract.
     }
@@ -67,12 +84,10 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
     {
         require(isPictionUser(userHash), "updatecontents : Not Match Sender");
 
-        IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
-        
         require(isContentsUser(contentsHash) ,"updateContents : Not Match User.");
-        require(!iStorage.getStringValue(contentsHash).isEmptyString(),"updateContents : rawdata Empty");
+        require(!contentsStorage.getStringValue(contentsHash).isEmptyString(),"updateContents : rawdata Empty");
 
-        iStorage.setStringValue(contentsHash, rawData, UPDATE_TAG);
+        contentsStorage.setStringValue(contentsHash, rawData, UPDATE_TAG);
     }
 
     /**
@@ -87,16 +102,13 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
     {
         require(isPictionUser(userHash) || isOwner(), "deleteContents : Not Match Sender");
 
-        IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
-
         require(isContentsUser(contentsHash) || isOwner() ,"deleteContents : Contents Not Match User.");
-        require(!iStorage.getStringValue(contentsHash).isEmptyString(),"deleteContents : Rawdata Empty");
+        require(!contentsStorage.getStringValue(contentsHash).isEmptyString(),"deleteContents : Rawdata Empty");
 
-        iStorage.deleteAddressValue(contentsHash, DELETE_TAG);
-        iStorage.deleteStringValue(contentsHash, DELETE_TAG);
+        contentsStorage.deleteAddressValue(contentsHash, DELETE_TAG);
+        contentsStorage.deleteStringValue(contentsHash, DELETE_TAG);
 
-        iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
-        iStorage.deleteStringValue(contentsHash, DELETE_TAG);
+        relationStorage.deleteStringValue(contentsHash, DELETE_TAG);
     }
 
     /**
@@ -105,7 +117,6 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
      * @return bool 등록 유저유무
      */
     function isPictionUser(string userHash) private view returns(bool) {
-        IAccountsManager accountManager = IAccountsManager(pictionNetwork.getAddress(ACCOUNT_NAME));
         return msg.sender == accountManager.getUserAddress(userHash);
     }
 
@@ -115,8 +126,7 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
      * @return bool 등록 유무
      */
     function isContentsUser(string contentsHash) private view returns(bool) {
-        IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
-        return msg.sender == iStorage.getAddressValue(contentsHash);
+        return msg.sender == contentsStorage.getAddressValue(contentsHash);
     }
     
     /**
@@ -130,8 +140,7 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         validString(contentsHash)
         returns(address writer) 
     {
-        IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
-        writer = iStorage.getAddressValue(contentsHash);
+        return contentsStorage.getAddressValue(contentsHash);
     }
 
     /**
@@ -143,10 +152,9 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         external
         view
         validString(contentsHash)
-        returns(string memory rawData)
+        returns(string rawData)
     {
-        IStorage iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
-        rawData = iStorage.getStringValue(contentsHash);
+        return contentsStorage.getStringValue(contentsHash);
     }
 
     /**
@@ -160,7 +168,33 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         validString(contentsHash)
         returns(string userHash) 
     {
-        IStorage iStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
-        userHash = iStorage.getStringValue(contentsHash);
+        return relationStorage.getStringValue(contentsHash);
+    }
+
+    /**
+     * @dev 저장소 주소 변경
+     * @param cStorage Contents 정보가 저장되는 주소
+     * @param rStorage Contents와 유저가 매핑되는 저장소 주소
+     */
+    function changeStorage(address cStorage, address rStorage) 
+        validAddress(cStorage)
+        validAddress(rStorage)
+        external 
+        onlyOwner
+    {
+        contentsStorage = IStorage(cStorage);
+        relationStorage = IStorage(rStorage);
+    }
+
+    /**
+     * @dev 참조하는 Manager 주소 변경
+     * @param aManager 유저 정보를 관리하는 주소
+     */
+    function changeManager(address aManager) 
+        validAddress(aManager)
+        external 
+        onlyOwner
+    {
+        accountManager = IAccountsManager(aManager);
     }
 }

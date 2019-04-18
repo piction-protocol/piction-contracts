@@ -24,8 +24,10 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     constructor(address piction) public validAddress(piction) {
         pictionNetwork = IPictionNetwork(piction);
 
-        require(pictionNetwork.getAddress(STORAGE_NAME) != address(0), "AccountManager deploy failed: Check account storage address");
-        iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
+        address account = pictionNetwork.getAddress(STORAGE_NAME);
+        require(account != address(0), "AccountManager deploy failed: Check account storage address");
+
+        iStorage = IStorage(account);
     }
 
     /**
@@ -127,5 +129,17 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
         returns(bool isValid) 
     {
         return iStorage.getStringValue(userHash).compareString(rawData);
+    }
+
+    /**
+     * @dev 저장소 주소 변경
+     * @param aStorage User 정보가 저장되는 주소
+     */
+    function changeStorage(address aStorage) 
+        validAddress(aStorage)
+        external 
+        onlyOwner
+    {
+        iStorage = IStorage(aStorage);
     }
 }

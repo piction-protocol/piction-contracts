@@ -9,4 +9,6 @@ interface IPostManager {
     function getPostWriter(string postHash) external view returns(address writer);
     function getPostRawData(string postHash) external view returns(string rawData);
     function getContentsHash(string postHash) external view returns(string contentsHash);
+    function changeStorage(address cStorage, address rStorage) external;
+    function changeManager(address aManager, address cManager) external;
 }
