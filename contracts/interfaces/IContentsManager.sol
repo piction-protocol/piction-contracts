@@ -8,12 +8,7 @@ interface IContentsManager {
     function getWriter(string contentsHash) external view returns(address writer);
     function getContentsRawData(string contentsHash) external view returns(string rawData);
     function getUserHash(string contentsHash) external view returns(string userHash);
-    function changeStorage(address cStorage, address rStorage) external;
-    function changeManager(address aManager) external;
 
-    function updateStorage() external;
-    function updateRefManager() external;
-
-    event UpdateStorage(address beforeStorage, address afterStorage);
-    event UpdateRefManager(address beforeManager, address afterManager);
+    function updateAddress() external;
+    event UpdateAddress(address beforeAddr, address afterAddr);
 }

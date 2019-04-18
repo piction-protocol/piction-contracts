@@ -134,15 +134,15 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     /**
      * @dev 저장소 업데이트
      */
-    function updateStorage() 
+    function updateAddress() 
         onlyOwner 
         external
     {
         address aStorage = pictionNetwork.getAddress(STORAGE_NAME);
-        require(aStorage != address(0), "AccountsManager updateStorage 0");
-
-        emit UpdateStorage(address(iStorage), aStorage);
-
-        iStorage = IStorage(aStorage);
+        require(aStorage != address(0), "AccountsManager updateAddress 0");
+        if (address(iStorage) != aStorage) {
+            emit UpdateAddress(address(iStorage), aStorage);
+            iStorage = IStorage(aStorage);
+        }
     }
 }

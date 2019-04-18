@@ -214,42 +214,36 @@ contract PostManager is Ownable, ValidValue, IPostManager {
     /**
      * @dev 저장소 업데이트
      */
-    function updateStorage() 
+    function updateAddress() 
         onlyOwner 
         external
     {
         address cStorage = pictionNetwork.getAddress(STORAGE_NAME);
-        require(cStorage != address(0), "PostManager updateStorage 0");
+        require(cStorage != address(0), "PostManager updateAddress 0");
+        if (address(contentsStorage) != cStorage) {
+            emit UpdateAddress(address(contentsStorage), cStorage);
+            contentsStorage = IStorage(cStorage);
+        }
 
-        emit UpdateStorage(address(contentsStorage), cStorage);
+        address rStorage = pictionNetwork.getAddress(RELATION_NAME);
+        require(rStorage != address(0), "PostManager updateAddress 1");
+        if (address(relationStorage) != rStorage) {
+            emit UpdateAddress(address(relationStorage), rStorage);
+            relationStorage = IStorage(rStorage);
+        }
 
-        address rStorage = pictionNetwork.getAddress(STORAGE_NAME);
-        require(rStorage != address(0), "PostManager updateStorage 1");
-
-        emit UpdateStorage(address(relationStorage), rStorage);
-
-        contentsStorage = IStorage(cStorage);
-        relationStorage = IStorage(rStorage);
-    }
-
-    /**
-     * @dev 참조하는 Manager 업데이트
-     */
-    function updateRefManager()
-        onlyOwner
-        external
-    {
         address aManager = pictionNetwork.getAddress(ACCOUNT_NAME);
-        require(aManager != address(0), "PostManager updateRefManager 0");
-        
-        emit UpdateRefManager(address(accountManager), aManager);
-        
+        require(aManager != address(0), "PostManager updateAddress 2");
+        if (address(accountManager) != aManager) {
+            emit UpdateAddress(address(accountManager), aManager);
+            accountManager = IAccountsManager(aManager);
+        }
+
         address cManager = pictionNetwork.getAddress(CONTENTS_NAME);
-        require(cManager != address(0), "PostManager updateRefManager 1");
-
-        emit UpdateRefManager(address(contentsManager), cManager);
-
-        accountManager = IAccountsManager(aManager);
-        contentsManager = IContentsManager(cManager);
+        require(cManager != address(0), "PostManager updateAddress 3");
+        if (address(contentsManager) != cManager) {
+            emit UpdateAddress(address(contentsManager), cManager);
+            contentsManager = IContentsManager(cManager);
+        }
     }
 }

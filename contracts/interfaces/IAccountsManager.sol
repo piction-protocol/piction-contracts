@@ -10,7 +10,6 @@ contract IAccountsManager {
     function getUserAddress(string userHash) public view returns(address publicKey);
     function accountValidation(string userHash, string rawData) external view returns(bool isValid);
 
-    function updateStorage() external;
-
-    event UpdateStorage(address beforeStorage, address afterStorage);
+    function updateAddress() external;
+    event UpdateAddress(address beforeAddr, address afterAddr);
 }

@@ -174,36 +174,29 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
     /**
      * @dev 저장소 업데이트
      */
-    function updateStorage() 
+    function updateAddress() 
         onlyOwner 
         external
     {
         address cStorage = pictionNetwork.getAddress(STORAGE_NAME);
-        require(cStorage != address(0), "ContentsManager updateStorage 0");
+        require(cStorage != address(0), "ContentsManager updateAddress 0");
+        if (address(contentsStorage) != cStorage) {
+            emit UpdateAddress(address(contentsStorage), cStorage);
+            contentsStorage = IStorage(cStorage);
+        }
 
-        emit UpdateStorage(address(contentsStorage), cStorage);
+        address rStorage = pictionNetwork.getAddress(RELATION_NAME);
+        require(rStorage != address(0), "ContentsManager updateAddress 1");
+        if (address(relationStorage) != rStorage) {
+            emit UpdateAddress(address(relationStorage), rStorage);
+            relationStorage = IStorage(rStorage);
+        }
 
-        address rStorage = pictionNetwork.getAddress(STORAGE_NAME);
-        require(rStorage != address(0), "ContentsManager updateStorage 1");
-
-        emit UpdateStorage(address(relationStorage), rStorage);
-
-        contentsStorage = IStorage(cStorage);
-        relationStorage = IStorage(rStorage);
-    }
-
-    /**
-     * @dev 참조하는 Manager 업데이트
-     */
-    function updateRefManager()
-        onlyOwner
-        external
-    {
         address aManager = pictionNetwork.getAddress(ACCOUNT_NAME);
-        require(aManager != address(0), "ContentsManager updateRefManager 0");
-
-        emit UpdateRefManager(address(accountManager), aManager);
-
-        accountManager = IAccountsManager(aManager);
+        require(aManager != address(0), "ContentsManager updateAddress 2");
+        if (address(accountManager) != aManager) {
+            emit UpdateAddress(address(accountManager), aManager);
+            accountManager = IAccountsManager(aManager);
+        }
     }
 }
