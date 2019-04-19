@@ -23,11 +23,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
 
     constructor(address piction) public validAddress(piction) {
         pictionNetwork = IPictionNetwork(piction);
-
-        address account = pictionNetwork.getAddress(STORAGE_NAME);
-        require(account != address(0), "AccountsManager constructor 0");
-
-        iStorage = IStorage(account);
+        iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
     }
 
     /**
@@ -139,10 +135,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
         external
     {
         address aStorage = pictionNetwork.getAddress(STORAGE_NAME);
-        require(aStorage != address(0), "AccountsManager updateAddress 0");
-        if (address(iStorage) != aStorage) {
-            emit UpdateAddress(address(iStorage), aStorage);
-            iStorage = IStorage(aStorage);
-        }
+        emit UpdateAddress(address(iStorage), aStorage);
+        iStorage = IStorage(aStorage);
     }
 }

@@ -30,19 +30,10 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
     constructor(address piction) public validAddress(piction) {
         pictionNetwork = IPictionNetwork(piction);
 
-        address contents = pictionNetwork.getAddress(STORAGE_NAME);
-        require(contents != address(0), "ContentsManager constructor 0");
-
-        address relation = pictionNetwork.getAddress(RELATION_NAME);
-        require(relation != address(0), "ContentsManager constructor 1");
-
-        address aManager = pictionNetwork.getAddress(ACCOUNT_NAME);
-        require(aManager != address(0), "ContentsManager constructor 2");
-
-        contentsStorage = IStorage(contents);
-        relationStorage = IStorage(relation);
-
-        accountManager = IAccountsManager(aManager);
+        contentsStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
+        relationStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
+        
+        accountManager = IAccountsManager(pictionNetwork.getAddress(ACCOUNT_NAME));
     }
 
     /**
@@ -179,24 +170,15 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
         external
     {
         address cStorage = pictionNetwork.getAddress(STORAGE_NAME);
-        require(cStorage != address(0), "ContentsManager updateAddress 0");
-        if (address(contentsStorage) != cStorage) {
-            emit UpdateAddress(address(contentsStorage), cStorage);
-            contentsStorage = IStorage(cStorage);
-        }
+        emit UpdateAddress(address(contentsStorage), cStorage);
+        contentsStorage = IStorage(cStorage);
 
         address rStorage = pictionNetwork.getAddress(RELATION_NAME);
-        require(rStorage != address(0), "ContentsManager updateAddress 1");
-        if (address(relationStorage) != rStorage) {
-            emit UpdateAddress(address(relationStorage), rStorage);
-            relationStorage = IStorage(rStorage);
-        }
+        emit UpdateAddress(address(relationStorage), rStorage);
+        relationStorage = IStorage(rStorage);
 
         address aManager = pictionNetwork.getAddress(ACCOUNT_NAME);
-        require(aManager != address(0), "ContentsManager updateAddress 2");
-        if (address(accountManager) != aManager) {
-            emit UpdateAddress(address(accountManager), aManager);
-            accountManager = IAccountsManager(aManager);
-        }
+        emit UpdateAddress(address(accountManager), aManager);
+        accountManager = IAccountsManager(aManager);
     }
 }
