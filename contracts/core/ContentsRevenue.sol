@@ -7,23 +7,39 @@ import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsManager.sol";
 import "../interfaces/IERC20.sol";
 import "../utils/BytesLib.sol";
+import "../utils/ValidValue.sol";
 
-contract ContentsRevenue is Ownable {
+contract ContentsRevenue is Ownable, ValidValue {
     using SafeMath for uint256;
     using BytesLib for bytes;
 
     IPictionNetwork private pictionNetwork;
     IERC20 private pxlToken;
 
+    uint256 distributionRate;
+    uint256 private staking;
+    address private contentsDistributor;
+
     uint256 constant DECIMALS = 10 ** 18;
     
     constructor(
-        address pictionNetworkAddress
+        address pictionNetworkAddress,
+        uint256 initialStaking,
+        uint256 cdRate,
+        address cdAddress
     )
         public 
+        validRange(initialStaking)
+        validRate(cdRate)
+        validAddress(pictionNetworkAddress)
+        validAddress(cdAddress)
     {
         pictionNetwork = IPictionNetwork(pictionNetworkAddress);
         pxlToken = IERC20(pictionNetwork.getAddress("PXL"));
+        
+        distributionRate = cdRate;
+        staking = initialStaking;
+        contentsDistributor = cdAddress;
     }
 
     /**
@@ -33,31 +49,24 @@ contract ContentsRevenue is Ownable {
      * @param token PXL 컨트랙트 주소
      * @param data 기타 파라미터 :
                     [Content Hash 66]
-                    [Contents Distributor 20]
                     [Sale type 32]
                     [Supporter Pool Rate 32]
-     *
      */
     function receiveApproval(address from, uint256 value, address token, bytes memory data) public {
-        require(address(this) != from, "Invalid buyer address.");
-        require(pictionNetwork.getAddress("PXL") == token, "Invalid Pixel token address.");
-        require(value > 0, "Received token must be greater than zero.");
+        require(address(this) != from, "ContentsRevenue receiveApproval 0");
+        require(pictionNetwork.getAddress("PXL") == token, "ContentsRevenue receiveApproval 1");
+        require(value > 0, "ContentsRevenue receiveApproval 2");
         
         string memory contentHash = string(data.slice(0, 66));
         IContentsManager contentsManager = IContentsManager(pictionNetwork.getAddress("ContentsManager"));
         address contentsProvider = contentsManager.getWriter(contentHash);
-        require(contentsProvider != address(0));
+        require(contentsProvider != address(0), "ContentsRevenue receiveApproval 3");
 
-        string memory cdName;
-        address contentsDistributor = data.toAddress(66);
-        (cdName, ) = pictionNetwork.getCDInfo(contentsDistributor);
-        require(bytes(cdName).length > 0);
-
-        uint256 saleType = data.toUint(86);
-        uint256 supporterPoolRate = data.toUint(118);
+        uint256 saleType = data.toUint(66);
+        uint256 supporterPoolRate = data.toUint(98);
         
         pxlToken.transferFrom(from, address(this), value);
-        _transferDistributePxl(from, contentsDistributor, supporterPoolRate, contentsProvider, value);
+        _transferDistributePxl(from, supporterPoolRate, contentsProvider, value);
 
         // contentsManager.purchase(from, contentHash, saleType);
     }
@@ -65,27 +74,18 @@ contract ContentsRevenue is Ownable {
     /**
      * @dev PXL을 각 비율별로 전송
      * @param from 발신자 주소
-     * @param contentsDistributor ContentsDistributor 주소
      * @param supporterPoolRate SupporterPool 분배 비율
      * @param contentsProvider 작가 주소
      * @param amount 토큰 권리 위임 수량
-     *
      */
-    function _transferDistributePxl(address from, address contentsDistributor, uint256 supporterPoolRate, address contentsProvider, uint256 amount) internal {
-        uint256 cdRate;
-        (, cdRate) = pictionNetwork.getCDInfo(contentsDistributor);
-
-        uint256 contentsDistributorAmount = amount.mul(cdRate).div(DECIMALS);
+    function _transferDistributePxl(address from, uint256 supporterPoolRate, address contentsProvider, uint256 amount) internal {
+        uint256 contentsDistributorAmount = amount.mul(distributionRate).div(DECIMALS);
         uint256 userAdoptionPoolAmount = amount.mul(pictionNetwork.getRate("UserAdoptionPool")).div(DECIMALS);
         uint256 ecosystemFundAmount = amount.mul(pictionNetwork.getRate("EcosystemFund")).div(DECIMALS);
         uint256 supporterPoolAmount = amount.mul(supporterPoolRate).div(DECIMALS);
 
         uint256 contentsProviderAmount = amount.sub(contentsDistributorAmount).sub(userAdoptionPoolAmount).sub(ecosystemFundAmount).sub(supporterPoolAmount);
 
-        if (contentsDistributorAmount > 0) {
-            pxlToken.transfer(contentsDistributor, contentsDistributorAmount);
-            emit Distribute(from, contentsDistributor, contentsDistributorAmount);
-        }
         if (userAdoptionPoolAmount > 0) {
             pxlToken.transfer(pictionNetwork.getAddress("UserAdoptionPool"), userAdoptionPoolAmount);
             emit Distribute(from, pictionNetwork.getAddress("UserAdoptionPool"), userAdoptionPoolAmount);
@@ -104,5 +104,25 @@ contract ContentsRevenue is Ownable {
         }
     }
 
+    /**
+     * @dev ContentsDistributor의 분배 비율을 설정
+     * @param cdRate 분배 비율
+     */
+    function setRate(uint256 cdRate) external onlyOwner validRate(cdRate) {
+        distributionRate = cdRate;
+
+        emit SetRate(cdRate);
+    }
+
+    /**
+     * @dev ContentsDistributor에 분배된 토큰을 전송
+     */
+    function sendCDToken() external onlyOwner {
+        uint256 balance = pxlToken.balanceOf(address(this));
+        
+        pxlToken.transfer(contentsDistributor, balance.sub(staking));
+    }
+
+    event SetRate(uint256 rate);
     event Distribute(address indexed sender, address to, uint256 value);
 }

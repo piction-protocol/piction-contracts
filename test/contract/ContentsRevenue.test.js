@@ -25,7 +25,8 @@ contract("ContentsRevenue", function (accounts) {
 
     const decimals = Math.pow(10, 18);
     const initialBalance = 100000 * decimals;
-        
+    const initialStaking = 1000 * decimals;
+
     let pictionNetwork;
     let pxl;
 
@@ -59,9 +60,9 @@ contract("ContentsRevenue", function (accounts) {
 
         pxl = await PXL.new({from: owner}).should.be.fulfilled;
         await pictionNetwork.setAddress("PXL", pxl.address, {from: owner}).should.be.fulfilled;
-        await pxl.unlock({from: owner}).should.be.fulfilled;
         await pxl.mint(initialBalance, {from: owner}).should.be.fulfilled;
         await pxl.transfer(user, 200 * decimals, {from: owner}).should.be.fulfilled;
+        await pxl.transfer(contentsDistributor, 1000 * decimals, {from: owner}).should.be.fulfilled;
         
         const accountsStorage = await AccountsStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
         await pictionNetwork.setAddress("AccountsStorage", accountsStorage.address, {from: owner}).should.be.fulfilled;
@@ -81,9 +82,10 @@ contract("ContentsRevenue", function (accounts) {
         await pictionNetwork.setAddress("ContentsManager", contentsManager.address, {from: owner}).should.be.fulfilled;
         await contentsManager.createContents(writerHash, contentHash, "testData", {from: contentsProvider}).should.be.fulfilled;
 
-        const contentsRevenue = await ContentsRevenue.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
-        await pictionNetwork.setAddress("ContentsRevenue", contentsRevenue.address, {from: owner}).should.be.fulfilled;
-        
+        const contentsRevenue = await ContentsRevenue.new(pictionNetwork.address, initialStaking, contentsDistributorRate * decimals, contentsDistributor, {from: owner}).should.be.fulfilled;
+        await pxl.transfer(contentsRevenue.address, 1000 * decimals, {from: contentsDistributor}).should.be.fulfilled;
+        await pictionNetwork.setContentsDistributor("BattleComics", contentsRevenue.address);
+
         // TODO: deploy UserAdoptionPool
         await pictionNetwork.setAddress("UserAdoptionPool", userAdoptionPool, {from: owner}).should.be.fulfilled;
 
@@ -92,7 +94,6 @@ contract("ContentsRevenue", function (accounts) {
 
         await pictionNetwork.setAddress("EcosystemFund", ecosystemFund, {from: owner}).should.be.fulfilled;
         
-        await pictionNetwork.setRate("ContentsDistributor", contentsDistributorRate * decimals, {from: owner}).should.be.fulfilled;
         await pictionNetwork.setRate("UserAdoptionPool", userAdoptionPoolRate * decimals, {from: owner}).should.be.fulfilled;
         await pictionNetwork.setRate("EcosystemFund", ecosystemFundRate * decimals, {from: owner}).should.be.fulfilled;
     });
@@ -101,36 +102,36 @@ contract("ContentsRevenue", function (accounts) {
         it("Distribute", async () => {
             const amount = 100 * decimals;
 
+            const contentsRevenueAddress = await pictionNetwork.getContentsDistributor("BattleComics").should.be.fulfilled;
+
             const beforeUserBalance = await pxl.balanceOf(user);
-            const beforeContentsDistributorBalance = await pxl.balanceOf(contentsDistributor);
+            const beforeContentsDistributorBalance = await pxl.balanceOf(contentsRevenueAddress);
             const beforeUserAdoptionPoolBalance = await pxl.balanceOf(userAdoptionPool);
             const beforeEcosystemFundBalance = await pxl.balanceOf(ecosystemFund);            
             const beforeSupporterPoolBalance = await pxl.balanceOf(supporterPool);
             const beforeContentsProviderBalance = await pxl.balanceOf(contentsProvider);
 
             console.log("beforeUserBalance: " + beforeUserBalance);
-            console.log("beforeContentsDistributorBalance: " + beforeContentsDistributorBalance);
+            console.log("beforeContentsDistributorBalance: " + (beforeContentsDistributorBalance - initialStaking));
             console.log("beforeUserAdoptionPoolBalance: " + beforeUserAdoptionPoolBalance);
             console.log("beforeEcosystemFundBalance: " + beforeEcosystemFundBalance);
             console.log("beforeSupporterPoolBalance: " + beforeSupporterPoolBalance);
             console.log("beforeContentsProviderBalance: " + beforeContentsProviderBalance);
 
-            const param = web3.fromAscii(contentHash) + toAddress(contentsDistributor).substr(2) + toBigNumber(1).substr(2) + toBigNumber(supporterPoolRate * decimals).substr(2)
+            const param = web3.fromAscii(contentHash) + toBigNumber(1).substr(2) + toBigNumber(supporterPoolRate * decimals).substr(2)
             console.log("param: " + param);
-
-            const contentsRevenueAddress = await pictionNetwork.getAddress("ContentsRevenue").should.be.fulfilled;
             
             await pxl.approveAndCall(contentsRevenueAddress, amount, param, {from: user}).should.be.fulfilled;
 
             const afterUserBalance = await pxl.balanceOf(user);
-            const afterContentsDistributorBalance = await pxl.balanceOf(contentsDistributor);
+            const afterContentsDistributorBalance = await pxl.balanceOf(contentsRevenueAddress);
             const afterUserAdoptionPoolBalance = await pxl.balanceOf(userAdoptionPool);
             const afterEcosystemFundBalance = await pxl.balanceOf(ecosystemFund);            
             const afterSupporterPoolBalance = await pxl.balanceOf(supporterPool);
             const afterContentsProviderBalance = await pxl.balanceOf(contentsProvider);
 
             console.log("afterUserBalance: " + afterUserBalance);
-            console.log("afterContentsDistributorBalance: " + afterContentsDistributorBalance);
+            console.log("afterContentsDistributorBalance: " + (afterContentsDistributorBalance - initialStaking));
             console.log("afterUserAdoptionPoolBalance: " + afterUserAdoptionPoolBalance);
             console.log("afterEcosystemFundBalance: " + afterEcosystemFundBalance);            
             console.log("afterSupporterPoolBalance: " + afterSupporterPoolBalance);
