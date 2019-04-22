@@ -1,8 +1,6 @@
 const PXL = artifacts.require("PXL");
 const ContentsRevenue = artifacts.require("ContentsRevenue");
-const AccountsStorage = artifacts.require("AccountsStorage");
-const ContentsStorage = artifacts.require("ContentsStorage");
-const RelationStorage = artifacts.require("RelationStorage");
+const Storage = artifacts.require("Storage");
 const AccountsManager = artifacts.require("AccountsManager");
 const ContentsManager = artifacts.require("ContentsManager");
 const PictionNetwork = artifacts.require("PictionNetwork");
@@ -37,13 +35,13 @@ module.exports = async (accounts) => {
     await pxl.transfer(user, 200 * decimals, {from: owner}).should.be.fulfilled;
     await pxl.transfer(contentsDistributor, 1000 * decimals, {from: owner}).should.be.fulfilled;
     
-    const accountsStorage = await AccountsStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
+    const accountsStorage = await Storage.new({from: owner}).should.be.fulfilled;
     await pictionNetwork.setAddress("AccountsStorage", accountsStorage.address, {from: owner}).should.be.fulfilled;
 
-    const contentsStorage = await ContentsStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
+    const contentsStorage = await Storage.new({from: owner}).should.be.fulfilled;
     await pictionNetwork.setAddress("ContentsStorage", contentsStorage.address, {from: owner}).should.be.fulfilled;
 
-    const relationStorage = await RelationStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
+    const relationStorage = await Storage.new({from: owner}).should.be.fulfilled;
     await pictionNetwork.setAddress("RelationStorage", relationStorage.address, {from: owner}).should.be.fulfilled;
 
     const accountsManager = await AccountsManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
