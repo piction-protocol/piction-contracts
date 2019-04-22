@@ -43,6 +43,11 @@ contract("manager", function (accounts) {
 
             accountsStorage = await AccountsStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
             await pictionNetwork.setAddress(tagAccountsStorage, accountsStorage.address, {from: owner}).should.be.fulfilled;
+            contentsStorage = await ContentsStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
+            await pictionNetwork.setAddress(tagContentsStorage, contentsStorage.address, {from: owner}).should.be.fulfilled;
+            relationStorage = await RelationStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
+            await pictionNetwork.setAddress(tagRelationStorage, relationStorage.address, {from: owner}).should.be.fulfilled;
+
             accountsManager = await AccountsManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
             await pictionNetwork.setAddress(tagAccountsManager, accountsManager.address, {from: owner}).should.be.fulfilled;
             contentsManager = await ContentsManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
@@ -50,13 +55,14 @@ contract("manager", function (accounts) {
             postManager = await PostManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
             await pictionNetwork.setAddress(tagPostManager, postManager.address, {from: owner}).should.be.fulfilled;
 
-            contentsStorage = await ContentsStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
-            await pictionNetwork.setAddress(tagContentsStorage, contentsStorage.address, {from: owner}).should.be.fulfilled;
-            relationStorage = await RelationStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
-            await pictionNetwork.setAddress(tagRelationStorage, relationStorage.address, {from: owner}).should.be.fulfilled;
+            await accountsStorage.addOwner(accountsManager.address, {from: owner}).should.be.fulfilled;
+            await contentsStorage.addOwner(contentsManager.address, {from: owner}).should.be.fulfilled;
+            await contentsStorage.addOwner(postManager.address, {from: owner}).should.be.fulfilled;
+            await relationStorage.addOwner(contentsManager.address, {from: owner}).should.be.fulfilled;
+            await relationStorage.addOwner(postManager.address, {from: owner}).should.be.fulfilled;
         });
 
-        it("contentsManager test start", async () => {    
+        it("contentsManager test start", async () => {
             //accountsManager 계정 생성
             await accountsManager.createAccount('0', 'userHash', 'accountRawData', user1, {from: owner}).should.be.fulfilled;
             

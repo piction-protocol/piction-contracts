@@ -23,8 +23,6 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
 
     constructor(address piction) public validAddress(piction) {
         pictionNetwork = IPictionNetwork(piction);
-
-        require(pictionNetwork.getAddress(STORAGE_NAME) != address(0), "AccountManager deploy failed: Check account storage address");
         iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
     }
 
@@ -39,9 +37,9 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
         external 
         onlyOwner validString(id) validString(userHash) validString(rawData) validAddress(sender) 
     {
-        require(availableId(id), "Account creation failed: Already exists user id");
-        require(iStorage.getAddressValue(userHash) == address(0), "Account creation failed: Already exists user hash and address");
-        require(iStorage.getStringValue(userHash).isEmptyString(), "Account creation failed: Already exists userHash and raw data");
+        require(availableId(id), "AccountsManager createAccount 0");
+        require(iStorage.getAddressValue(userHash) == address(0), "AccountsManager createAccount 1");
+        require(iStorage.getStringValue(userHash).isEmptyString(), "AccountsManager createAccount 2");
         
         iStorage.setBooleanValue(id, true, CREATE_TAG);
         iStorage.setAddressValue(userHash, sender, CREATE_TAG);
@@ -59,9 +57,9 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
         external 
         onlyOwner validString(id) validString(userHash) validString(rawData) validAddress(sender) 
     {
-        require(!availableId(id), "Update account failed: Invalid user id");
-        require(iStorage.getAddressValue(userHash) == sender, "Update account failed: Invalid user hash and address");
-        require(!iStorage.getStringValue(userHash).isEmptyString(), "Update account failed: Invalid user hash and raw data");
+        require(!availableId(id), "AccountsManager updateAccount 0");
+        require(iStorage.getAddressValue(userHash) == sender, "AccountsManager updateAccount 1");
+        require(!iStorage.getStringValue(userHash).isEmptyString(), "AccountsManager updateAccount 2");
         
         iStorage.setStringValue(userHash, rawData, UPDATE_TAG);
     }
@@ -77,10 +75,10 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
         external 
         onlyOwner validString(id) validString(userHash) validString(rawData) validAddress(sender) 
     {
-        require(!availableId(id), "Delete account failed: Invalid user id");
-        require(iStorage.getAddressValue(userHash) == sender, "Delete account failed: Invalid user hash and address");
-        require(!iStorage.getStringValue(userHash).isEmptyString(), "Delete account failed: Invalid user hash and raw data");
-        require(iStorage.getStringValue(userHash).compareString(rawData), "Delete account failed: Invalid user hash and raw data");
+        require(!availableId(id), "AccountsManager deleteAccount 0");
+        require(iStorage.getAddressValue(userHash) == sender, "AccountsManager deleteAccount 1");
+        require(!iStorage.getStringValue(userHash).isEmptyString(), "AccountsManager deleteAccount 2");
+        require(iStorage.getStringValue(userHash).compareString(rawData), "AccountsManager deleteAccount 3");
 
         iStorage.deleteBooleanValue(id, DELETE_TAG);
         iStorage.deleteAddressValue(userHash, DELETE_TAG);
@@ -127,5 +125,17 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
         returns(bool isValid) 
     {
         return iStorage.getStringValue(userHash).compareString(rawData);
+    }
+
+    /**
+     * @dev 저장소 업데이트
+     */
+    function updateAddress() 
+        onlyOwner 
+        external
+    {
+        address aStorage = pictionNetwork.getAddress(STORAGE_NAME);
+        emit UpdateAddress(address(iStorage), aStorage);
+        iStorage = IStorage(aStorage);
     }
 }
