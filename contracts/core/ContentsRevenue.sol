@@ -117,8 +117,9 @@ contract ContentsRevenue is Ownable, ValidValue {
     /**
      * @dev ContentsDistributor에 분배된 토큰을 전송
      */
-    function sendCDToken() external onlyOwner {
+    function sendToContentsDistributor() external onlyOwner {
         uint256 balance = pxlToken.balanceOf(address(this));
+        require(balance > staking, "ContentsRevenue sendToContentsDistributor 0");
         
         pxlToken.transfer(contentsDistributor, balance.sub(staking));
     }

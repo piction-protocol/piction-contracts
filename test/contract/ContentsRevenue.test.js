@@ -146,5 +146,25 @@ contract("ContentsRevenue", function (accounts) {
             beforeSupporterPoolBalance.add(amount * supporterPoolRate).should.be.bignumber.equal(afterSupporterPoolBalance);
             beforeContentsProviderBalance.add(cpAmount).should.be.bignumber.equal(afterContentsProviderBalance);
         });
+
+        it("Send to ContentsDistributor", async () => {
+            const contentsRevenueAddress = await pictionNetwork.getContentsDistributor("BattleComics").should.be.fulfilled;
+            const contentsRevenue = await ContentsRevenue.at(contentsRevenueAddress);
+            
+            const beforeContentsRevenueBalance = await pxl.balanceOf(contentsRevenueAddress);
+            const beforeContentsDistributorBalance = await pxl.balanceOf(contentsDistributor)
+            console.log("beforeContentsRevenueBalance: " + (beforeContentsRevenueBalance));
+            console.log("beforeContentsDistributorBalance: " + (beforeContentsDistributorBalance));
+            
+            await contentsRevenue.sendToContentsDistributor({from: owner}).should.be.fulfilled;
+
+            const afterContentsRevenueBalance = await pxl.balanceOf(contentsRevenueAddress);
+            const afterContentsDistributorBalance = await pxl.balanceOf(contentsDistributor);
+            console.log("afterContentsRevenueBalance: " + (afterContentsRevenueBalance));
+            console.log("afterContentsDistributorBalance: " + (afterContentsDistributorBalance));
+
+            initialStaking.should.be.bignumber.equal(afterContentsRevenueBalance);
+            beforeContentsRevenueBalance.sub(afterContentsRevenueBalance).should.be.bignumber.equal(afterContentsDistributorBalance);
+        });
     });
 });
