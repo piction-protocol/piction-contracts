@@ -1,5 +1,5 @@
 const PXL = artifacts.require("PXL");
-const ContentsRevenue = artifacts.require("ContentsRevenue");
+const ContentsDistributor = artifacts.require("ContentsDistributor");
 const Storage = artifacts.require("Storage");
 const AccountsManager = artifacts.require("AccountsManager");
 const ContentsManager = artifacts.require("ContentsManager");
@@ -8,7 +8,7 @@ const PictionNetwork = artifacts.require("PictionNetwork");
 module.exports = async (accounts) => {
     const owner = accounts[0];
     const user = accounts[1];
-    const contentsDistributor = accounts[2];
+    const contentsDistributorAccount = accounts[2];
     const userAdoptionPool = accounts[3];
     const ecosystemFund = accounts[4];
     const contentsProvider = accounts[5];
@@ -33,7 +33,7 @@ module.exports = async (accounts) => {
     await pictionNetwork.setAddress("PXL", pxl.address, {from: owner}).should.be.fulfilled;
     await pxl.mint(initialBalance, {from: owner}).should.be.fulfilled;
     await pxl.transfer(user, 200 * decimals, {from: owner}).should.be.fulfilled;
-    await pxl.transfer(contentsDistributor, 1000 * decimals, {from: owner}).should.be.fulfilled;
+    await pxl.transfer(contentsDistributorAccount, 1000 * decimals, {from: owner}).should.be.fulfilled;
     
     const accountsStorage = await Storage.new({from: owner}).should.be.fulfilled;
     await pictionNetwork.setAddress("AccountsStorage", accountsStorage.address, {from: owner}).should.be.fulfilled;
@@ -53,9 +53,9 @@ module.exports = async (accounts) => {
     await pictionNetwork.setAddress("ContentsManager", contentsManager.address, {from: owner}).should.be.fulfilled;
     await contentsManager.createContents(writerHash, contentHash, "testData", {from: contentsProvider}).should.be.fulfilled;
 
-    const contentsRevenue = await ContentsRevenue.new(pictionNetwork.address, initialStaking, contentsDistributorRate * decimals, contentsDistributor, {from: owner}).should.be.fulfilled;
-    await pxl.transfer(contentsRevenue.address, 1000 * decimals, {from: contentsDistributor}).should.be.fulfilled;
-    await pictionNetwork.setContentsDistributor("BattleComics", contentsRevenue.address);
+    const contentsDistributor = await ContentsDistributor.new(pictionNetwork.address, initialStaking, contentsDistributorRate * decimals, contentsDistributorAccount, "BattleComics", {from: owner}).should.be.fulfilled;
+    await pxl.transfer(contentsDistributor.address, 1000 * decimals, {from: contentsDistributorAccount}).should.be.fulfilled;
+    await pictionNetwork.setContentsDistributor("BattleComics", contentsDistributor.address);
 
     // TODO: deploy UserAdoptionPool
     await pictionNetwork.setAddress("UserAdoptionPool", userAdoptionPool, {from: owner}).should.be.fulfilled;

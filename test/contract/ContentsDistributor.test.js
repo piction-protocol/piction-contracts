@@ -1,7 +1,6 @@
 const PXL = artifacts.require("PXL");
-const ContentsRevenue = artifacts.require("ContentsRevenue");
+const ContentsDistributor = artifacts.require("ContentsDistributor");
 const InitialPictionNetwork = require("./InitialPictionNetwork.js");
-
 
 const BigNumber = require("bigNumber.js");
 
@@ -10,10 +9,10 @@ require("chai")
     .use(require("chai-bignumber")(BigNumber))
     .should();
 
-contract("ContentsRevenue", function (accounts) {
+contract("ContentsDistributor", function (accounts) {
     const owner = accounts[0];
     const user = accounts[1];
-    const contentsDistributor = accounts[2];
+    const contentsDistributorAccount = accounts[2];
     const userAdoptionPool = accounts[3];
     const ecosystemFund = accounts[4];
     const contentsProvider = accounts[5];
@@ -51,17 +50,17 @@ contract("ContentsRevenue", function (accounts) {
         pictionNetwork = await InitialPictionNetwork(accounts);
     });
 
-    describe("ContentsRevenue", () => {
+    describe("ContentsDistributor", () => {
         it("Distribute", async () => {
             const amount = 100 * decimals;
 
-            const contentsRevenueAddress = await pictionNetwork.getContentsDistributor("BattleComics").should.be.fulfilled;
+            const contentsDistributorAddress = await pictionNetwork.getContentsDistributor("BattleComics").should.be.fulfilled;
             const pxlAddress = await pictionNetwork.getAddress("PXL").should.be.fulfilled;
 
             const pxl = await PXL.at(pxlAddress);
 
             const beforeUserBalance = await pxl.balanceOf(user);
-            const beforeContentsDistributorBalance = await pxl.balanceOf(contentsRevenueAddress);
+            const beforeContentsDistributorBalance = await pxl.balanceOf(contentsDistributorAddress);
             const beforeUserAdoptionPoolBalance = await pxl.balanceOf(userAdoptionPool);
             const beforeEcosystemFundBalance = await pxl.balanceOf(ecosystemFund);            
             const beforeSupporterPoolBalance = await pxl.balanceOf(supporterPool);
@@ -77,10 +76,10 @@ contract("ContentsRevenue", function (accounts) {
             const param = web3.fromAscii(contentHash) + toBigNumber(1).substr(2) + toBigNumber(supporterPoolRate * decimals).substr(2)
             console.log("param: " + param);
             
-            await pxl.approveAndCall(contentsRevenueAddress, amount, param, {from: user}).should.be.fulfilled;
+            await pxl.approveAndCall(contentsDistributorAddress, amount, param, {from: user}).should.be.fulfilled;
 
             const afterUserBalance = await pxl.balanceOf(user);
-            const afterContentsDistributorBalance = await pxl.balanceOf(contentsRevenueAddress);
+            const afterContentsDistributorBalance = await pxl.balanceOf(contentsDistributorAddress);
             const afterUserAdoptionPoolBalance = await pxl.balanceOf(userAdoptionPool);
             const afterEcosystemFundBalance = await pxl.balanceOf(ecosystemFund);            
             const afterSupporterPoolBalance = await pxl.balanceOf(supporterPool);
@@ -104,26 +103,26 @@ contract("ContentsRevenue", function (accounts) {
         });
 
         it("Send to ContentsDistributor", async () => {
-            const contentsRevenueAddress = await pictionNetwork.getContentsDistributor("BattleComics").should.be.fulfilled;
+            const contentsDistributorAddress = await pictionNetwork.getContentsDistributor("BattleComics").should.be.fulfilled;
             const pxlAddress = await pictionNetwork.getAddress("PXL").should.be.fulfilled;
 
             const pxl = await PXL.at(pxlAddress);
-            const contentsRevenue = await ContentsRevenue.at(contentsRevenueAddress);
+            const contentsDistributor = await ContentsDistributor.at(contentsDistributorAddress);
             
-            const beforeContentsRevenueBalance = await pxl.balanceOf(contentsRevenueAddress);
-            const beforeContentsDistributorBalance = await pxl.balanceOf(contentsDistributor)
-            console.log("beforeContentsRevenueBalance: " + (beforeContentsRevenueBalance));
+            const beforeContentsDistributorBalance = await pxl.balanceOf(contentsDistributorAddress);
+            const beforeContentsDistributorAccountBalance = await pxl.balanceOf(contentsDistributorAccount)
             console.log("beforeContentsDistributorBalance: " + (beforeContentsDistributorBalance));
+            console.log("beforeContentsDistributorAccountBalance: " + (beforeContentsDistributorAccountBalance));
             
-            await contentsRevenue.sendToContentsDistributor({from: owner}).should.be.fulfilled;
+            await contentsDistributor.sendToContentsDistributor({from: owner}).should.be.fulfilled;
 
-            const afterContentsRevenueBalance = await pxl.balanceOf(contentsRevenueAddress);
-            const afterContentsDistributorBalance = await pxl.balanceOf(contentsDistributor);
-            console.log("afterContentsRevenueBalance: " + (afterContentsRevenueBalance));
+            const afterContentsDistributorBalance = await pxl.balanceOf(contentsDistributorAddress);
+            const afterContentsDistributorAccountBalance = await pxl.balanceOf(contentsDistributorAccount);
             console.log("afterContentsDistributorBalance: " + (afterContentsDistributorBalance));
+            console.log("afterContentsDistributorAccountBalance: " + (afterContentsDistributorAccountBalance));
 
-            initialStaking.should.be.bignumber.equal(afterContentsRevenueBalance);
-            beforeContentsRevenueBalance.sub(afterContentsRevenueBalance).should.be.bignumber.equal(afterContentsDistributorBalance);
+            initialStaking.should.be.bignumber.equal(afterContentsDistributorBalance);
+            beforeContentsDistributorBalance.sub(afterContentsDistributorBalance).should.be.bignumber.equal(afterContentsDistributorAccountBalance);
         });
     });
 });
