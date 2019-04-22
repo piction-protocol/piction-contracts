@@ -7,8 +7,8 @@ interface IPictionNetwork {
     function setRate(string contractName, uint256 rate) external;
     function getRate(string contractName) external view returns (uint256 rate);
 
-    function setCDInfo(string cdName, address cdAddress, uint256 rate) external;
-    function getCDInfo(address cdAddress) external view returns (string cdName, uint256 rate);
+    function setContentsDistributor(string cdName, address cdAddress) external;
+    function getContentsDistributor(string cdName) external view returns (address cdAddress);
 
     event SetAddress(
         address indexed from,
@@ -22,9 +22,8 @@ interface IPictionNetwork {
         uint256 rate
     );
 
-    event SetCDInfo(
+    event SetContentsDistributor(
         string cdName,
-        address indexed cdAddress,
-        uint256 rate
+        address cdAddress
     );
 }

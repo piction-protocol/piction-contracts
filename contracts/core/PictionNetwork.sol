@@ -8,7 +8,7 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
 
     mapping (string => bool) private registeredAddress;
     mapping (string => bool) private registeredRate;
-    mapping (address => ContentsDistributorInfo) private cdList;
+    mapping (string => address) private contentsDistributor;
 
     // Managers: AccountsManager, ContentsManager
     // Core: ContentsRevenue
@@ -17,13 +17,8 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
     // Connectors: ELEConnector, PICConnector
     mapping (string => address) private addressList;
 
-    // ContentsDistributor, UserAdoptionPool, EcosystemFund, SupporterPool
+    // UserAdoptionPool, EcosystemFund
     mapping (string => uint256) distributeRate;
-
-    struct ContentsDistributorInfo {
-        string cdName;
-        uint256 rate;
-    }
 
     /**
       * @dev Address 설정
@@ -93,34 +88,30 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
       * @dev ContentsDistributor 설정
       * @param cdName 설정하고자 하는 ContentsDistributor 이름
       * @param cdAddress 설정하고자 하는 ContentsDistributor의 주소
-      * @param rate 설정하고자 하는 Rate
       */
-    function setCDInfo(
+    function setContentsDistributor(
         string cdName,
-        address cdAddress,
-        uint256 rate
+        address cdAddress
     )
         external
         onlyOwner
         validString(cdName)
         validAddress(cdAddress)
-        validRate(rate)
     {
-        cdList[cdAddress] = ContentsDistributorInfo(cdName, rate);
+        contentsDistributor[cdName] = cdAddress;
 
-        emit SetCDInfo(cdName, cdAddress, rate);
+        emit SetContentsDistributor(cdName, cdAddress);
     }
 
     /**
       * @dev ContentsDistributor 정보 조회
       * @param cdAddress 조회하고자 하는 ContentsDistributor의 주소
       */
-    function getCDInfo(address cdAddress)
+    function getContentsDistributor(string cdName)
         external
         view
-        returns(string cdName, uint256 rate)
+        returns(address cdAddress)
     {
-        cdName = cdList[cdAddress].cdName;
-        rate = cdList[cdAddress].rate;
+        cdAddress = contentsDistributor[cdName];
     }
 }
