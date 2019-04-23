@@ -5,10 +5,10 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsManager.sol";
+import "../interfaces/IContentsRevenue.sol";
 import "../interfaces/IERC20.sol";
 import "../utils/BytesLib.sol";
 import "../utils/ValidValue.sol";
-import "../core/ContentsRevenue.sol";
 
 contract ContentsDistributor is Ownable, ValidValue {
     using SafeMath for uint256;
@@ -17,7 +17,7 @@ contract ContentsDistributor is Ownable, ValidValue {
     uint256 constant DECIMALS = 10 ** 18;   
     
     IPictionNetwork private pictionNetwork;
-    IERC20 private pxlToken;
+    IERC20 pxlToken;
     
     uint256 private staking;
     uint256 distributionRate;
@@ -70,10 +70,25 @@ contract ContentsDistributor is Ownable, ValidValue {
         uint256 supporterPoolRate = data.toUint(98);
         
         pxlToken.transferFrom(from, address(this), value);
-        
-        ContentsRevenue.transferDistributePxl(address(pictionNetwork), distributionRate, supporterPoolRate, contentsProvider, value);
 
+        (address[] memory addresses, uint256[] memory amounts) = IContentsRevenue(pictionNetwork.getAddress("ContentsRevenue")).calculateDistributionPxl(distributionRate, supporterPoolRate, contentsProvider, value);
+        
+        for (uint256 i = 0; i < addresses.length; i++) { 
+            _transferDistributePxl(addresses[i], amounts[i]);
+        }
         // contentsManager.purchase(from, contentHash, saleType);
+    }
+
+    /**
+     * @dev 계산된 분배량에 따라 토큰 전송
+     * @param to 발신자 주소
+     * @param amount 전송할 토큰 수량
+     */
+    function _transferDistributePxl(address to, uint256 amount) internal {
+        if (amount > 0) {
+            pxlToken.transfer(to, amount);
+            emit Distribute(address(this), to, amount);
+        }
     }
 
     /**
@@ -99,6 +114,6 @@ contract ContentsDistributor is Ownable, ValidValue {
     }
 
     event SetRate(uint256 rate);
-    
+    event Distribute(address indexed sender, address to, uint256 value);
     event SendToContentsDistributor(uint256 value);
 }
