@@ -26,7 +26,7 @@ contract("ContentsDistributor", function (accounts) {
     const contentsDistributorRate = 0.12;
     const userAdoptionPoolRate = 0.02;
     const ecosystemFundRate = 0.10;
-    const supporterPoolRate = 0.10;
+    const supporterPoolRate = 0;
 
     const contentHash = '0xb493d48364afe44d11c0165cf470a4164d1e2609911ef998be868d46ade3de4e';
 
