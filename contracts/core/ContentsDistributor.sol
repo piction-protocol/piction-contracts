@@ -60,7 +60,7 @@ contract ContentsDistributor is Ownable, ValidValue {
                     [Sale type 32]
      */
     function receiveApproval(address from, uint256 value, address token, bytes memory data) public {
-        require(pxlToken == token, "ContentsDistributor receiveApproval 0");
+        require(address(pxlToken) == token, "ContentsDistributor receiveApproval 0");
         require(value > 0, "ContentsDistributor receiveApproval 1");
         
         string memory contentHash = string(data.slice(0, 66));
