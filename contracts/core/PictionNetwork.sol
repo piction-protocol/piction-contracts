@@ -2,6 +2,7 @@ pragma solidity ^0.4.24;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "../interfaces/IPictionNetwork.sol";
+import "../interfaces/IUpdateAddress.sol";
 import "../utils/ValidValue.sol";
 
 contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
@@ -113,5 +114,20 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
         returns(address cdAddress)
     {
         cdAddress = contentsDistributor[cdName];
+    }
+
+    /**
+      * @dev Address를 업데이트
+      * @param updateAddressList updateAddress를 호출할 Contract들의 주소
+      */
+    function updateAddress(
+        address[] updateAddressList
+    )
+        external
+        onlyOwner
+    {
+        for (uint256 i = 0; i < updateAddressList.length; i++) {
+            IUpdateAddress(updateAddressList[i]).updateAddress();
+        }
     }
 }
