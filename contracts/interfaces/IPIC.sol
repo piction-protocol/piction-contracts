@@ -5,5 +5,7 @@ contract IPIC {
     function balanceOf(string contentsHash, address owner) public view returns (uint256);
     function transfer(string contentsHash, address from, address to, uint256 value) public returns (bool);
     function burn(string contentsHash, address from, uint256 value) external;
-    function mint(string contentsHash) external;
+    function mint(string contentsHash, uint256 initialValue) external;
+
+    event Transfer(address indexed from, address indexed to, uint256 value, string contentsHash);
 }
