@@ -6,7 +6,7 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsRevenue.sol";
 import "../interfaces/IContentsManager.sol";
-// import "../interfaces/ISUPPORTERPOOL.sol";
+// import "../interfaces/ISupporterPool.sol";
 import "../utils/ValidValue.sol";
 import "../utils/StringLib.sol";
 
@@ -16,7 +16,7 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue {
 
     IPictionNetwork private pictionNetwork;
     IContentsManager private contentsManager;
-    // ISUPPORTERPOOL private supporterPool;
+    // ISupporterPool private supporterPool;
 
     string public constant USERADOPTIONPOOL = "UserAdoptionPool";
     string public constant SUPPORTERPOOL = "SupporterPool";
