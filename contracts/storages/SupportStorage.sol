@@ -11,7 +11,7 @@ contract SupportStorage is Storage, ISupportStorage, ExtendsOwnable {
 
     struct Sale {
         uint256 price;
-        uint256 maxCap;
+        uint256 maxcap;
         uint256 endTime;
         uint256 pxlRaised;
         mapping (address => uint256) pxlAmount;     // 구조체 밖으로 뺄경우 약간의 가스비용이 더 발생
@@ -25,14 +25,14 @@ contract SupportStorage is Storage, ISupportStorage, ExtendsOwnable {
         pictionNetwork = IPictionNetwork(piction);
     }
 
-    function setSaleValue(string key, uint256 price, uint256 maxCap, uint256 endTime, string tag) external onlyOwner {
-        sales[key] = Sale(price, maxCap, endTime, 0);
+    function setSaleValue(string key, uint256 price, uint256 maxcap, uint256 endTime, string tag) external onlyOwner {
+        sales[key] = Sale(price, maxcap, endTime, 0);
 
-        emit SetSaleValue(tag, key, price, maxCap, endTime);
+        emit SetSaleValue(tag, key, price, maxcap, endTime);
     }
     
-    function getSaleValue(string key) external view onlyOwner returns(uint256 price, uint256 maxCap, uint256 endTime, uint256 pxlRaised){
-        return (sales[key].price, sales[key].maxCap, sales[key].endTime, sales[key].pxlRaised);
+    function getSaleValue(string key) external view onlyOwner returns(uint256 price, uint256 maxcap, uint256 endTime, uint256 pxlRaised){
+        return (sales[key].price, sales[key].maxcap, sales[key].endTime, sales[key].pxlRaised);
     }
     
     function setPxlRaised(string key, uint256 pxlRaised, string tag) external onlyOwner {
