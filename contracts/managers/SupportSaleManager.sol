@@ -9,6 +9,7 @@ import "../interfaces/IStorage.sol";
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/ISupportStorage.sol";
 import "../interfaces/IContentsManager.sol";
+import "../interfaces/ISupportSaleManager.sol";
 
 import "../tokens/ContractReceiver.sol";
 
@@ -20,7 +21,7 @@ import "../utils/ExtendsOwnable.sol";
 /**
     SupportSaleManager 와 SupportTradeManager로 분리하여 관리할지 생각.....
  */
-contract SupportSaleManager is ExtendsOwnable {
+contract SupportSaleManager is ExtendsOwnable, ISupportSaleManager {
     using Math for uint256;
     using SafeMath for uint256;
     using BytesLib for bytes;
@@ -127,5 +128,28 @@ contract SupportSaleManager is ExtendsOwnable {
         require(endTime >= TimeLib.currentTime() || maxcap == pxlRaised, "SupportSaleManager withDrawPic 1");
 
         // 목록 관리 정책 정해지면 추후 구현
+    }
+
+    // 남은 수량 조회
+    function remainingBalance(string contentsHash) external view returns (uint256 picBalance, uint256 pxlBalance) {
+        (uint256 price,uint256 maxcap,,uint256 pxlRaised) = iSupportStorage.getSaleValue(contentsHash);
+        return (maxcap.sub(pxlRaised).div(price), maxcap.sub(pxlRaised));
+    }
+
+    // 판매 가격 조회
+    function getPicPrice(string contentsHash) external view returns (uint256 picPrice) {
+        (picPrice,,,) = iSupportStorage.getSaleValue(contentsHash);
+        return picPrice;
+    }
+
+    // 종료 시간 조회
+    function getEndTime(string contentsHash) external view returns (uint256 endTime) {
+        (,,endTime,) = iSupportStorage.getSaleValue(contentsHash);
+        return endTime;
+    }
+
+    // pic 세일 정보 조회
+    function getSaleValue(string contentsHash) external view returns (uint256 picPrice, uint256 maxcap, uint256 endtime, uint256 pxlRaised) {
+        return iSupportStorage.getSaleValue(contentsHash);
     }
 }
