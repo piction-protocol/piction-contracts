@@ -20,8 +20,9 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     
     IPictionNetwork private pictionNetwork;
     IERC20 pxlToken;
+    IContentsRevenue private contentsRevenue;
     
-    uint256 private staking;
+    uint256 private stakingAmount;
     uint256 distributionRate;
     address private contentsDistributor;
     string name;
@@ -47,7 +48,7 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         contentsRevenue = IContentsRevenue(pictionNetwork.getAddress("ContentsRevenue"));
         
         distributionRate = cdRate;
-        staking = initialStaking;
+        stakingAmount = initialStaking;
         contentsDistributor = cdAddress;
         name = cdName;
     }
@@ -83,6 +84,16 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         // contentsManager.purchase(from, contentHash, saleType);
     }
 
+     /**
+     * @dev ContentsDistributor의 Staking 수량을 설정
+     * @param staking 설정할 staking
+     */
+    function setStaking(uint256 staking) external onlyOwner {
+        stakingAmount = staking;
+
+        emit SetStaking(name, staking);
+    }
+
     /**
      * @dev ContentsDistributor의 분배 비율을 설정
      * @param cdRate 분배 비율
@@ -90,7 +101,17 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     function setRate(uint256 cdRate) external onlyOwner validRate(cdRate) {
         distributionRate = cdRate;
 
-        emit SetRate(cdRate);
+        emit SetRate(name, cdRate);
+    }
+
+    /**
+     * @dev ContentsDistributor의 출금 주소를 설정
+     * @param cdAddress 설정할 주소
+     */
+    function setCDAddress(address cdAddress) external onlyOwner validAddress(cdAddress) {
+        contentsDistributor = cdAddress;
+
+        emit SetCDAddress(name, cdAddress);
     }
 
     /**
@@ -98,11 +119,11 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
      */
     function sendToContentsDistributor() external onlyOwner {
         uint256 balance = pxlToken.balanceOf(address(this));
-        require(balance > staking, "ContentsDistributor sendToContentsDistributor 0");
+        require(balance > stakingAmount, "ContentsDistributor sendToContentsDistributor 0");
         
-        pxlToken.transfer(contentsDistributor, balance.sub(staking));
+        pxlToken.transfer(contentsDistributor, balance.sub(stakingAmount));
 
-        emit SendToContentsDistributor(balance.sub(staking));
+        emit SendToContentsDistributor(name, balance.sub(stakingAmount));
     }
 
     /**
@@ -112,6 +133,8 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         contentsRevenue = IContentsRevenue(pictionNetwork.getAddress("ContentsRevenue"));
     }
 
-    event SetRate(uint256 rate);
-    event SendToContentsDistributor(uint256 value);
+    event SetStaking(string name, uint256 value);
+    event SetRate(string name, uint256 rate);
+    event SetCDAddress(string name, address cdAddress);
+    event SendToContentsDistributor(string name, uint256 value);
 }

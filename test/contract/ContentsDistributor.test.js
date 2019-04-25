@@ -102,6 +102,17 @@ contract("ContentsDistributor", function (accounts) {
             beforeContentsProviderBalance.add(cpAmount).should.be.bignumber.equal(afterContentsProviderBalance);
         });
 
+        it("Set Staking", async () => {
+            const contentsDistributorAddress = await pictionNetwork.getContentsDistributor("BattleComics").should.be.fulfilled;
+
+            const contentsDistributor = await ContentsDistributor.at(contentsDistributorAddress);
+            await contentsDistributor.setStaking(2000 * decimals, {from: owner}).should.be.fulfilled;
+
+            await contentsDistributor.sendToContentsDistributor({from: owner}).should.be.rejected;
+
+            await contentsDistributor.setStaking(1000 * decimals, {from: owner}).should.be.fulfilled;
+        });
+
         it("Send to ContentsDistributor", async () => {
             const contentsDistributorAddress = await pictionNetwork.getContentsDistributor("BattleComics").should.be.fulfilled;
             const pxlAddress = await pictionNetwork.getAddress("PXL").should.be.fulfilled;
@@ -123,6 +134,30 @@ contract("ContentsDistributor", function (accounts) {
 
             initialStaking.should.be.bignumber.equal(afterContentsDistributorBalance);
             beforeContentsDistributorBalance.sub(afterContentsDistributorBalance).should.be.bignumber.equal(afterContentsDistributorAccountBalance);
+        });
+
+        it("Send to ContentsDistributor after changed staking", async () => {
+            const contentsDistributorAddress = await pictionNetwork.getContentsDistributor("BattleComics").should.be.fulfilled;
+            const pxlAddress = await pictionNetwork.getAddress("PXL").should.be.fulfilled;
+
+            const pxl = await PXL.at(pxlAddress);
+            const contentsDistributor = await ContentsDistributor.at(contentsDistributorAddress);
+            await contentsDistributor.setStaking(0, {from: owner}).should.be.fulfilled;
+            
+            const beforeContentsDistributorBalance = await pxl.balanceOf(contentsDistributorAddress);
+            const beforeContentsDistributorAccountBalance = await pxl.balanceOf(contentsDistributorAccount)
+            console.log("beforeContentsDistributorBalance: " + (beforeContentsDistributorBalance));
+            console.log("beforeContentsDistributorAccountBalance: " + (beforeContentsDistributorAccountBalance));
+            
+            await contentsDistributor.sendToContentsDistributor({from: owner}).should.be.fulfilled;
+
+            const afterContentsDistributorBalance = await pxl.balanceOf(contentsDistributorAddress);
+            const afterContentsDistributorAccountBalance = await pxl.balanceOf(contentsDistributorAccount);
+            console.log("afterContentsDistributorBalance: " + (afterContentsDistributorBalance));
+            console.log("afterContentsDistributorAccountBalance: " + (afterContentsDistributorAccountBalance));
+
+            afterContentsDistributorBalance.should.be.zero;
+            initialStaking.should.be.bignumber.equal(afterContentsDistributorAccountBalance.sub(beforeContentsDistributorAccountBalance));
         });
     });
 });
