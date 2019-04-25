@@ -5,12 +5,13 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsRevenue.sol";
+import "../interfaces/IUpdateAddress.sol";
 import "../interfaces/IERC20.sol";
 import "../utils/BytesLib.sol";
 import "../utils/StringLib.sol";
 import "../utils/ValidValue.sol";
 
-contract ContentsDistributor is Ownable, ValidValue {
+contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     using SafeMath for uint256;
     using BytesLib for bytes;
     using StringLib for string;
@@ -43,6 +44,7 @@ contract ContentsDistributor is Ownable, ValidValue {
     {
         pictionNetwork = IPictionNetwork(pictionNetworkAddress);
         pxlToken = IERC20(pictionNetwork.getAddress("PXL"));
+        contentsRevenue = IContentsRevenue(pictionNetwork.getAddress("ContentsRevenue"));
         
         distributionRate = cdRate;
         staking = initialStaking;
@@ -101,6 +103,13 @@ contract ContentsDistributor is Ownable, ValidValue {
         pxlToken.transfer(contentsDistributor, balance.sub(staking));
 
         emit SendToContentsDistributor(balance.sub(staking));
+    }
+
+    /**
+     * @dev 저장된 주소를 업데이트
+     */
+    function updateAddress() external onlyOwner {
+        contentsRevenue = IContentsRevenue(pictionNetwork.getAddress("ContentsRevenue"));
     }
 
     event SetRate(uint256 rate);
