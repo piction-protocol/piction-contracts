@@ -1,6 +1,5 @@
 pragma solidity ^0.4.24;
 
-import "openzeppelin-solidity/contracts/math/Math.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
@@ -20,9 +19,9 @@ import "../utils/ExtendsOwnable.sol";
 
 /**
     SupportSaleManager 와 SupportTradeManager로 분리하여 관리할지 생각.....
+    함수의 주석은 목록 관리 정책 정해지면 추가
  */
 contract SupportSaleManager is ExtendsOwnable, ISupportSaleManager {
-    using Math for uint256;
     using SafeMath for uint256;
     using BytesLib for bytes;
 
