@@ -2,12 +2,14 @@ pragma solidity ^0.4.24;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "../interfaces/IPictionNetwork.sol";
+import "../interfaces/IUpdateAddress.sol";
 import "../utils/ValidValue.sol";
 
 contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
 
     mapping (string => bool) private registeredAddress;
     mapping (string => bool) private registeredRate;
+    mapping (string => address) private contentsDistributor;
 
     // Managers: AccountsManager, ContentsManager
     // Core: ContentsRevenue
@@ -16,7 +18,7 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
     // Connectors: ELEConnector, PICConnector
     mapping (string => address) private addressList;
 
-    // ContentsDistributor, UserAdoptionPool, EcosystemFund, SupporterPool
+    // UserAdoptionPool, EcosystemFund
     mapping (string => uint256) distributeRate;
 
     /**
@@ -81,5 +83,51 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
         require(registeredRate[contractName], "Unregistered contract");
 
         rate = distributeRate[contractName];
+    }
+
+    /**
+      * @dev ContentsDistributor 설정
+      * @param cdName 설정하고자 하는 ContentsDistributor 이름
+      * @param cdAddress 설정하고자 하는 ContentsDistributor의 주소
+      */
+    function setContentsDistributor(
+        string cdName,
+        address cdAddress
+    )
+        external
+        onlyOwner
+        validString(cdName)
+        validAddress(cdAddress)
+    {
+        contentsDistributor[cdName] = cdAddress;
+
+        emit SetContentsDistributor(cdName, cdAddress);
+    }
+
+    /**
+      * @dev ContentsDistributor 정보 조회
+      * @param cdAddress 조회하고자 하는 ContentsDistributor의 주소
+      */
+    function getContentsDistributor(string cdName)
+        external
+        view
+        returns(address cdAddress)
+    {
+        cdAddress = contentsDistributor[cdName];
+    }
+
+    /**
+      * @dev Address를 업데이트
+      * @param updateAddressList updateAddress를 호출할 Contract들의 주소
+      */
+    function updateAddress(
+        address[] updateAddressList
+    )
+        external
+        onlyOwner
+    {
+        for (uint256 i = 0; i < updateAddressList.length; i++) {
+            IUpdateAddress(updateAddressList[i]).updateAddress();
+        }
     }
 }
