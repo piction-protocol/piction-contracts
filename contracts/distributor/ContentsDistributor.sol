@@ -28,6 +28,7 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     string name;
     
     string public constant CONTENTSREVENUE = "ContentsRevenue";
+    string public constant PXL = "PXL";
     
     constructor(
         address pictionNetworkAddress,
@@ -44,8 +45,8 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         validString(cdName)
     {
         pictionNetwork = IPictionNetwork(pictionNetworkAddress);
-        pxlToken = IERC20(pictionNetwork.getAddress("PXL"));
-        contentsRevenue = IContentsRevenue(pictionNetwork.getAddress("ContentsRevenue"));
+        pxlToken = IERC20(pictionNetwork.getAddress(PXL));
+        contentsRevenue = IContentsRevenue(pictionNetwork.getAddress(CONTENTSREVENUE));
         
         distributionRate = cdRate;
         stakingAmount = initialStaking;
@@ -73,7 +74,6 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         
         pxlToken.transferFrom(from, address(this), value);
 
-        IContentsRevenue contentsRevenue = IContentsRevenue(pictionNetwork.getAddress(CONTENTSREVENUE));
         (address[] memory addresses, uint256[] memory amounts) = contentsRevenue.calculateDistributionPxl(distributionRate, contentHash, value);
         
         for (uint256 i = 0; i < addresses.length; i++) { 
@@ -132,7 +132,7 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     function updateAddress() external {
         require(msg.sender == address(pictionNetwork), "ContentsDistributor updateAddress 0");
 
-        contentsRevenue = IContentsRevenue(pictionNetwork.getAddress("ContentsRevenue"));
+        contentsRevenue = IContentsRevenue(pictionNetwork.getAddress(CONTENTSREVENUE));
     }
 
     event SetStaking(string name, uint256 value);
