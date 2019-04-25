@@ -89,7 +89,9 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
     /**
      * @dev 저장된 주소를 업데이트
      */
-    function updateAddress() external onlyOwner {
+    function updateAddress() external {
+        require(msg.sender == address(pictionNetwork), "ContentsRevenue updateAddress 0");
+
         contentsManager = IContentsManager(pictionNetwork.getAddress(CONTENTSMANAGER));
         // supporterPool = ISupporterPool(pictionNetwork.getAddress(SUPPORTERPOOL));
     }

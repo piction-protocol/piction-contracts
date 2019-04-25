@@ -129,7 +129,9 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     /**
      * @dev 저장된 주소를 업데이트
      */
-    function updateAddress() external onlyOwner {
+    function updateAddress() external {
+        require(msg.sender == address(pictionNetwork), "ContentsDistributor updateAddress 0");
+
         contentsRevenue = IContentsRevenue(pictionNetwork.getAddress("ContentsRevenue"));
     }
 
