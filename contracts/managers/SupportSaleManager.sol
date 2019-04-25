@@ -25,14 +25,14 @@ contract SupportSaleManager is ExtendsOwnable, ISupportSaleManager {
     using SafeMath for uint256;
     using BytesLib for bytes;
 
-    string public constant PXL_NAME = "PXL";
-    string public constant PIC_NAME = "PIC";
-    string public constant STORAGE_NAME = "SupportStorage";
-    string public constant CONTENTS_MANAGER_NAME = "ContentsManager";
+    string internal constant PXL_NAME = "PXL";
+    string internal constant PIC_NAME = "PIC";
+    string internal constant STORAGE_NAME = "SupportStorage";
+    string internal constant CONTENTS_MANAGER_NAME = "ContentsManager";
 
-    string public constant CREATE_TAG = "CreatePicSale";
-    string public constant PURCHASE_TAG = "PurchasePic";
-    string public constant REFUND_TAG = "RefundPic";
+    string internal constant CREATE_TAG = "CreatePicSale";
+    string internal constant PURCHASE_TAG = "PurchasePic";
+    string internal constant REFUND_TAG = "RefundPic";
 
     IPIC iPic;
     IERC20 iPxl;
@@ -49,7 +49,7 @@ contract SupportSaleManager is ExtendsOwnable, ISupportSaleManager {
         iPic = IPIC(iPiction.getAddress(PIC_NAME));
         iPxl = IERC20(iPiction.getAddress(PXL_NAME));
         iSupportStorage = ISupportStorage(iPiction.getAddress(STORAGE_NAME));
-        iStorage = IStorage(iPiction.getAddress(STORAGE_NAME));
+        iStorage = IStorage(address(iSupportStorage));
 
         iContentsManager = IContentsManager(iPiction.getAddress(CONTENTS_MANAGER_NAME));
     }
@@ -88,7 +88,7 @@ contract SupportSaleManager is ExtendsOwnable, ISupportSaleManager {
     }
 
     // 구매 처리
-    function purchasePic(string contentsHash, address buyer, uint256 amount) private {
+    function purchasePic(string contentsHash, address buyer, uint256 amount) internal {
         require(iStorage.getBooleanValue(contentsHash), "SupportSaleManager purchasePic 0");
 
         (,uint256 maxcap,,uint256 pxlRaised) = iSupportStorage.getSaleValue(contentsHash);
@@ -127,24 +127,6 @@ contract SupportSaleManager is ExtendsOwnable, ISupportSaleManager {
         require(endTime >= TimeLib.currentTime() || maxcap == pxlRaised, "SupportSaleManager withDrawPic 1");
 
         // 목록 관리 정책 정해지면 추후 구현
-    }
-
-    // 남은 수량 조회
-    function remainingBalance(string contentsHash) external view returns (uint256 picBalance, uint256 pxlBalance) {
-        (uint256 price,uint256 maxcap,,uint256 pxlRaised) = iSupportStorage.getSaleValue(contentsHash);
-        return (maxcap.sub(pxlRaised).div(price), maxcap.sub(pxlRaised));
-    }
-
-    // 판매 가격 조회
-    function getPicPrice(string contentsHash) external view returns (uint256 picPrice) {
-        (picPrice,,,) = iSupportStorage.getSaleValue(contentsHash);
-        return picPrice;
-    }
-
-    // 종료 시간 조회
-    function getEndTime(string contentsHash) external view returns (uint256 endTime) {
-        (,,endTime,) = iSupportStorage.getSaleValue(contentsHash);
-        return endTime;
     }
 
     // pic 세일 정보 조회
