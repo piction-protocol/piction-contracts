@@ -42,7 +42,7 @@ contract SupportSaleManager is ExtendsOwnable {
     IContentsManager iContentsManager;
 
     constructor (address pictionNetwork) public {
-        require(pictionNetwork != address(0), "SupportManager constructor 0");
+        require(pictionNetwork != address(0), "SupportSaleManager constructor 0");
 
         iPiction = IPictionNetwork(pictionNetwork);
 
@@ -56,11 +56,11 @@ contract SupportSaleManager is ExtendsOwnable {
 
     // 후원 생성
     function createPicSale(string contentsHash, uint256 picPrice) external {
-        require(picPrice.div(1 ether) > 0, "SupportManager createPicSale 0");
-        require(iContentsManager.getWriter(contentsHash) == msg.sender, "SupportManager createPicSale 1");
+        require(picPrice.div(1 ether) > 0, "SupportSaleManager createPicSale 0");
+        require(iContentsManager.getWriter(contentsHash) == msg.sender, "SupportSaleManager createPicSale 1");
 
         uint256 initialValue = 10000;
-        uint256 endTime = TimeLib.currentTime().add((30 days).mul(1000));
+        uint256 endTime = TimeLib.currentTime().add(30 days * 1000);
         
         iStorage.setBooleanValue(contentsHash, true, CREATE_TAG);
         iStorage.setAddressValue(contentsHash, msg.sender, CREATE_TAG);
@@ -78,9 +78,9 @@ contract SupportSaleManager is ExtendsOwnable {
 
     // 후원증 구매(거래는 처리 안함, 컨트랙트 분리)
     function receiveApproval(address from, uint256 value, address token, bytes memory data) public {
-        require(value > 1 ether, "SupportManager receiveApproval 0");
-        require(address(iPxl) == token, "SupportManager receiveApproval 1");
-        require(data.length == 66, "SupportManager receiveApproval 2");
+        require(value > 1 ether, "SupportSaleManager receiveApproval 0");
+        require(address(iPxl) == token, "SupportSaleManager receiveApproval 1");
+        require(data.length == 66, "SupportSaleManager receiveApproval 2");
 
         string memory contentsHash = string(data.slice(0, 66));
         iPxl.transferFrom(from, address(this), value);
@@ -89,7 +89,7 @@ contract SupportSaleManager is ExtendsOwnable {
 
     // 구매 처리
     function purchasePic(string contentsHash, address buyer, uint256 amount) private {
-        require(iSupportStorage.getBooleanValue(contentsHash), "SupportManager purchasePic 0");
+        require(iStorage.getBooleanValue(contentsHash), "SupportSaleManager purchasePic 0");
 
         (,uint256 maxcap,,uint256 pxlRaised) = iSupportStorage.getSaleValue(contentsHash);
 
@@ -110,7 +110,7 @@ contract SupportSaleManager is ExtendsOwnable {
     // PIC 환불
     function refundPic(string contentsHash) external {
         uint256 refundAmount = iSupportStorage.getPxlAmount(contentsHash, msg.sender);
-        require(refundAmount > 0, "SupportManager refundPic 0");
+        require(refundAmount > 0, "SupportSaleManager refundPic 0");
 
         uint256 pxlRaised = iSupportStorage.getPxlRaised(contentsHash);
         iSupportStorage.setPxlRaised(contentsHash, pxlRaised.sub(refundAmount), REFUND_TAG);
@@ -120,4 +120,12 @@ contract SupportSaleManager is ExtendsOwnable {
     }
 
     // PIC 지급 
+    function withDrawPic(string contentsHash) external {
+        require(iStorage.getAddressValue(contentsHash) == msg.sender, "SupportSaleManager withDrawPic 0");
+        
+        (,uint256 maxcap,uint256 endTime,uint256 pxlRaised) = iSupportStorage.getSaleValue(contentsHash);
+        require(endTime >= TimeLib.currentTime() || maxcap == pxlRaised, "SupportSaleManager withDrawPic 1");
+
+        // 목록 관리 정책 정해지면 추후 구현
+    }
 }
