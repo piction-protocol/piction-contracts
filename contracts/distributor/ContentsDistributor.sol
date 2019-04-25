@@ -2,11 +2,11 @@ pragma solidity ^0.4.24;
 
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsRevenue.sol";
 import "../interfaces/IUpdateAddress.sol";
-import "../interfaces/IERC20.sol";
 import "../utils/BytesLib.sol";
 import "../utils/StringLib.sol";
 import "../utils/ValidValue.sol";
