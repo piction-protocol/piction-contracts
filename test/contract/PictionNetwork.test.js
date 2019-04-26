@@ -60,7 +60,7 @@ contract("PictionNetwork", function (accounts) {
 
             await pictionNetwork.setAddress("ContentsManager", newContentsManager.address);
 
-            await contentsRevenue.updateAddress({from: owner}).should.be.fulfilled;
+            await pictionNetwork.updateAddress([contentsRevenue.address], {from: owner}).should.be.fulfilled;
         });
     });
 });
