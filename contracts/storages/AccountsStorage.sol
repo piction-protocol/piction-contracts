@@ -13,23 +13,58 @@ contract AccountsStorage is Storage, ExtendsOwnable, ValidValue {
         pictionNetwork = IPictionNetwork(piction);
     }
     
-    function setBooleanValue(string key, bool value, string tag) public onlyOwner {
+    function setBooleanValue(
+        string key, 
+        bool value, 
+        string tag
+    ) 
+        public 
+        onlyOwner 
+    {
         super.setBooleanValue(key, value, tag);
     }
 
-    function setBytesValue(string key, bytes value, string tag) public onlyOwner {
+    function setBytesValue(
+        string key, 
+        bytes value, 
+        string tag
+    ) 
+        public 
+        onlyOwner 
+    {
         super.setBytesValue(key, value, tag);
     }
 
-    function setStringValue(string key, string value, string tag) public onlyOwner {
+    function setStringValue(
+        string key, 
+        string value, 
+        string tag
+    ) 
+        public 
+        onlyOwner 
+    {
         super.setStringValue(key, value, tag);
     }
 
-    function setUintValue(string key, uint256 value, string tag) public onlyOwner {
+    function setUintValue(
+        string key, 
+        uint256 value, 
+        string tag
+    ) 
+        public 
+        onlyOwner 
+    {
         super.setUintValue(key, value, tag);
     }
 
-    function setAddressValue(string key, address value, string tag) public onlyOwner  {
+    function setAddressValue(
+        string key, 
+        address value, 
+        string tag
+    ) 
+        public 
+        onlyOwner 
+    {
         super.setAddressValue(key, value, tag);
     }
 

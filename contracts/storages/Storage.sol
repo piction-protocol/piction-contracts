@@ -16,7 +16,13 @@ contract Storage is IStorage {
     * @param value 설정하고자 하는 booleanValue value
     * @param tag mapping 변수 설정에 대한 tag
     */
-    function setBooleanValue(string key, bool value, string tag) public {
+    function setBooleanValue(
+        string key, 
+        bool value, 
+        string tag
+    ) 
+        public 
+    {
         booleanValue[key] = value;
         
         emit SetBooleanValue(tag, key);
@@ -28,7 +34,13 @@ contract Storage is IStorage {
     * @param value 설정하고자 하는 bytesValue value
     * @param tag mapping 변수 설정에 대한 tag
     */
-    function setBytesValue(string key, bytes value, string tag) public {
+    function setBytesValue(
+        string key, 
+        bytes value, 
+        string tag
+    ) 
+        public 
+    {
         bytesValue[key] = value;
 
         emit SetBytesValue(tag, key);
@@ -40,7 +52,13 @@ contract Storage is IStorage {
     * @param value 설정하고자 하는 stringValue value
     * @param tag mapping 변수 설정에 대한 tag
     */
-    function setStringValue(string key, string value, string tag) public {
+    function setStringValue(
+        string key, 
+        string value, 
+        string tag
+    ) 
+        public 
+    {
         stringValue[key] = value;
 
         emit SetStringValue(tag, key);
@@ -52,7 +70,13 @@ contract Storage is IStorage {
     * @param value 설정하고자 하는 utinValue value
     * @param tag mapping 변수 설정에 대한 tag
     */
-    function setUintValue(string key, uint256 value, string tag) public  {
+    function setUintValue(
+        string key, 
+        uint256 value, 
+        string tag
+    ) 
+        public  
+    {
         uintValue[key] = value;
 
         emit SetUintValue(tag, key);
@@ -64,7 +88,13 @@ contract Storage is IStorage {
     * @param value 설정하고자 하는 addressValue value
     * @param tag mapping 변수 설정에 대한 tag
     */
-    function setAddressValue(string key, address value, string tag) public {
+    function setAddressValue(
+        string key, 
+        address value, 
+        string tag
+    ) 
+        public 
+    {
         addressValue[key] = value;
 
         emit SetAddressValue(tag, key);

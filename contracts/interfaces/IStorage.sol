@@ -16,6 +16,7 @@ contract IStorage {
     function deleteUintValue(string key, string tag) public;
     function deleteAddressValue(string key, string tag) public;
     function deleteBytesValue(string key, string tag) public;
+    
     event SetBooleanValue(string tag, string key);
     event SetStringValue(string tag, string key);
     event SetUintValue(string tag, string key);
