@@ -62,7 +62,14 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
                     [Content Hash 66]
                     [Sale type 32]
      */
-    function receiveApproval(address from, uint256 value, address token, bytes memory data) public {
+    function receiveApproval(
+        address from,
+        uint256 value,
+        address token,
+        bytes memory data
+    ) 
+        public 
+    {
         require(address(pxlToken) == token, "ContentsDistributor receiveApproval 0");
         require(value > 0, "ContentsDistributor receiveApproval 1");
         

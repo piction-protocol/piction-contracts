@@ -27,23 +27,23 @@ contract ValidValue {
       _;
   }
 
-  function _validRange(uint256 value) internal pure returns (bool) {
+  function _validRange(uint256 value) internal pure returns(bool) {
       return (value > 0);
   }
 
-  function _validAddressZero(address account) internal pure returns (bool) {
+  function _validAddressZero(address account) internal pure returns(bool) {
       return (account != address(0));
   }
 
-  function _validAddressThis(address account) internal view returns (bool) {
+  function _validAddressThis(address account) internal view returns(bool) {
       return (account != address(this));
   }
 
-  function _validString(string str) internal pure returns (bool) {
+  function _validString(string str) internal pure returns(bool) {
       return (bytes(str).length > 0);
   }
 
-  function _validRate(uint256 rate) internal pure returns (bool) {
+  function _validRate(uint256 rate) internal pure returns(bool) {
       uint256 validDecimals = 10 ** 18;
       return (rate <= validDecimals);
   }
