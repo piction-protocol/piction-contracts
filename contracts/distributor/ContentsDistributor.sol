@@ -16,19 +16,18 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     using BytesLib for bytes;
     using StringLib for string;
 
-    uint256 constant DECIMALS = 10 ** 18;   
-    
     IPictionNetwork private pictionNetwork;
-    IERC20 pxlToken;
+    IERC20 public pxlToken;
     IContentsRevenue private contentsRevenue;
     
+    uint256 private constant DECIMALS = 10 ** 18;   
+    string private constant CONTENTSREVENUE = "ContentsRevenue";
+    string private constant PXL = "PXL";
+
     uint256 private stakingAmount;
-    uint256 distributionRate;
+    uint256 public distributionRate;
     address private contentsDistributor;
-    string name;
-    
-    string public constant CONTENTSREVENUE = "ContentsRevenue";
-    string public constant PXL = "PXL";
+    string public name;
     
     constructor(
         address pictionNetworkAddress,
@@ -63,7 +62,14 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
                     [Content Hash 66]
                     [Sale type 32]
      */
-    function receiveApproval(address from, uint256 value, address token, bytes memory data) public {
+    function receiveApproval(
+        address from,
+        uint256 value,
+        address token,
+        bytes memory data
+    ) 
+        public 
+    {
         require(address(pxlToken) == token, "ContentsDistributor receiveApproval 0");
         require(value > 0, "ContentsDistributor receiveApproval 1");
         

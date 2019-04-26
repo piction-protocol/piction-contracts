@@ -9,20 +9,19 @@ import "../interfaces/IContentsManager.sol";
 import "../interfaces/IUpdateAddress.sol";
 // import "../interfaces/ISupporterPool.sol";
 import "../utils/ValidValue.sol";
-import "../utils/StringLib.sol";
 
 contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddress {
     using SafeMath for uint256;
-    using StringLib for string;
 
     IPictionNetwork private pictionNetwork;
     IContentsManager private contentsManager;
     // ISupporterPool private supporterPool;
-
-    string public constant USERADOPTIONPOOL = "UserAdoptionPool";
-    string public constant SUPPORTERPOOL = "SupporterPool";
-    string public constant ECOSYSTEMFUND = "EcosystemFund";
-    string public constant CONTENTSMANAGER = "ContentsManager";
+    
+    uint256 private constant DECIMALS = 10 ** 18;
+    string private constant USERADOPTIONPOOL = "UserAdoptionPool";
+    string private constant SUPPORTERPOOL = "SupporterPool";
+    string private constant ECOSYSTEMFUND = "EcosystemFund";
+    string private constant CONTENTSMANAGER = "ContentsManager";
 
     struct DistributionInfo {
         uint256 contentsDistributor;
@@ -30,8 +29,6 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
         uint256 ecosystemFund;
         uint256 supporterPool;
     }
-
-    uint256 constant DECIMALS = 10 ** 18;
 
     constructor(address pictionNetworkAddress) public validAddress(pictionNetworkAddress) {
         pictionNetwork = IPictionNetwork(pictionNetworkAddress);
@@ -53,16 +50,16 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
         external 
         view
         validRate(cdRate)
-        returns (address[] memory addresses, uint256[] memory amounts)
+        validString(contentHash)
+        returns(address[] memory addresses, uint256[] memory amounts)
     {
         require(amount > 0, "ContentsRevenue calculateDistributionPxl 0");
-        require(!contentHash.isEmptyString(), "ContentsRevenue calculateDistributionPxl 1");
         
         addresses = new address[](4);
         amounts = new uint256[](4);
 
         address contentsProvider = contentsManager.getWriter(contentHash);
-        require(contentsProvider != address(0), "ContentsRevenue calculateDistributionPxl 2");
+        require(contentsProvider != address(0), "ContentsRevenue calculateDistributionPxl 1");
 
         uint256 supporterPoolRate = 0; // supporterPool.getSupporterPoolRate(contentHash).div(DECIMALS);
 
