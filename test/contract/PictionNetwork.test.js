@@ -1,6 +1,7 @@
 const InitialPictionNetwork = require("./InitialPictionNetwork.js");
 const ContentsRevenue = artifacts.require("ContentsRevenue");
 const ContentsManager = artifacts.require("ContentsManager");
+const ContentsDistributor = artifacts.require("ContentsDistributor");
 
 const decimals = Math.pow(10, 18);
 
@@ -18,6 +19,8 @@ contract("PictionNetwork", function (accounts) {
     let pictionNetwork;
     
     const userAdoptionPoolRate = 0.02 * decimals;
+    const initialStaking = 10000 * decimals;
+    const contentsDistributorRate = 0.10;
 
     describe("PictionNetwork", () => {
         it("initial pictionNewtork", async () => {
@@ -33,12 +36,13 @@ contract("PictionNetwork", function (accounts) {
             registeredContentsManager.should.be.equal(contentsManager.address);
         });
 
-        if("set ContentsDistributor", async () => {
-            await pictionNetwork.setContentsDistributor("ContentsDistributor1", contentsDistributor1, {from: owner}).should.be.fulfilled;
+        it("set ContentsDistributor", async () => {
+            const newContentsDistributor = await ContentsDistributor.new(pictionNetwork.address, initialStaking, contentsDistributorRate * decimals, contentsDistributor1, "ContentsDistributor1", {from: owner}).should.be.fulfilled;
+            await pictionNetwork.setContentsDistributor("ContentsDistributor1", newContentsDistributor.address, {from: owner}).should.be.fulfilled;
 
-            const registeredContentsDistributor = pictionNetwork.getContentsDistributor("ContentsDistributor1").should.be.fulfilled;
+            const registeredContentsDistributor = await pictionNetwork.getContentsDistributor("ContentsDistributor1").should.be.fulfilled;
 
-            registeredContentsDistributor.should.be.equal(contentsDistributor1);
+            registeredContentsDistributor.should.be.equal(newContentsDistributor.address);
         });
 
         it("get invalid address", async () => {
