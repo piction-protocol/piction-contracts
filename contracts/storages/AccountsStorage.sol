@@ -2,34 +2,70 @@ pragma solidity ^0.4.24;
 
 import "./Storage.sol";
 import "../interfaces/IPictionNetwork.sol";
-import "../utils/ValidValue.sol";
 import "../utils/ExtendsOwnable.sol";
 
-contract AccountsStorage is Storage, ExtendsOwnable, ValidValue {
+contract AccountsStorage is Storage, ExtendsOwnable {
 
     IPictionNetwork private pictionNetwork;
 
-    constructor(address piction) public validAddress(piction) {
+    constructor(address piction) public {
+        require(piction != address(0), "AccountStorage constructor 0");
+
         pictionNetwork = IPictionNetwork(piction);
     }
     
-    function setBooleanValue(string key, bool value, string tag) public onlyOwner {
+    function setBooleanValue(
+        string key, 
+        bool value, 
+        string tag
+    ) 
+        public 
+        onlyOwner 
+    {
         super.setBooleanValue(key, value, tag);
     }
 
-    function setBytesValue(string key, bytes value, string tag) public onlyOwner {
+    function setBytesValue(
+        string key, 
+        bytes value, 
+        string tag
+    ) 
+        public 
+        onlyOwner 
+    {
         super.setBytesValue(key, value, tag);
     }
 
-    function setStringValue(string key, string value, string tag) public onlyOwner {
+    function setStringValue(
+        string key, 
+        string value, 
+        string tag
+    ) 
+        public 
+        onlyOwner 
+    {
         super.setStringValue(key, value, tag);
     }
 
-    function setUintValue(string key, uint256 value, string tag) public onlyOwner {
+    function setUintValue(
+        string key, 
+        uint256 value, 
+        string tag
+    ) 
+        public 
+        onlyOwner 
+    {
         super.setUintValue(key, value, tag);
     }
 
-    function setAddressValue(string key, address value, string tag) public onlyOwner  {
+    function setAddressValue(
+        string key, 
+        address value, 
+        string tag
+    ) 
+        public 
+        onlyOwner 
+    {
         super.setAddressValue(key, value, tag);
     }
 
