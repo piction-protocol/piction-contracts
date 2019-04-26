@@ -50,9 +50,9 @@ module.exports = async (accounts) => {
     await accountsManager.createAccount("0", writerHash, "testData", contentsProvider, {from: owner}).should.be.fulfilled;
     await accountsManager.createAccount("1", userHash, "testData", user, {from: owner}).should.be.fulfilled;
     
-    const contentsManager = await ContentsManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled; // 17
+    const contentsManager = await ContentsManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
     await pictionNetwork.setAddress("ContentsManager", contentsManager.address, {from: owner}).should.be.fulfilled;
-    await contentsManager.createContents(writerHash, contentHash, "testData", {from: contentsProvider}).should.be.fulfilled; // 19
+    await contentsManager.createContents(writerHash, contentHash, "testData", {from: contentsProvider}).should.be.fulfilled;
 
     const contentsRevenue = await ContentsRevenue.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
     await pictionNetwork.setAddress("ContentsRevenue", contentsRevenue.address, {from: owner}).should.be.fulfilled;
