@@ -9,11 +9,9 @@ import "../interfaces/IContentsManager.sol";
 import "../interfaces/IUpdateAddress.sol";
 // import "../interfaces/ISupporterPool.sol";
 import "../utils/ValidValue.sol";
-import "../utils/StringLib.sol";
 
 contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddress {
     using SafeMath for uint256;
-    using StringLib for string;
 
     IPictionNetwork private pictionNetwork;
     IContentsManager private contentsManager;
@@ -52,17 +50,16 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
         external 
         view
         validRate(cdRate)
-        // validString(contentHash)
+        validString(contentHash)
         returns (address[] memory addresses, uint256[] memory amounts)
     {
         require(amount > 0, "ContentsRevenue calculateDistributionPxl 0");
-        require(!contentHash.isEmptyString(), "ContentsRevenue calculateDistributionPxl 1");
         
         addresses = new address[](4);
         amounts = new uint256[](4);
 
         address contentsProvider = contentsManager.getWriter(contentHash);
-        require(contentsProvider != address(0), "ContentsRevenue calculateDistributionPxl 2");
+        require(contentsProvider != address(0), "ContentsRevenue calculateDistributionPxl 1");
 
         uint256 supporterPoolRate = 0; // supporterPool.getSupporterPoolRate(contentHash).div(DECIMALS);
 
