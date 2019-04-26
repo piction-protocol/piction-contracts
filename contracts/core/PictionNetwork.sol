@@ -26,7 +26,7 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
       * @param contractName 설정하고자 하는 Contract 이름
       * @param pictionAddress 설정하고자 하는 Address
       */
-    function setAddress(String contractName, address pictionAddress) external onlyOwner validAddress(pictionAddress) {
+    function setAddress(string contractName, address pictionAddress) external onlyOwner validAddress(pictionAddress) {
         addressList[contractName] = pictionAddress;
         registeredAddress[contractName] = true;
 
