@@ -18,11 +18,12 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
     IPictionNetwork private pictionNetwork;
     IContentsManager private contentsManager;
     // ISupporterPool private supporterPool;
-
-    string public constant USERADOPTIONPOOL = "UserAdoptionPool";
-    string public constant SUPPORTERPOOL = "SupporterPool";
-    string public constant ECOSYSTEMFUND = "EcosystemFund";
-    string public constant CONTENTSMANAGER = "ContentsManager";
+    
+    uint256 private constant DECIMALS = 10 ** 18;
+    string private constant USERADOPTIONPOOL = "UserAdoptionPool";
+    string private constant SUPPORTERPOOL = "SupporterPool";
+    string private constant ECOSYSTEMFUND = "EcosystemFund";
+    string private constant CONTENTSMANAGER = "ContentsManager";
 
     struct DistributionInfo {
         uint256 contentsDistributor;
@@ -30,8 +31,6 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
         uint256 ecosystemFund;
         uint256 supporterPool;
     }
-
-    uint256 constant DECIMALS = 10 ** 18;
 
     constructor(address pictionNetworkAddress) public validAddress(pictionNetworkAddress) {
         pictionNetwork = IPictionNetwork(pictionNetworkAddress);
@@ -53,6 +52,7 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
         external 
         view
         validRate(cdRate)
+        // validString(contentHash)
         returns (address[] memory addresses, uint256[] memory amounts)
     {
         require(amount > 0, "ContentsRevenue calculateDistributionPxl 0");
