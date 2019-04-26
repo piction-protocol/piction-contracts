@@ -2,14 +2,15 @@ pragma solidity ^0.4.24;
 
 import "./Storage.sol";
 import "../interfaces/IPictionNetwork.sol";
-import "../utils/ValidValue.sol";
 import "../utils/ExtendsOwnable.sol";
 
-contract ContentsStorage is Storage, ExtendsOwnable, ValidValue {
+contract ContentsStorage is Storage, ExtendsOwnable {
 
     IPictionNetwork private pictionNetwork;
 
-    constructor(address piction) public validAddress(piction) {
+    constructor(address piction) public {
+        require(piction != address(0), "ContentsStorage constructor 0");
+
         pictionNetwork = IPictionNetwork(piction);
     }
 
