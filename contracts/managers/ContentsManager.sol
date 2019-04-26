@@ -43,7 +43,11 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager, IUpdateAddres
      * @param contentsHash 생성하는 콘텐츠의 유일 값
      * @param rawData 생성되는 콘텐츠의 데이터
      */
-    function createContents(string userHash, string contentsHash, string rawData) 
+    function createContents(
+        string userHash, 
+        string contentsHash, 
+        string rawData
+    ) 
         external
         validString(userHash) 
         validString(contentsHash)
@@ -68,7 +72,11 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager, IUpdateAddres
      * @param contentsHash 업데이트하는 콘텐츠의 고유 값
      * @param rawData 엡데이트 데이터
      */
-    function updateContents(string userHash, string contentsHash, string rawData) 
+    function updateContents(
+        string userHash, 
+        string contentsHash, 
+        string rawData
+    ) 
         external
         validString(userHash) 
         validString(contentsHash)
@@ -87,11 +95,7 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager, IUpdateAddres
      * @param userHash 삭제를 요청하는 유저의 유일한 값
      * @param contentsHash 삭제하고자 하는 콘텐츠의 유일한 값
      */
-    function deleteContents(string userHash, string contentsHash)
-        external
-        validString(userHash) 
-        validString(contentsHash)
-    {
+    function deleteContents(string userHash, string contentsHash) external validString(userHash) validString(contentsHash) {
         require(isPictionUser(userHash) || isOwner(), "ContentsManager deleteContents 0");
 
         require(isContentsUser(contentsHash) || isOwner() ,"ContentsManager deleteContents 1");
@@ -126,12 +130,7 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager, IUpdateAddres
      * @param contentsHash 유저 주소를 조회하고자 하는 콘텐츠의 유일 값
      * @return writer 콘텐츠를 업로드한 유저의 주소
      */
-    function getWriter(string contentsHash) 
-        external 
-        view 
-        validString(contentsHash)
-        returns(address writer) 
-    {
+    function getWriter(string contentsHash) external view validString(contentsHash) returns(address writer) {
         return contentsStorage.getAddressValue(contentsHash);
     }
 
@@ -140,12 +139,7 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager, IUpdateAddres
      * @param contentsHash 콘텐츠의 유일 값
      * @return rawData 콘텐츠 정보
      */
-    function getContentsRawData(string contentsHash)
-        external
-        view
-        validString(contentsHash)
-        returns(string rawData)
-    {
+    function getContentsRawData(string contentsHash) external view validString(contentsHash) returns(string rawData) {
         return contentsStorage.getStringValue(contentsHash);
     }
 
@@ -154,12 +148,7 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager, IUpdateAddres
      * @param contentsHash 확인하고자 하는 콘텐츠 유일 값
      * @return userHash 유저의 유일 값
      */
-    function getUserHash(string contentsHash) 
-        external 
-        view 
-        validString(contentsHash)
-        returns(string userHash) 
-    {
+    function getUserHash(string contentsHash) external view validString(contentsHash) returns(string userHash) {
         return relationStorage.getStringValue(contentsHash);
     }
 

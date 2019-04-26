@@ -34,9 +34,18 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
     * @param rawData 사용자 계정 정보
     * @param sender 사용자 주소
     */
-    function createAccount(string id, string userHash, string rawData, address sender) 
+    function createAccount(
+        string id, 
+        string userHash, 
+        string rawData, 
+        address sender
+    ) 
         external 
-        onlyOwner validString(id) validString(userHash) validString(rawData) validAddress(sender) 
+        onlyOwner 
+        validString(id) 
+        validString(userHash) 
+        validString(rawData) 
+        validAddress(sender) 
     {
         require(availableId(id), "AccountsManager createAccount 0");
         require(iStorage.getAddressValue(userHash) == address(0), "AccountsManager createAccount 1");
@@ -54,9 +63,18 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
     * @param rawData 변경할 사용자 계정 정보
     * @param sender 사용자 주소
     */
-    function updateAccount(string id, string userHash, string rawData, address sender) 
+    function updateAccount(
+        string id, 
+        string userHash, 
+        string rawData, 
+        address sender
+    ) 
         external 
-        onlyOwner validString(id) validString(userHash) validString(rawData) validAddress(sender) 
+        onlyOwner 
+        validString(id) 
+        validString(userHash) 
+        validString(rawData) 
+        validAddress(sender) 
     {
         require(!availableId(id), "AccountsManager updateAccount 0");
         require(iStorage.getAddressValue(userHash) == sender, "AccountsManager updateAccount 1");
@@ -72,9 +90,18 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
     * @param rawData 사용자 계정 정보
     * @param sender 사용자 주소
     */
-    function deleteAccount(string id, string userHash, string rawData, address sender) 
+    function deleteAccount(
+        string id, 
+        string userHash, 
+        string rawData, 
+        address sender
+    ) 
         external 
-        onlyOwner validString(id) validString(userHash) validString(rawData) validAddress(sender) 
+        onlyOwner 
+        validString(id) 
+        validString(userHash) 
+        validString(rawData) 
+        validAddress(sender) 
     {
         require(!availableId(id), "AccountsManager deleteAccount 0");
         require(iStorage.getAddressValue(userHash) == sender, "AccountsManager deleteAccount 1");
@@ -91,7 +118,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
     * @param id 사용자 계정 id
     * @return isAvailable 사용 가능 여부
     */
-    function availableId(string id) public validString(id) view returns(bool isAvailable) {
+    function availableId(string id) public view validString(id) returns(bool isAvailable) {
         return !iStorage.getBooleanValue(id);
     }
 
@@ -100,7 +127,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
     * @param userHash 사용자 고유 hash
     * @return isAvailable 사용 가능 여부
     */
-    function availableUserHash(string userHash) public validString(userHash) view returns(bool isAvailable) {
+    function availableUserHash(string userHash) public view validString(userHash) returns(bool isAvailable) {
         return (iStorage.getStringValue(userHash).isEmptyString() && iStorage.getAddressValue(userHash) == address(0));
     }
 
@@ -109,7 +136,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
     * @param userHash 사용자 고유 hash
     * @return publicKey 사용자 주소
     */
-    function getUserAddress(string userHash) public validString(userHash) view returns(address publicKey) {
+    function getUserAddress(string userHash) public view validString(userHash) returns(address publicKey) {
         return iStorage.getAddressValue(userHash);
     }
 
@@ -119,10 +146,12 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
     * @param rawData 사용자 계정 정보
     * @return isValid 검증 결과
     */
-    function accountValidation(string userHash, string rawData)
+    function accountValidation(string userHash, string rawData) 
         external 
-        onlyOwner validString(userHash) validString(rawData) 
         view 
+        onlyOwner 
+        validString(userHash) 
+        validString(rawData) 
         returns(bool isValid) 
     {
         return iStorage.getStringValue(userHash).compareString(rawData);
@@ -131,7 +160,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
     /**
      * @dev 저장소 업데이트
      */
-    function updateAddress() external{
+    function updateAddress() external {
         require(msg.sender == address(pictionNetwork), "AccountsManager updateAddress 0");
 
         address aStorage = pictionNetwork.getAddress(STORAGE_NAME);

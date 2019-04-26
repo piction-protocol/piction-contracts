@@ -47,7 +47,12 @@ contract PostManager is Ownable, ValidValue, IPostManager, IUpdateAddress {
      * @param postHash 생성되는 Post의 유일 값
      * @param rawData Post 정보
      */
-    function createPost(string userHash, string contentsHash, string postHash, string rawData) 
+    function createPost(
+        string userHash, 
+        string contentsHash, 
+        string postHash, 
+        string rawData
+    ) 
         external
         validString(userHash)
         validString(contentsHash)
@@ -73,7 +78,12 @@ contract PostManager is Ownable, ValidValue, IPostManager, IUpdateAddress {
      * @param postHash 수정되는 Post의 유일 값
      * @param rawData Post 정보
      */
-    function updatePost(string userHash, string contentsHash, string postHash, string rawData) 
+    function updatePost(
+        string userHash, 
+        string contentsHash, 
+        string postHash, 
+        string rawData
+    ) 
         external
         validString(userHash)
         validString(contentsHash)
@@ -95,7 +105,11 @@ contract PostManager is Ownable, ValidValue, IPostManager, IUpdateAddress {
      * @param contentsHash Post 생성한 콘텐츠의 유일 값
      * @param postHash 생성되는 Post의 유일 값
      */
-    function deletePost(string userHash, string contentsHash, string postHash)
+    function deletePost(
+        string userHash, 
+        string contentsHash, 
+        string postHash
+    )
         external
         validString(userHash)
         validString(contentsHash)
@@ -120,7 +134,12 @@ contract PostManager is Ownable, ValidValue, IPostManager, IUpdateAddress {
      * @param afterContentsHash Post를 이동시키고자 하는 콘텐츠의 유일 값
      * @param postHash 이동시키고자 하는 Post의 유일 값
      */
-    function movePost(string userHash, string beforeContentsHash, string afterContentsHash, string postHash) 
+    function movePost(
+        string userHash, 
+        string beforeContentsHash, 
+        string afterContentsHash, 
+        string postHash
+    ) 
         external 
         validString(userHash)
         validString(beforeContentsHash)
@@ -163,12 +182,7 @@ contract PostManager is Ownable, ValidValue, IPostManager, IUpdateAddress {
      * @param postHash 유저 주소를 조회하고자 하는 Post의 유일 값
      * @return writer Post를 업로드한 유저의 주소
      */
-    function getPostWriter(string postHash) 
-        external 
-        view
-        validString(postHash)
-        returns(address writer) 
-    {
+    function getPostWriter(string postHash) external view validString(postHash) returns(address writer) {
         return contentsStorage.getAddressValue(postHash);
     }
 
@@ -177,12 +191,7 @@ contract PostManager is Ownable, ValidValue, IPostManager, IUpdateAddress {
      * @param postHash Post의 유일 값
      * @return rawData 콘텐츠 정보
      */
-    function getPostRawData(string postHash)
-        external 
-        view
-        validString(postHash)
-        returns(string memory rawData)
-    {
+    function getPostRawData(string postHash) external view validString(postHash) returns(string memory rawData) {
         return contentsStorage.getStringValue(postHash);
     }
 
@@ -191,12 +200,7 @@ contract PostManager is Ownable, ValidValue, IPostManager, IUpdateAddress {
      * @param postHash 확인하고자 하는 Post 유일 값
      * @return contentsHash 콘텐츠의 유일 값
      */
-    function getContentsHash(string postHash) 
-        external
-        view 
-        validString(postHash)
-        returns(string contentsHash) 
-    {
+    function getContentsHash(string postHash) external view validString(postHash) returns(string contentsHash) {
         return relationStorage.getStringValue(postHash);
     }
 
