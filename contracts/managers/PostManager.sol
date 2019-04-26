@@ -6,23 +6,24 @@ import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IAccountsManager.sol";
 import "../interfaces/IContentsManager.sol";
 import "../interfaces/IPostManager.sol";
+import "../interfaces/IUpdateAddress.sol";
 import "../interfaces/IStorage.sol";
 import "../utils/ValidValue.sol";
 import "../utils/StringLib.sol";
 
-contract PostManager is Ownable, ValidValue, IPostManager {
+contract PostManager is Ownable, ValidValue, IPostManager, IUpdateAddress {
     using StringLib for string;
 
-    string public constant STORAGE_NAME = "ContentsStorage";
-    string public constant RELATION_NAME = "RelationStorage";
-    string public constant ACCOUNT_NAME = "AccountsManager";
-    string public constant CONTENTS_NAME = "ContentsManager";
-    string public constant CREATE_TAG = "createPost";
-    string public constant UPDATE_TAG = "updatePost";
-    string public constant DELETE_TAG = "deletePost";
-    string public constant MOVE_TAG = "movePost";
+    string private constant STORAGE_NAME = "ContentsStorage";
+    string private constant RELATION_NAME = "RelationStorage";
+    string private constant ACCOUNT_NAME = "AccountsManager";
+    string private constant CONTENTS_NAME = "ContentsManager";
+    string private constant CREATE_TAG = "createPost";
+    string private constant UPDATE_TAG = "updatePost";
+    string private constant DELETE_TAG = "deletePost";
+    string private constant MOVE_TAG = "movePost";
 
-    IPictionNetwork pictionNetwork;
+    IPictionNetwork private pictionNetwork;
     IStorage private contentsStorage;
     IStorage private relationStorage;
 
@@ -202,10 +203,9 @@ contract PostManager is Ownable, ValidValue, IPostManager {
     /**
      * @dev 저장소 업데이트
      */
-    function updateAddress() 
-        onlyOwner 
-        external
-    {
+    function updateAddress() external {
+        require(msg.sender == address(pictionNetwork), "PostManager updateAddress 0");
+
         address cStorage = pictionNetwork.getAddress(STORAGE_NAME);
         emit UpdateAddress(address(contentsStorage), cStorage);
         contentsStorage = IStorage(cStorage);

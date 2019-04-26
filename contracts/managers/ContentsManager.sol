@@ -5,21 +5,22 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IAccountsManager.sol";
 import "../interfaces/IContentsManager.sol";
+import "../interfaces/IUpdateAddress.sol";
 import "../interfaces/IStorage.sol";
 import "../utils/ValidValue.sol";
 import "../utils/StringLib.sol";
 
-contract ContentsManager is Ownable, ValidValue, IContentsManager {
+contract ContentsManager is Ownable, ValidValue, IContentsManager, IUpdateAddress {
     using StringLib for string;
 
-    string public constant STORAGE_NAME = "ContentsStorage";
-    string public constant RELATION_NAME = "RelationStorage";
-    string public constant ACCOUNT_NAME = "AccountsManager";
-    string public constant CREATE_TAG = "createContents";
-    string public constant UPDATE_TAG = "updateContents";
-    string public constant DELETE_TAG = "deleteContents";
+    string private constant STORAGE_NAME = "ContentsStorage";
+    string private constant RELATION_NAME = "RelationStorage";
+    string private constant ACCOUNT_NAME = "AccountsManager";
+    string private constant CREATE_TAG = "createContents";
+    string private constant UPDATE_TAG = "updateContents";
+    string private constant DELETE_TAG = "deleteContents";
 
-    IPictionNetwork pictionNetwork;
+    IPictionNetwork private pictionNetwork;
 
     IStorage private contentsStorage;
     IStorage private relationStorage;
@@ -165,10 +166,9 @@ contract ContentsManager is Ownable, ValidValue, IContentsManager {
     /**
      * @dev 저장소 업데이트
      */
-    function updateAddress() 
-        onlyOwner 
-        external
-    {
+    function updateAddress() external {
+        require(msg.sender == address(pictionNetwork), "ContentsManager updateAddress 0");
+
         address cStorage = pictionNetwork.getAddress(STORAGE_NAME);
         emit UpdateAddress(address(contentsStorage), cStorage);
         contentsStorage = IStorage(cStorage);

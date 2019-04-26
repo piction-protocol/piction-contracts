@@ -5,18 +5,19 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "../interfaces/IStorage.sol";
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IAccountsManager.sol";
+import "../interfaces/IUpdateAddress.sol";
 
 import "../utils/ValidValue.sol";
 import "../utils/TimeLib.sol";
 import "../utils/StringLib.sol";
 
-contract AccountsManager is IAccountsManager, Ownable, ValidValue {
+contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddress{
     using StringLib for string;
 
-    string public constant STORAGE_NAME = "AccountsStorage";
-    string public constant CREATE_TAG = "CreateAccount";
-    string public constant UPDATE_TAG = "UpdateAccount";
-    string public constant DELETE_TAG = "DeleteAccount";
+    string private constant STORAGE_NAME = "AccountsStorage";
+    string private constant CREATE_TAG = "CreateAccount";
+    string private constant UPDATE_TAG = "UpdateAccount";
+    string private constant DELETE_TAG = "DeleteAccount";
 
     IStorage private iStorage;
     IPictionNetwork private pictionNetwork;
@@ -130,10 +131,9 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue {
     /**
      * @dev 저장소 업데이트
      */
-    function updateAddress() 
-        onlyOwner 
-        external
-    {
+    function updateAddress() external{
+        require(msg.sender == address(pictionNetwork), "AccountsManager updateAddress 0");
+
         address aStorage = pictionNetwork.getAddress(STORAGE_NAME);
         emit UpdateAddress(address(iStorage), aStorage);
         iStorage = IStorage(aStorage);
