@@ -56,7 +56,7 @@ module.exports = async () => {
     log(`-------------------------------------------------------------------`);
 
     if (process.env.PICTIONNETWORK_ADDRESS) {
-        await PictionNetwork('ContentsManager')
+        await PictionNetwork('PostManager')
     }
 
     if (process.env.CONTENTSSTORAGE_ADDRESS) {

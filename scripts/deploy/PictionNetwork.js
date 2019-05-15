@@ -75,6 +75,14 @@ async function init() {
     if (process.env.CONTENTSREVENUE_ADDRESS) {
         await setAddress('ContentsRevenue');
     }
+
+    if (process.env.USERADOPTIONPOOL_ADDRESS) {
+        await setAddress('UserAdoptionPool');
+    }
+
+    if (process.env.ECOSYSTEMFUND_ADDRESS) {
+        await setAddress('EcosystemFund');
+    }
 }
 
 async function setAddress(type) {
@@ -152,6 +160,22 @@ async function setAddress(type) {
             break;
         }
         address = contentsRevenue;
+        break;
+    case 'UserAdoptionPool':
+        const userAdoptionPool = process.env.USERADOPTIONPOOL_ADDRESS;
+        if (!userAdoptionPool) {
+            error('USER ADOPTION POOL is not deployed!! Please after USER ADOPTION POOL deployment.');
+            break;
+        }
+        address = userAdoptionPool;
+        break;
+    case 'EcosystemFund':
+        const ecosystemFund = process.env.ECOSYSTEMFUND_ADDRESS;
+        if (!ecosystemFund) {
+            error('ECOSYSTEM FUND is not deployed!! Please after ECOSYSTEM FUND deployment.');
+            break;
+        }
+        address = ecosystemFund;
         break;
     default:
         error('type is undefined.')
