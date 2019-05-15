@@ -14,7 +14,7 @@ module.exports = async () => {
     process.env.POSTMANAGER_ADDRESS = '';
     process.env.CONTENTSREVENUE_ADDRESS = '';
     process.env.CONTENTSDISTRIBUTOR_ADDRESS = '';
-    process.env.USERADOPTIONPOON_ADDRESS = '';
+    process.env.USERADOPTIONPOOL_ADDRESS = '';
     process.env.ECOSYSTEMFUND_ADDRESS = '';
 
     try {
@@ -80,8 +80,8 @@ module.exports = async () => {
 
         await replace({
             files: `.env.${process.env.NODE_ENV}`,
-            from: /USERADOPTIONPOON_ADDRESS=.*/g,
-            to: `USERADOPTIONPOON_ADDRESS=`
+            from: /USERADOPTIONPOOL_ADDRESS=.*/g,
+            to: `USERADOPTIONPOOL_ADDRESS=`
         });
 
         await replace({
