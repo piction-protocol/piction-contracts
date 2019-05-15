@@ -1,6 +1,5 @@
 require('dotenv-flow').config({default_node_env: 'klaytn'});
 const colors = require('colors');
-const Enquirer = require('enquirer');
 const BigNumber = require('bignumber.js');
 const Compile = require('./scripts/deploy/Compile');
   
