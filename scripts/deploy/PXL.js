@@ -15,7 +15,7 @@ module.exports = async () => {
         arguments: []
     }).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: 2500000,
+        gas: gasLimit,
         gasPrice: gasPrice
     }); 
 
@@ -27,7 +27,7 @@ module.exports = async () => {
 
     await pxlContract.methods.mint(tokenAmountHex).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: 100000,
+        gas: gasLimit,
         gasPrice: gasPrice
     }); 
 

@@ -25,7 +25,7 @@ async function init() {
         arguments: []
     }).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: 2000000,
+        gas: gasLimit,
         gasPrice: gasPrice
     }); 
 
@@ -188,7 +188,7 @@ async function setAddress(type) {
 
     await pictionNetwork.methods.setAddress(type, address).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: 100000,
+        gas: gasLimit,
         gasPrice: gasPrice
     });
 }
@@ -210,7 +210,7 @@ async function setCD(cdAddress, cdName) {
 
     await pictionNetwork.methods.setContentsDistributor(cdName, cdAddress).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: 100000,
+        gas: gasLimit,
         gasPrice: gasPrice
     });
 }

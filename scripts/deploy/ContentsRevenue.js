@@ -21,7 +21,7 @@ module.exports = async () => {
         arguments: [piction]
     }).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: 2500000,
+        gas: gasLimit,
         gasPrice: gasPrice
     }); 
 
