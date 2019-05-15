@@ -29,7 +29,7 @@ module.exports = async () => {
         arguments: [piction, initialStakingHex, cdRateHex, cdAddress, cdName]
     }).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: gasLmit,
+        gas: gasLimit,
         gasPrice: gasPrice
     }); 
 
