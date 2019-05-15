@@ -11,6 +11,7 @@ global.info = (message) => console.log(colors.white.bold(message));
 global.error = (message) => console.log(colors.red.bold(message));
 global.ether = (value) => new BigNumber(value * Math.pow(10, 18));
 global.gasPrice = '25000000000'
+global.gasLimit = 8000000
 
 
 console.log('current env: ' + process.env.NODE_ENV);
