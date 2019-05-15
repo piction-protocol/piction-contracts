@@ -5,8 +5,9 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IEcosystemFund.sol";
+import "../utils/ValidValue.sol";
 
-contract EcosystemFund is Ownable, IEcosystemFund {
+contract EcosystemFund is Ownable, IEcosystemFund, ValidValue {
     string private constant PXL = "PXL";
 
     IERC20 public iPxl;
@@ -14,7 +15,7 @@ contract EcosystemFund is Ownable, IEcosystemFund {
     
     constructor(address pictionNetwork) public validAddress(pictionNetwork) {
         iPictionNetwork = IPictionNetwork(pictionNetwork);
-        iPxl = iPictionNetwork.getAddress(PXL);
+        iPxl = IERC20(iPictionNetwork.getAddress(PXL));
     }
 
     function refundPxl() external onlyOwner {

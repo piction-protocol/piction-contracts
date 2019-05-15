@@ -5,8 +5,9 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IUserAdoptionPool.sol";
+import "../utils/ValidValue.sol";
 
-contract UserAdoptionPool is Ownable, IUserAdoptionPool {
+contract UserAdoptionPool is Ownable, IUserAdoptionPool, ValidValue {
 
     string private constant PXL = "PXL";
 
@@ -15,7 +16,7 @@ contract UserAdoptionPool is Ownable, IUserAdoptionPool {
     
     constructor(address pictionNetwork) public validAddress(pictionNetwork) {
         iPictionNetwork = IPictionNetwork(pictionNetwork);
-        iPxl = iPictionNetwork.getAddress(PXL);
+        iPxl = IERC20(iPictionNetwork.getAddress(PXL));
     }
     
     function refundPxl() external onlyOwner {
