@@ -9,6 +9,8 @@ const ContentsManager = require('./ContentsManager');
 const PostManager = require('./PostManager');
 const ContentsRevenue = require('./ContentsRevenue');
 const ContentsDistributor = require('./ContentsDistributor');
+const UserAdoptionPool = require('./UserAdoptionPool');
+const EcosystemFund = require('./EcosystemFund');
 
 module.exports = async () => {
     await CleanEnv();
@@ -32,4 +34,8 @@ module.exports = async () => {
     await ContentsRevenue();
 
     await ContentsDistributor();
+
+    await UserAdoptionPool();
+
+    await EcosystemFund();
 };

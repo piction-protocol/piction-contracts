@@ -25,7 +25,7 @@ async function init() {
         arguments: []
     }).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: 2000000,
+        gas: gasLimit,
         gasPrice: gasPrice
     }); 
 
@@ -74,6 +74,14 @@ async function init() {
 
     if (process.env.CONTENTSREVENUE_ADDRESS) {
         await setAddress('ContentsRevenue');
+    }
+
+    if (process.env.USERADOPTIONPOOL_ADDRESS) {
+        await setAddress('UserAdoptionPool');
+    }
+
+    if (process.env.ECOSYSTEMFUND_ADDRESS) {
+        await setAddress('EcosystemFund');
     }
 }
 
@@ -153,6 +161,22 @@ async function setAddress(type) {
         }
         address = contentsRevenue;
         break;
+    case 'UserAdoptionPool':
+        const userAdoptionPool = process.env.USERADOPTIONPOOL_ADDRESS;
+        if (!userAdoptionPool) {
+            error('USER ADOPTION POOL is not deployed!! Please after USER ADOPTION POOL deployment.');
+            break;
+        }
+        address = userAdoptionPool;
+        break;
+    case 'EcosystemFund':
+        const ecosystemFund = process.env.ECOSYSTEMFUND_ADDRESS;
+        if (!ecosystemFund) {
+            error('ECOSYSTEM FUND is not deployed!! Please after ECOSYSTEM FUND deployment.');
+            break;
+        }
+        address = ecosystemFund;
+        break;
     default:
         error('type is undefined.')
         break;
@@ -164,7 +188,7 @@ async function setAddress(type) {
 
     await pictionNetwork.methods.setAddress(type, address).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: 100000,
+        gas: gasLimit,
         gasPrice: gasPrice
     });
 }
@@ -186,7 +210,7 @@ async function setCD(cdAddress, cdName) {
 
     await pictionNetwork.methods.setContentsDistributor(cdName, cdAddress).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: 100000,
+        gas: gasLimit,
         gasPrice: gasPrice
     });
 }

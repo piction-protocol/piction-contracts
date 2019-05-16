@@ -24,19 +24,12 @@ module.exports = async () => {
     const cdAddress = '0xc73DB144887fEAE6150E01df9D48F0293f26256f';
     const cdName = 'PictionNetworkCD';
 
-    console.log("cd parameter debug....");
-    console.log(piction);
-    console.log(initialStakingHex);
-    console.log(cdRateHex);
-    console.log(cdAddress);
-    console.log(cdName);
-
     let instance = await contract.deploy({
         data: input.bytecode,
         arguments: [piction, initialStakingHex, cdRateHex, cdAddress, cdName]
     }).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: 8000000,
+        gas: gasLimit,
         gasPrice: gasPrice
     }); 
 

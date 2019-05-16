@@ -31,7 +31,7 @@ async function init() {
         arguments: [piction]
     }).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: 8000000,
+        gas: gasLimit,
         gasPrice: gasPrice
     }); 
 
@@ -68,7 +68,7 @@ async function addOwner(owner) {
 
     await relationStorage.methods.addOwner(owner).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: 100000,
+        gas: gasLimit,
         gasPrice: gasPrice
     });
 }

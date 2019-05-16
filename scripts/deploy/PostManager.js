@@ -35,7 +35,7 @@ module.exports = async () => {
         arguments: [piction]
     }).send({
         from: caver.klay.accounts.wallet[0].address,
-        gas: 8000000,
+        gas: gasLimit,
         gasPrice: gasPrice
     }); 
 
@@ -56,7 +56,7 @@ module.exports = async () => {
     log(`-------------------------------------------------------------------`);
 
     if (process.env.PICTIONNETWORK_ADDRESS) {
-        await PictionNetwork('ContentsManager')
+        await PictionNetwork('PostManager')
     }
 
     if (process.env.CONTENTSSTORAGE_ADDRESS) {
