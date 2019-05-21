@@ -5,7 +5,7 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsRevenue.sol";
-import "../interfaces/IContentsManager.sol";
+import "../interfaces/IProjectManager.sol";
 import "../interfaces/IUpdateAddress.sol";
 // import "../interfaces/ISupporterPool.sol";
 import "../utils/ValidValue.sol";
@@ -14,14 +14,14 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
     using SafeMath for uint256;
 
     IPictionNetwork private pictionNetwork;
-    IContentsManager private contentsManager;
+    IProjectManager private contentsManager;
     // ISupporterPool private supporterPool;
     
     uint256 private constant DECIMALS = 10 ** 18;
     string private constant USERADOPTIONPOOL = "UserAdoptionPool";
     string private constant SUPPORTERPOOL = "SupporterPool";
     string private constant ECOSYSTEMFUND = "EcosystemFund";
-    string private constant CONTENTSMANAGER = "ContentsManager";
+    string private constant CONTENTSMANAGER = "ProjectManager";
 
     struct DistributionInfo {
         uint256 contentsDistributor;
@@ -32,7 +32,7 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
 
     constructor(address pictionNetworkAddress) public validAddress(pictionNetworkAddress) {
         pictionNetwork = IPictionNetwork(pictionNetworkAddress);
-        contentsManager = IContentsManager(pictionNetwork.getAddress(CONTENTSMANAGER));
+        contentsManager = IProjectManager(pictionNetwork.getAddress(CONTENTSMANAGER));
         // supporterPool = ISupporterPool(pictionNetwork.getAddress(SUPPORTERPOOL));
     }
 
@@ -91,7 +91,7 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
         
         address cManager = pictionNetwork.getAddress(CONTENTSMANAGER);
         emit UpdateAddress(address(contentsManager), cManager);
-        contentsManager = IContentsManager(cManager);
+        contentsManager = IProjectManager(cManager);
 
         // supporterPool = ISupporterPool(pictionNetwork.getAddress(SUPPORTERPOOL));
     }
