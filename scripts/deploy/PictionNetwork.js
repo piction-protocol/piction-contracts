@@ -52,7 +52,7 @@ async function init() {
         await setAddress('AccountsStorage');
     }
 
-    if (process.env.CONTENTSSTORAGE_ADDRESS) {
+    if (process.env.PROJECTSTORAGE_ADDRESS) {
         await setAddress('ProjectStorage');
     }
 
@@ -64,7 +64,7 @@ async function init() {
         await setAddress('AccountsManager');
     }
 
-    if (process.env.CONTENTSMANAGER_ADDRESS) {
+    if (process.env.PROJECTMANAGER_ADDRESS) {
         await setAddress('ProjectManager');
     }
 
@@ -114,12 +114,12 @@ async function setAddress(type) {
         address = accountsStorage;
         break;
     case 'ContentsStorage':
-        const contentsStorage = process.env.CONTENTSSTORAGE_ADDRESS;
-        if (!contentsStorage) {
-            error('CONTENTS STORAGE is not deployed!! Please after CONTENTS STORAGE deployment.');
+        const projectStorage = process.env.PROJECTSTORAGE_ADDRESS;
+        if (!projectStorage) {
+            error('PROJECT STORAGE is not deployed!! Please after PROJECT STORAGE deployment.');
             break;
         }
-        address = contentsStorage;
+        address = projectStorage;
         break;
     case 'RelationStorage':
         const relationStorage = process.env.RELATIONSTORAGE_ADDRESS;
@@ -138,12 +138,12 @@ async function setAddress(type) {
         address = accountsManager;
         break;
     case 'ContentsManager':
-        const contentsManager = process.env.CONTENTSMANAGER_ADDRESS;
-        if (!contentsManager) {
-            error('CONTENTS MANAGER is not deployed!! Please after CONTENTS MANAGER deployment.');
+        const projectManager = process.env.PROJECTMANAGER_ADDRESS;
+        if (!projectManager) {
+            error('PROJECT MANAGER is not deployed!! Please after PROJECT MANAGER deployment.');
             break;
         }
-        address = contentsManager;
+        address = projectManager;
         break;
     case 'PostManager':
         const postManager = process.env.POSTMANAGER_ADDRESS;
