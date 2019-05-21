@@ -29,97 +29,99 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
 
     /**
     * @dev 계정 생성
-    * @param id 사용자 계정 id
+    * @param email 사용자 계정 메일 주소
     * @param userHash 사용자 고유 hash
     * @param rawData 사용자 계정 정보
     * @param sender 사용자 주소
     */
     function createAccount(
-        string id, 
+        string email, 
         string userHash, 
         string rawData, 
         address sender
     ) 
         external 
         onlyOwner 
-        validString(id) 
         validString(userHash) 
         validString(rawData) 
         validAddress(sender) 
     {
-        require(availableId(id), "AccountsManager createAccount 0");
+        require(availableEmail(email), "AccountsManager createAccount 0");
         require(iStorage.getAddressValue(userHash) == address(0), "AccountsManager createAccount 1");
         require(iStorage.getStringValue(userHash).isEmptyString(), "AccountsManager createAccount 2");
         
-        iStorage.setBooleanValue(id, true, CREATE_TAG);
+        iStorage.setBooleanValue(email, true, CREATE_TAG);
         iStorage.setAddressValue(userHash, sender, CREATE_TAG);
         iStorage.setStringValue(userHash, rawData, CREATE_TAG);
     }
 
     /**
     * @dev 계정 정보 변경
-    * @param id 사용자 계정 id
+    * @param beforeEmail 사용자 계정 현재 메일 주소
+    * @param afterEmail 사용자 계정 수정할 메일 주소
     * @param userHash 사용자 고유 hash
     * @param rawData 변경할 사용자 계정 정보
     * @param sender 사용자 주소
     */
     function updateAccount(
-        string id, 
+        string beforeEmail,
+        string afterEmail, 
         string userHash, 
         string rawData, 
         address sender
     ) 
         external 
         onlyOwner 
-        validString(id) 
         validString(userHash) 
         validString(rawData) 
         validAddress(sender) 
     {
-        require(!availableId(id), "AccountsManager updateAccount 0");
-        require(iStorage.getAddressValue(userHash) == sender, "AccountsManager updateAccount 1");
-        require(!iStorage.getStringValue(userHash).isEmptyString(), "AccountsManager updateAccount 2");
-        
+        require(!availableEmail(beforeEmail), "AccountsManager updateAccount 0");
+        require(availableEmail(afterEmail), "AccountsManager updateAccount 1");
+        require(iStorage.getAddressValue(userHash) == sender, "AccountsManager updateAccount 2");
+        require(!iStorage.getStringValue(userHash).isEmptyString(), "AccountsManager updateAccount 3");
+
+        iStorage.setBooleanValue(afterEmail, true, UPDATE_TAG);  
+        iStorage.deleteBooleanValue(beforeEmail, UPDATE_TAG);  
         iStorage.setStringValue(userHash, rawData, UPDATE_TAG);
     }
 
     /**
     * @dev 계정 삭제
-    * @param id 사용자 계정 id
+    * @param email 사용자 계정 메일 주소
     * @param userHash 사용자 고유 hash
     * @param rawData 사용자 계정 정보
     * @param sender 사용자 주소
     */
     function deleteAccount(
-        string id, 
+        string email, 
         string userHash, 
         string rawData, 
         address sender
     ) 
         external 
         onlyOwner 
-        validString(id) 
         validString(userHash) 
         validString(rawData) 
         validAddress(sender) 
     {
-        require(!availableId(id), "AccountsManager deleteAccount 0");
+        require(!availableEmail(email), "AccountsManager deleteAccount 0");
         require(iStorage.getAddressValue(userHash) == sender, "AccountsManager deleteAccount 1");
         require(!iStorage.getStringValue(userHash).isEmptyString(), "AccountsManager deleteAccount 2");
         require(iStorage.getStringValue(userHash).compareString(rawData), "AccountsManager deleteAccount 3");
 
-        iStorage.deleteBooleanValue(id, DELETE_TAG);
+        iStorage.deleteBooleanValue(email, DELETE_TAG);
         iStorage.deleteAddressValue(userHash, DELETE_TAG);
         iStorage.deleteStringValue(userHash, DELETE_TAG);
     }
 
     /**
-    * @dev 사용자 id 사용가능 여부 조회
-    * @param id 사용자 계정 id
+    * @dev 사용자 email 사용가능 여부 조회
+    * @param email 사용자 계정 메일 주소
     * @return isAvailable 사용 가능 여부
     */
-    function availableId(string id) public view validString(id) returns(bool isAvailable) {
-        return !iStorage.getBooleanValue(id);
+    function availableEmail(string email) public view validString(email) returns(bool isAvailable) {
+        return !iStorage.getBooleanValue(email);
     }
 
     /**
