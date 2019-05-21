@@ -53,7 +53,7 @@ async function init() {
     }
 
     if (process.env.CONTENTSSTORAGE_ADDRESS) {
-        await setAddress('ContentsStorage');
+        await setAddress('ProjectStorage');
     }
 
     if (process.env.RELATIONSTORAGE_ADDRESS) {
@@ -65,7 +65,7 @@ async function init() {
     }
 
     if (process.env.CONTENTSMANAGER_ADDRESS) {
-        await setAddress('ContentsManager');
+        await setAddress('ProjectManager');
     }
 
     if (process.env.POSTMANAGER_ADDRESS) {
