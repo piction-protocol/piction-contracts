@@ -14,14 +14,14 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
     using SafeMath for uint256;
 
     IPictionNetwork private pictionNetwork;
-    IProjectManager private contentsManager;
+    IProjectManager private projectManager;
     // ISupporterPool private supporterPool;
     
     uint256 private constant DECIMALS = 10 ** 18;
     string private constant USERADOPTIONPOOL = "UserAdoptionPool";
     string private constant SUPPORTERPOOL = "SupporterPool";
     string private constant ECOSYSTEMFUND = "EcosystemFund";
-    string private constant CONTENTSMANAGER = "ProjectManager";
+    string private constant PROJECTMANAGER = "ProjectManager";
 
     struct DistributionInfo {
         uint256 contentsDistributor;
