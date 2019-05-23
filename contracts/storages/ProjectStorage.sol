@@ -5,7 +5,7 @@ import "../interfaces/IPictionNetwork.sol";
 import "../utils/ValidValue.sol";
 import "../utils/ExtendsOwnable.sol";
 
-contract ContentsStorage is Storage, ExtendsOwnable, ValidValue {
+contract ProjectStorage is Storage, ExtendsOwnable, ValidValue {
 
     IPictionNetwork private pictionNetwork;
 
