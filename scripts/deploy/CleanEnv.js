@@ -7,10 +7,10 @@ module.exports = async () => {
     process.env.PXL_ADDRESS = '';
     process.env.PICTIONNETWORK_ADDRESS = '';
     process.env.ACCOUNTSSTORAGE_ADDRESS = '';
-    process.env.CONTENTSSTORAGE_ADDRESS = '';
+    process.env.PROJECTSTORAGE_ADDRESS = '';
     process.env.RELATIONSTORAGE_ADDRESS = '';
     process.env.ACCOUNTSMANAGER_ADDRESS = '';
-    process.env.CONTENTSMANAGER_ADDRESS = '';
+    process.env.PROJECTMANAGER_ADDRESS = '';
     process.env.POSTMANAGER_ADDRESS = '';
     process.env.CONTENTSREVENUE_ADDRESS = '';
     process.env.CONTENTSDISTRIBUTOR_ADDRESS = '';
@@ -38,8 +38,8 @@ module.exports = async () => {
 
         await replace({
             files: `.env.${process.env.NODE_ENV}`,
-            from: /CONTENTSSTORAGE_ADDRESS=.*/g,
-            to: `CONTENTSSTORAGE_ADDRESS=`
+            from: /PROJECTSTORAGE_ADDRESS=.*/g,
+            to: `PROJECTSTORAGE_ADDRESS=`
         });
 
         await replace({
@@ -56,8 +56,8 @@ module.exports = async () => {
 
         await replace({
             files: `.env.${process.env.NODE_ENV}`,
-            from: /CONTENTSMANAGER_ADDRESS=.*/g,
-            to: `CONTENTSMANAGER_ADDRESS=`
+            from: /PROJECTMANAGER_ADDRESS=.*/g,
+            to: `PROJECTMANAGER_ADDRESS=`
         });
 
         await replace({

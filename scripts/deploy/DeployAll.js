@@ -2,10 +2,10 @@ const CleanEnv = require('./CleanEnv');
 const PictionNetwork = require('./PictionNetwork');
 const PXL = require('./PXL');
 const AccountsStorage = require('./AccountsStorage');
-const ContentsStorage = require('./ContentsStorage');
+const ProjectStorage = require('./ProjectStorage');
 const RelationStorage = require('./RelationStorage');
 const AccountsManager = require('./AccountsManager');
-const ContentsManager = require('./ContentsManager');
+const ProjectManager = require('./ProjectManager');
 const PostManager = require('./PostManager');
 const ContentsRevenue = require('./ContentsRevenue');
 const ContentsDistributor = require('./ContentsDistributor');
@@ -21,13 +21,13 @@ module.exports = async () => {
 
     await AccountsStorage();
 
-    await ContentsStorage();
+    await ProjectStorage();
 
     await RelationStorage();
 
     await AccountsManager();
     
-    await ContentsManager();
+    await ProjectManager();
     
     await PostManager();
 

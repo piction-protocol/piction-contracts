@@ -5,7 +5,7 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsRevenue.sol";
-import "../interfaces/IContentsManager.sol";
+import "../interfaces/IProjectManager.sol";
 import "../interfaces/IUpdateAddress.sol";
 // import "../interfaces/ISupporterPool.sol";
 import "../utils/ValidValue.sol";
@@ -14,14 +14,14 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
     using SafeMath for uint256;
 
     IPictionNetwork private pictionNetwork;
-    IContentsManager private contentsManager;
+    IProjectManager private projectManager;
     // ISupporterPool private supporterPool;
     
     uint256 private constant DECIMALS = 10 ** 18;
     string private constant USERADOPTIONPOOL = "UserAdoptionPool";
     string private constant SUPPORTERPOOL = "SupporterPool";
     string private constant ECOSYSTEMFUND = "EcosystemFund";
-    string private constant CONTENTSMANAGER = "ContentsManager";
+    string private constant PROJECTMANAGER = "ProjectManager";
 
     struct DistributionInfo {
         uint256 contentsDistributor;
@@ -32,7 +32,7 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
 
     constructor(address pictionNetworkAddress) public validAddress(pictionNetworkAddress) {
         pictionNetwork = IPictionNetwork(pictionNetworkAddress);
-        contentsManager = IContentsManager(pictionNetwork.getAddress(CONTENTSMANAGER));
+        projectManager = IProjectManager(pictionNetwork.getAddress(PROJECTMANAGER));
         // supporterPool = ISupporterPool(pictionNetwork.getAddress(SUPPORTERPOOL));
     }
 
@@ -58,7 +58,7 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
         addresses = new address[](4);
         amounts = new uint256[](4);
 
-        address contentsProvider = contentsManager.getWriter(contentHash);
+        address contentsProvider = projectManager.getWriter(contentHash);
         require(contentsProvider != address(0), "ContentsRevenue calculateDistributionPxl 1");
 
         uint256 supporterPoolRate = 0; // supporterPool.getSupporterPoolRate(contentHash).div(DECIMALS);
@@ -89,9 +89,9 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
     function updateAddress() external {
         require(msg.sender == address(pictionNetwork), "ContentsRevenue updateAddress 0");
         
-        address cManager = pictionNetwork.getAddress(CONTENTSMANAGER);
-        emit UpdateAddress(address(contentsManager), cManager);
-        contentsManager = IContentsManager(cManager);
+        address pManager = pictionNetwork.getAddress(PROJECTMANAGER);
+        emit UpdateAddress(address(projectManager), pManager);
+        projectManager = IProjectManager(pManager);
 
         // supporterPool = ISupporterPool(pictionNetwork.getAddress(SUPPORTERPOOL));
     }

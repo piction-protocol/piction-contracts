@@ -1,11 +1,11 @@
 const fs = require('fs');
-const input = JSON.parse(fs.readFileSync('build/contracts/ContentsStorage.json'));
+const input = JSON.parse(fs.readFileSync('build/contracts/ProjectStorage.json'));
 const contract = new caver.klay.Contract(input.abi);
 const replace = require('replace-in-file');
 const PictionNetwork = require('./PictionNetwork');
 
 module.exports = async (owner) => {
-    log(`>>>>>>>>>> [ContentsStorage] <<<<<<<<<<`);
+    log(`>>>>>>>>>> [ProjectStorage] <<<<<<<<<<`);
     
     if (!owner) {
         await init();
@@ -17,7 +17,7 @@ module.exports = async (owner) => {
 }
     
 async function init() {
-    console.log('> Deploying ContentsStorage.');
+    console.log('> Deploying ProjectStorage.');
 
     const piction = process.env.PICTIONNETWORK_ADDRESS;
 
@@ -48,11 +48,11 @@ async function init() {
 
     process.env.CONTENTSSTORAGE_ADDRESS = instance.contractAddress;
 
-    info(`ContentsStorage_ADDRESS: ${instance.contractAddress}`);
+    info(`ProjectStorage_ADDRESS: ${instance.contractAddress}`);
     log(`-------------------------------------------------------------------`);
 
     if (process.env.PICTIONNETWORK_ADDRESS) {
-        await PictionNetwork('ContentsStorage')
+        await PictionNetwork('ProjectStorage')
     }
 }
 
@@ -62,11 +62,11 @@ async function addOwner(owner) {
         return;
     }
 
-    console.log('> Contents Storage add owner: ' + owner);
+    console.log('> Project Storage add owner: ' + owner);
 
-    const contentsStorage = new caver.klay.Contract(input.abi, process.env.CONTENTSSTORAGE_ADDRESS);
+    const projectStorage = new caver.klay.Contract(input.abi, process.env.CONTENTSSTORAGE_ADDRESS);
 
-    await contentsStorage.methods.addOwner(owner).send({
+    await projectStorage.methods.addOwner(owner).send({
         from: caver.klay.accounts.wallet[0].address,
         gas: gasLimit,
         gasPrice: gasPrice
