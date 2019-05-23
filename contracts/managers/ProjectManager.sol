@@ -158,9 +158,9 @@ contract ProjectManager is Ownable, ValidValue, IProjectManager, IUpdateAddress 
     function updateAddress() external {
         require(msg.sender == address(pictionNetwork), "ProjectManager updateAddress 0");
 
-        address cStorage = pictionNetwork.getAddress(STORAGE_NAME);
-        emit UpdateAddress(address(projectStorage), cStorage);
-        projectStorage = IStorage(cStorage);
+        address pStorage = pictionNetwork.getAddress(STORAGE_NAME);
+        emit UpdateAddress(address(projectStorage), pStorage);
+        projectStorage = IStorage(pStorage);
 
         address rStorage = pictionNetwork.getAddress(RELATION_NAME);
         emit UpdateAddress(address(relationStorage), rStorage);

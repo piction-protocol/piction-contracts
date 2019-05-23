@@ -17,7 +17,7 @@ contract PostManager is Ownable, ValidValue, IPostManager, IUpdateAddress {
     string private constant STORAGE_NAME = "ProjectStorage";
     string private constant RELATION_NAME = "RelationStorage";
     string private constant ACCOUNT_NAME = "AccountsManager";
-    string private constant CONTENTS_NAME = "ProjectManager";
+    string private constant PROJECT_NAME = "ProjectManager";
     string private constant CREATE_TAG = "createPost";
     string private constant UPDATE_TAG = "updatePost";
     string private constant DELETE_TAG = "deletePost";
@@ -210,9 +210,9 @@ contract PostManager is Ownable, ValidValue, IPostManager, IUpdateAddress {
     function updateAddress() external {
         require(msg.sender == address(pictionNetwork), "PostManager updateAddress 0");
 
-        address cStorage = pictionNetwork.getAddress(STORAGE_NAME);
-        emit UpdateAddress(address(projectStorage), cStorage);
-        projectStorage = IStorage(cStorage);
+        address pStorage = pictionNetwork.getAddress(STORAGE_NAME);
+        emit UpdateAddress(address(projectStorage), pStorage);
+        projectStorage = IStorage(pStorage);
 
         address rStorage = pictionNetwork.getAddress(RELATION_NAME);
         emit UpdateAddress(address(relationStorage), rStorage);
@@ -222,8 +222,8 @@ contract PostManager is Ownable, ValidValue, IPostManager, IUpdateAddress {
         emit UpdateAddress(address(accountManager), aManager);
         accountManager = IAccountsManager(aManager);
 
-        address cManager = pictionNetwork.getAddress(CONTENTS_NAME);
-        emit UpdateAddress(address(projectManager), cManager);
-        projectManager = IProjectManager(cManager);
+        address pManager = pictionNetwork.getAddress(CONTENTS_NAME);
+        emit UpdateAddress(address(projectManager), pManager);
+        projectManager = IProjectManager(pManager);
     }
 }
