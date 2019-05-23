@@ -89,9 +89,9 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
     function updateAddress() external {
         require(msg.sender == address(pictionNetwork), "ContentsRevenue updateAddress 0");
         
-        address cManager = pictionNetwork.getAddress(PROJECTMANAGER);
-        emit UpdateAddress(address(projectManager), cManager);
-        projectManager = IProjectManager(cManager);
+        address pManager = pictionNetwork.getAddress(PROJECTMANAGER);
+        emit UpdateAddress(address(projectManager), pManager);
+        projectManager = IProjectManager(pManager);
 
         // supporterPool = ISupporterPool(pictionNetwork.getAddress(SUPPORTERPOOL));
     }
