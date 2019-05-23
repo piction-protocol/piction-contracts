@@ -37,7 +37,7 @@ contract PostManager is Ownable, ValidValue, IPostManager, IUpdateAddress {
         relationStorage = IStorage(pictionNetwork.getAddress(RELATION_NAME));
 
         accountManager = IAccountsManager(pictionNetwork.getAddress(ACCOUNT_NAME));
-        projectManager = IProjectManager(pictionNetwork.getAddress(CONTENTS_NAME));
+        projectManager = IProjectManager(pictionNetwork.getAddress(PROJECT_NAME));
     }
 
     /**
@@ -222,7 +222,7 @@ contract PostManager is Ownable, ValidValue, IPostManager, IUpdateAddress {
         emit UpdateAddress(address(accountManager), aManager);
         accountManager = IAccountsManager(aManager);
 
-        address pManager = pictionNetwork.getAddress(CONTENTS_NAME);
+        address pManager = pictionNetwork.getAddress(PROJECT_NAME);
         emit UpdateAddress(address(projectManager), pManager);
         projectManager = IProjectManager(pManager);
     }
