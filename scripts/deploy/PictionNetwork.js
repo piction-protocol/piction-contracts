@@ -113,7 +113,7 @@ async function setAddress(type) {
         }
         address = accountsStorage;
         break;
-    case 'ContentsStorage':
+    case 'ProjectStorage':
         const projectStorage = process.env.PROJECTSTORAGE_ADDRESS;
         if (!projectStorage) {
             error('PROJECT STORAGE is not deployed!! Please after PROJECT STORAGE deployment.');
@@ -137,7 +137,7 @@ async function setAddress(type) {
         }
         address = accountsManager;
         break;
-    case 'ContentsManager':
+    case 'ProjectManager':
         const projectManager = process.env.PROJECTMANAGER_ADDRESS;
         if (!projectManager) {
             error('PROJECT MANAGER is not deployed!! Please after PROJECT MANAGER deployment.');

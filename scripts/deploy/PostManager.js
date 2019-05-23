@@ -3,7 +3,7 @@ const input = JSON.parse(fs.readFileSync('build/contracts/PostManager.json'));
 const contract = new caver.klay.Contract(input.abi);
 const replace = require('replace-in-file');
 const PictionNetwork = require('./PictionNetwork');
-const ContentsStorage = require('./ContentsStorage');
+const ProjectStorage = require('./ProjectStorage');
 const RelationStorage = require('./RelationStorage');
 
 module.exports = async () => {
@@ -59,8 +59,8 @@ module.exports = async () => {
         await PictionNetwork('PostManager')
     }
 
-    if (process.env.CONTENTSSTORAGE_ADDRESS) {
-        await ContentsStorage(instance.contractAddress)
+    if (process.env.projectStorage_ADDRESS) {
+        await ProjectStorage(instance.contractAddress)
     }
 
     if (process.env.RELATIONSTORAGE_ADDRESS) {

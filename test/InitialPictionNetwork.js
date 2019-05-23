@@ -3,7 +3,7 @@ const ContentsDistributor = artifacts.require("ContentsDistributor");
 const ContentsRevenue = artifacts.require("ContentsRevenue");
 const Storage = artifacts.require("Storage");
 const AccountsManager = artifacts.require("AccountsManager");
-const ContentsManager = artifacts.require("ContentsManager");
+const ProjectManager = artifacts.require("ProjectManager");
 const PictionNetwork = artifacts.require("PictionNetwork");
 
 module.exports = async (accounts) => {
@@ -50,9 +50,9 @@ module.exports = async (accounts) => {
     await accountsManager.createAccount("0", writerHash, "testData", contentsProvider, {from: owner}).should.be.fulfilled;
     await accountsManager.createAccount("1", userHash, "testData", user, {from: owner}).should.be.fulfilled;
     
-    const contentsManager = await ContentsManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
-    await pictionNetwork.setAddress("ContentsManager", contentsManager.address, {from: owner}).should.be.fulfilled;
-    await contentsManager.createContents(writerHash, contentHash, "testData", {from: contentsProvider}).should.be.fulfilled;
+    const projectManager = await ProjectManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
+    await pictionNetwork.setAddress("ProjectManager", projectManager.address, {from: owner}).should.be.fulfilled;
+    await projectManager.createContents(writerHash, contentHash, "testData", {from: contentsProvider}).should.be.fulfilled;
 
     const contentsRevenue = await ContentsRevenue.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
     await pictionNetwork.setAddress("ContentsRevenue", contentsRevenue.address, {from: owner}).should.be.fulfilled;
