@@ -5,7 +5,7 @@ const ProjectManager = artifacts.require("ProjectManager");
 const PostManager = artifacts.require("PostManager");
 
 const AccountsStorage = artifacts.require("AccountsStorage");
-const ContentsStorage = artifacts.require("ContentsStorage");
+const ProjectStorage = artifacts.require("ProjectStorage");
 const RelationStorage = artifacts.require("RelationStorage");
 
 const BigNumber = require("bigNumber.js");
@@ -27,14 +27,14 @@ contract("manager", function (accounts) {
     let postManager;
 
     let accountsStorage;
-    let contentsStorage;
+    let projectStorage;
     let relationStorage;
 
     let tagAccountsManager = "AccountsManager";
     let tagProjectManager = "ProjectManager";
     let tagPostManager = "PostManager";
     let tagAccountsStorage = "AccountsStorage";
-    let tagContentsStorage = "ContentsStorage";
+    let tagProjectStorage = "ProjectStorage";
     let tagRelationStorage = "RelationStorage";
 
     describe("manager", () => {
@@ -43,8 +43,8 @@ contract("manager", function (accounts) {
 
             accountsStorage = await AccountsStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
             await pictionNetwork.setAddress(tagAccountsStorage, accountsStorage.address, {from: owner}).should.be.fulfilled;
-            contentsStorage = await ContentsStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
-            await pictionNetwork.setAddress(tagContentsStorage, contentsStorage.address, {from: owner}).should.be.fulfilled;
+            projectStorage = await ProjectStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
+            await pictionNetwork.setAddress(tagProjectStorage, projectStorage.address, {from: owner}).should.be.fulfilled;
             relationStorage = await RelationStorage.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
             await pictionNetwork.setAddress(tagRelationStorage, relationStorage.address, {from: owner}).should.be.fulfilled;
 
@@ -56,8 +56,8 @@ contract("manager", function (accounts) {
             await pictionNetwork.setAddress(tagPostManager, postManager.address, {from: owner}).should.be.fulfilled;
 
             await accountsStorage.addOwner(accountsManager.address, {from: owner}).should.be.fulfilled;
-            await contentsStorage.addOwner(projectManager.address, {from: owner}).should.be.fulfilled;
-            await contentsStorage.addOwner(postManager.address, {from: owner}).should.be.fulfilled;
+            await projectStorage.addOwner(projectManager.address, {from: owner}).should.be.fulfilled;
+            await projectStorage.addOwner(postManager.address, {from: owner}).should.be.fulfilled;
             await relationStorage.addOwner(projectManager.address, {from: owner}).should.be.fulfilled;
             await relationStorage.addOwner(postManager.address, {from: owner}).should.be.fulfilled;
         });

@@ -39,8 +39,8 @@ module.exports = async (accounts) => {
     const accountsStorage = await Storage.new({from: owner}).should.be.fulfilled;
     await pictionNetwork.setAddress("AccountsStorage", accountsStorage.address, {from: owner}).should.be.fulfilled;
 
-    const contentsStorage = await Storage.new({from: owner}).should.be.fulfilled;
-    await pictionNetwork.setAddress("ContentsStorage", contentsStorage.address, {from: owner}).should.be.fulfilled;
+    const projectStorage = await Storage.new({from: owner}).should.be.fulfilled;
+    await pictionNetwork.setAddress("ProjectStorage", projectStorage.address, {from: owner}).should.be.fulfilled;
 
     const relationStorage = await Storage.new({from: owner}).should.be.fulfilled;
     await pictionNetwork.setAddress("RelationStorage", relationStorage.address, {from: owner}).should.be.fulfilled;
