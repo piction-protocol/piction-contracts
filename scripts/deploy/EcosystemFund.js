@@ -1,5 +1,5 @@
 const fs = require('fs');
-const input = JSON.parse(fs.readFileSync('build/contracts/ContentsStorage.json'));
+const input = JSON.parse(fs.readFileSync('build/contracts/ProjectStorage.json'));
 const contract = new caver.klay.Contract(input.abi);
 const replace = require('replace-in-file');
 const PictionNetwork = require('./PictionNetwork');

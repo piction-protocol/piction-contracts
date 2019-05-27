@@ -38,15 +38,15 @@ async function init() {
     try {
         await replace({
             files: `.env.${process.env.NODE_ENV}`,
-            from: /CONTENTSSTORAGE_ADDRESS=.*/g,
-            to: `CONTENTSSTORAGE_ADDRESS=${instance.contractAddress}`
+            from: /PROJECTSTORAGE_ADDRESS=.*/g,
+            to: `PROJECTSTORAGE_ADDRESS=${instance.contractAddress}`
         });
     }
     catch (error) {
         console.error('Error occurred: ', error);
     } 
 
-    process.env.CONTENTSSTORAGE_ADDRESS = instance.contractAddress;
+    process.env.PROJECTSTORAGE_ADDRESS = instance.contractAddress;
 
     info(`ProjectStorage_ADDRESS: ${instance.contractAddress}`);
     log(`-------------------------------------------------------------------`);
@@ -57,14 +57,14 @@ async function init() {
 }
 
 async function addOwner(owner) {
-    if (!process.env.CONTENTSSTORAGE_ADDRESS) {
-        error('CONTENTS STORAGE is not deployed!! Please after CONTENTS STORAGE deployment.');
+    if (!process.env.PROJECTSTORAGE_ADDRESS) {
+        error('PROJECT STORAGE is not deployed!! Please after PROJECT STORAGE deployment.');
         return;
     }
 
     console.log('> Project Storage add owner: ' + owner);
 
-    const projectStorage = new caver.klay.Contract(input.abi, process.env.CONTENTSSTORAGE_ADDRESS);
+    const projectStorage = new caver.klay.Contract(input.abi, process.env.PROJECTSTORAGE_ADDRESS);
 
     await projectStorage.methods.addOwner(owner).send({
         from: caver.klay.accounts.wallet[0].address,

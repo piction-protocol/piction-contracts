@@ -1,6 +1,6 @@
 const InitialPictionNetwork = require("./InitialPictionNetwork.js");
 const ContentsRevenue = artifacts.require("ContentsRevenue");
-const ContentsManager = artifacts.require("ContentsManager");
+const ProjectManager = artifacts.require("ProjectManager");
 const ContentsDistributor = artifacts.require("ContentsDistributor");
 
 const decimals = Math.pow(10, 18);
@@ -28,12 +28,12 @@ contract("PictionNetwork", function (accounts) {
         });
 
         it("set address", async () => {
-            const contentsManager = await ContentsManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
-            await pictionNetwork.setAddress("ContentsManager", contentsManager.address, {from: owner}).should.be.fulfilled;
+            const projectManager = await ProjectManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
+            await pictionNetwork.setAddress("ProjectManager", projectManager.address, {from: owner}).should.be.fulfilled;
 
-            const registeredContentsManager = await pictionNetwork.getAddress("ContentsManager").should.be.fulfilled;
+            const registeredProjectManager = await pictionNetwork.getAddress("ProjectManager").should.be.fulfilled;
             
-            registeredContentsManager.should.be.equal(contentsManager.address);
+            registeredProjectManager.should.be.equal(projectManager.address);
         });
 
         it("set ContentsDistributor", async () => {
@@ -60,9 +60,9 @@ contract("PictionNetwork", function (accounts) {
         it("updateAddress", async () => {
             const contentsRevenueAddress = await pictionNetwork.getAddress("ContentsRevenue");
             const contentsRevenue = await ContentsRevenue.at(contentsRevenueAddress);
-            const newContentsManager = await ContentsManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
+            const newProjectManager = await ProjectManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
 
-            await pictionNetwork.setAddress("ContentsManager", newContentsManager.address);
+            await pictionNetwork.setAddress("ProjectManager", newProjectManager.address);
 
             await pictionNetwork.updateAddress([contentsRevenue.address], {from: owner}).should.be.fulfilled;
         });

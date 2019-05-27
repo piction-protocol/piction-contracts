@@ -87,7 +87,7 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
                 pxlToken.transfer(addresses[i], amounts[i]);
             }
         }
-        // contentsManager.purchase(from, contentHash, saleType);
+        // projectManager.purchase(from, contentHash, saleType);
     }
 
      /**

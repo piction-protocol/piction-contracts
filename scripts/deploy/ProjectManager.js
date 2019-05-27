@@ -42,15 +42,15 @@ module.exports = async () => {
     try {
         await replace({
             files: `.env.${process.env.NODE_ENV}`,
-            from: /CONTENTSMANAGER_ADDRESS=.*/g,
-            to: `CONTENTSMANAGER_ADDRESS=${instance.contractAddress}`
+            from: /PROJECTMANAGER_ADDRESS=.*/g,
+            to: `PROJECTMANAGER_ADDRESS=${instance.contractAddress}`
         });
     }
     catch (error) {
         console.error('Error occurred: ', error);
     } 
 
-    process.env.CONTENTSMANAGER_ADDRESS = instance.contractAddress;
+    process.env.PROJECTMANAGER_ADDRESS = instance.contractAddress;
 
     info(`ProjectManager_ADDRESS: ${instance.contractAddress}`);
     log(`-------------------------------------------------------------------`);
@@ -59,7 +59,7 @@ module.exports = async () => {
         await PictionNetwork('ProjectManager')
     }
 
-    if (process.env.CONTENTSSTORAGE_ADDRESS) {
+    if (process.env.PROJECTSTORAGE_ADDRESS) {
         await ProjectStorage(instance.contractAddress)
     }
 
