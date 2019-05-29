@@ -81,10 +81,6 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
         require(!availableEmail(beforeEmail), "AccountsManager updateAccount 0");
         require(iStorage.getAddressValue(userHash) == sender, "AccountsManager updateAccount 1");
         require(!iStorage.getStringValue(userHash).isEmptyString(), "AccountsManager updateAccount 2");
-
-        iStorage.setBooleanValue(afterEmail, true, UPDATE_TAG);  
-        iStorage.deleteBooleanValue(beforeEmail, UPDATE_TAG);  
-        iStorage.setStringValue(userHash, rawData, UPDATE_TAG);
         
         if(beforeEmail.compareString(afterEmail)) {
             iStorage.setStringValue(userHash, rawData, UPDATE_TAG);
