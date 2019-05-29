@@ -49,9 +49,11 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
         require(availableEmail(email), "AccountsManager createAccount 0");
         require(iStorage.getAddressValue(userHash) == address(0), "AccountsManager createAccount 1");
         require(iStorage.getStringValue(userHash).isEmptyString(), "AccountsManager createAccount 2");
+        require(iStorage.getStringValue(email).isEmptyString(), "AccountsManager createAccount 3");
         
         iStorage.setBooleanValue(email, true, CREATE_TAG);
         iStorage.setAddressValue(userHash, sender, CREATE_TAG);
+        iStorage.setStringValue(email, userHash, CREATE_TAG);
         iStorage.setStringValue(userHash, rawData, CREATE_TAG);
     }
 
@@ -77,13 +79,22 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
         validAddress(sender) 
     {
         require(!availableEmail(beforeEmail), "AccountsManager updateAccount 0");
-        require(availableEmail(afterEmail), "AccountsManager updateAccount 1");
-        require(iStorage.getAddressValue(userHash) == sender, "AccountsManager updateAccount 2");
-        require(!iStorage.getStringValue(userHash).isEmptyString(), "AccountsManager updateAccount 3");
+        require(iStorage.getAddressValue(userHash) == sender, "AccountsManager updateAccount 1");
+        require(!iStorage.getStringValue(userHash).isEmptyString(), "AccountsManager updateAccount 2");
+        
+        if(beforeEmail.compareString(afterEmail)) {
+            iStorage.setStringValue(userHash, rawData, UPDATE_TAG);
+        } else {
+            require(availableEmail(afterEmail) && iStorage.getStringValue(afterEmail).isEmptyString(), "AccountsManager updateAccount 3");
+            
+            iStorage.setBooleanValue(afterEmail, true, UPDATE_TAG);
+            iStorage.deleteBooleanValue(beforeEmail, UPDATE_TAG);
 
-        iStorage.setBooleanValue(afterEmail, true, UPDATE_TAG);  
-        iStorage.deleteBooleanValue(beforeEmail, UPDATE_TAG);  
-        iStorage.setStringValue(userHash, rawData, UPDATE_TAG);
+            iStorage.setStringValue(afterEmail, userHash, UPDATE_TAG);
+            iStorage.deleteStringValue(beforeEmail, UPDATE_TAG);
+
+            iStorage.setStringValue(userHash, rawData, UPDATE_TAG);
+        }
     }
 
     /**
