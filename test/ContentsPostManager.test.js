@@ -68,14 +68,14 @@ contract("manager", function (accounts) {
             
             //-- 콘텐츠 생성 --
             //비정상 유저 해시 입력
-            await projectManager.createContents("FakeUserHash", "contentsHash", "contentsRawData", {from: user1})
+            await projectManager.createProject("FakeUserHash", "contentsHash", "contentsRawData", {from: user1})
                 .should.be.rejected;
             //비정상 유저 Address 시도
-            await projectManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user2})
+            await projectManager.createProject("userHash", "contentsHash", "contentsRawData", {from: user2})
                 .should.be.rejected;
 
             //정상 콘텐츠 생성
-            await projectManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user1})
+            await projectManager.createProject("userHash", "contentsHash", "contentsRawData", {from: user1})
                 .should.be.fulfilled;
             
             //저장 값 검증 - Address
@@ -83,7 +83,7 @@ contract("manager", function (accounts) {
                 writer.should.be.equal(user1);
 
             //저장 값 검증 - RawData
-            let raw = await projectManager.getContentsRawData.call("contentsHash", {from: user1});
+            let raw = await projectManager.getProjectRawData.call("contentsHash", {from: user1});
                 raw.should.be.equal("contentsRawData");
             
             //저장 값 검증 - UserHash
@@ -91,37 +91,37 @@ contract("manager", function (accounts) {
                 uHash.should.be.equal("userHash");
 
             //중복 생성 검증
-            await projectManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user1})
+            await projectManager.createProject("userHash", "contentsHash", "contentsRawData", {from: user1})
                 .should.be.rejected;
 
             
             //-- 콘텐츠 업데이트 --
             //비정상 유저 해시 입력
-            await projectManager.updateContents("FakeUserHash", "contentsHash", "contentsUpdateRawData", {from: user1})
+            await projectManager.updateProject("FakeUserHash", "contentsHash", "contentsUpdateRawData", {from: user1})
                 .should.be.rejected;
             //비정상 유저 Address 시도
-            await projectManager.updateContents("userHash", "contentsHash", "contentsUpdateRawData", {from: user2})
+            await projectManager.updateProject("userHash", "contentsHash", "contentsUpdateRawData", {from: user2})
                 .should.be.rejected;
 
             //정상 콘텐츠 업데이트
-            await projectManager.updateContents("userHash", "contentsHash", "contentsUpdateRawData", {from: user1})
+            await projectManager.updateProject("userHash", "contentsHash", "contentsUpdateRawData", {from: user1})
                 .should.be.fulfilled;
 
             //저장 값 검증 - RawData
-            raw = await projectManager.getContentsRawData.call("contentsHash", {from: user1});
+            raw = await projectManager.getProjectRawData.call("contentsHash", {from: user1});
                 raw.should.be.equal("contentsUpdateRawData");
 
 
             //-- 콘텐츠 삭제 --
             //비정상 유저 해시 입력
-            await projectManager.deleteContents("FakeUserHash", "contentsHash", {from: user1})
+            await projectManager.deleteProject("FakeUserHash", "contentsHash", {from: user1})
                 .should.be.rejected;
             //비정상 유저 Address 시도
-            await projectManager.deleteContents("userHash", "contentsHash", {from: user2})
+            await projectManager.deleteProject("userHash", "contentsHash", {from: user2})
                 .should.be.rejected;
 
             //정상 콘텐츠 삭제
-            await projectManager.deleteContents("userHash", "contentsHash", {from: user1})
+            await projectManager.deleteProject("userHash", "contentsHash", {from: user1})
                 .should.be.fulfilled;
             
             //삭제 검증- Address
@@ -129,7 +129,7 @@ contract("manager", function (accounts) {
                 writer.should.be.equal("0x0000000000000000000000000000000000000000");
 
             //삭제 검증 - RawData
-            raw = await projectManager.getContentsRawData.call("contentsHash", {from: user1})
+            raw = await projectManager.getProjectRawData.call("contentsHash", {from: user1})
                 raw.should.be.equal("")
             
             //삭제 검증- UserHash
@@ -137,11 +137,11 @@ contract("manager", function (accounts) {
                 uHash.should.be.equal("");
             
             //owner 삭제 테스트를 위한 콘텐츠 업로드
-            await projectManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user1})
+            await projectManager.createProject("userHash", "contentsHash", "contentsRawData", {from: user1})
                 .should.be.fulfilled;
 
             //owner 삭제
-            await projectManager.deleteContents("userHash", "contentsHash", {from: owner})
+            await projectManager.deleteProject("userHash", "contentsHash", {from: owner})
                 .should.be.fulfilled;
 
             //삭제 검증 - Address
@@ -149,7 +149,7 @@ contract("manager", function (accounts) {
                 writer.should.be.equal("0x0000000000000000000000000000000000000000");
 
             //삭제 검증 - RawData
-            raw = await projectManager.getContentsRawData.call("contentsHash", {from: user1})
+            raw = await projectManager.getProjectRawData.call("contentsHash", {from: user1})
                 raw.should.be.equal("")
             
             //삭제 검증- UserHash
@@ -161,12 +161,12 @@ contract("manager", function (accounts) {
         it("postManager test start", async () => {
 
             //-- Post 생성 --
-            //삭제된 Contents 해시로 Post 생성 시도
+            //삭제된 Project 해시로 Post 생성 시도
             await postManager.createPost("userHash", "contentsHash", "postHash", "postRawData", {from: user1})
                 .should.be.rejected;
             
             //테스트를 위한 콘텐츠 등록
-            await projectManager.createContents("userHash", "contentsHash", "contentsRawData", {from: user1})
+            await projectManager.createProject("userHash", "contentsHash", "contentsRawData", {from: user1})
                 .should.be.fulfilled;
             
             //비정상 유저 해시 입력
@@ -178,7 +178,7 @@ contract("manager", function (accounts) {
                 .should.be.rejected;
 
             //비정상 콘텐츠 해시
-            await postManager.createPost("userHash", "fakeContentsHash", "postHash", "postRawData", {from: user1})
+            await postManager.createPost("userHash", "fakeProjectHash", "postHash", "postRawData", {from: user1})
                 .should.be.rejected;
 
             //정상 Post 생성
@@ -194,7 +194,7 @@ contract("manager", function (accounts) {
                 raw.should.be.equal("postRawData");
             
             //저장 값 검증 - ContentHash
-            let cHash = await postManager.getContentsHash.call("postHash", {from: user1});
+            let cHash = await postManager.getProjectHash.call("postHash", {from: user1});
                 cHash.should.be.equal("contentsHash");
 
             //중복 생성 검증
@@ -212,7 +212,7 @@ contract("manager", function (accounts) {
                 .should.be.rejected;
 
             //비정상 콘텐츠 해시
-            await postManager.updatePost("userHash", "fakeContentsHash", "postHash", "postRawData", {from: user1})
+            await postManager.updatePost("userHash", "fakeProjectHash", "postHash", "postRawData", {from: user1})
                 .should.be.rejected;
 
             //정상 Post 업데이트
@@ -220,13 +220,13 @@ contract("manager", function (accounts) {
                 .should.be.fulfilled;
             
             //저장 값 검증 - RawData
-            raw = await projectManager.getContentsRawData.call("postHash", {from: user1});
+            raw = await projectManager.getProjectRawData.call("postHash", {from: user1});
                 raw.should.be.equal("postUpdateRawData");
 
 
             //-- Post 이동 --
             //테스트를 위한 임의 콘텐츠 등록
-            await projectManager.createContents("userHash", "contentsHashTwo", "contentsRawDataTwo", {from: user1})
+            await projectManager.createProject("userHash", "contentsHashTwo", "contentsRawDataTwo", {from: user1})
                 .should.be.fulfilled;
 
             //비정상 유저 해시 입력
@@ -238,16 +238,16 @@ contract("manager", function (accounts) {
                 .should.be.rejected;
 
             // //비정상 콘텐츠 해시
-            await postManager.movePost("userHash", "fakeContentsHash", "contentsHashTwo", "postHash", {from: user1}).should.be.rejected;
-            await postManager.movePost("userHash", "contentsHash", "fakeContentsHashTwo", "postHash", {from: user1}).should.be.rejected;
-            await postManager.movePost("userHash", "fakeContentsHash", "fakeContentsHashTwo", "postHash", {from: user1}).should.be.rejected;
+            await postManager.movePost("userHash", "fakeProjectHash", "contentsHashTwo", "postHash", {from: user1}).should.be.rejected;
+            await postManager.movePost("userHash", "contentsHash", "fakeProjectHashTwo", "postHash", {from: user1}).should.be.rejected;
+            await postManager.movePost("userHash", "fakeProjectHash", "fakeProjectHashTwo", "postHash", {from: user1}).should.be.rejected;
 
             //정상 Post 이동
             await postManager.movePost("userHash", "contentsHash", "contentsHashTwo", "postHash", {from: user1})
                 .should.be.fulfilled;
 
             //저장 값 검증 - 이후 컨텐츠 해시
-            cHash = await postManager.getContentsHash.call("postHash", {from: user1});
+            cHash = await postManager.getProjectHash.call("postHash", {from: user1});
                 cHash.should.be.equal("contentsHashTwo");
 
 
@@ -261,7 +261,7 @@ contract("manager", function (accounts) {
                 .should.be.rejected;
 
             //비정상 콘텐츠 해시
-            await postManager.deletePost("userHash", "fakeContentsHashTwo", "postHash", {from: user1})
+            await postManager.deletePost("userHash", "fakeProjectHashTwo", "postHash", {from: user1})
                 .should.be.rejected;
                 
             //정상 Post 삭제
@@ -277,7 +277,7 @@ contract("manager", function (accounts) {
                 raw.should.be.equal("")
         
             //삭제 검증- UserHash
-            cHash = await postManager.getContentsHash.call("postHash", {from: user1})
+            cHash = await postManager.getProjectHash.call("postHash", {from: user1})
                 cHash.should.be.equal("");
             
             //Owner 테스트를 위한 Post 등록
@@ -297,7 +297,7 @@ contract("manager", function (accounts) {
                 raw.should.be.equal("")
         
             //삭제 검증- UserHash
-            cHash = await postManager.getContentsHash.call("postHash", {from: user1})
+            cHash = await postManager.getProjectHash.call("postHash", {from: user1})
                 cHash.should.be.equal("");
         });
     });
