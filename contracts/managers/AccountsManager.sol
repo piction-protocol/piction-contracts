@@ -1,6 +1,7 @@
 pragma solidity ^0.4.24;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/IStorage.sol";
 import "../interfaces/IPictionNetwork.sol";
@@ -18,13 +19,18 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
     string private constant CREATE_TAG = "CreateAccount";
     string private constant UPDATE_TAG = "UpdateAccount";
     string private constant DELETE_TAG = "DeleteAccount";
+    string private constant TOKEN_NAME = "PXL";
 
+    uint256 public constant AIRDROP_AMOUNT = 1000 * (10 ** 18);
+
+    IERC20 private iPxl;
     IStorage private iStorage;
     IPictionNetwork private pictionNetwork;
 
     constructor(address piction) public validAddress(piction) {
         pictionNetwork = IPictionNetwork(piction);
         iStorage = IStorage(pictionNetwork.getAddress(STORAGE_NAME));
+        iPxl = IERC20(pictionNetwork.getAddress(TOKEN_NAME));
     }
 
     /**
@@ -55,6 +61,10 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
         iStorage.setAddressValue(userHash, sender, CREATE_TAG);
         iStorage.setStringValue(email, userHash, CREATE_TAG);
         iStorage.setStringValue(userHash, rawData, CREATE_TAG);
+
+        if(iPxl.balanceOf(address(this)) >= AIRDROP_AMOUNT) {
+            iPxl.transfer(sender, AIRDROP_AMOUNT);
+        }
     }
 
     /**
@@ -120,6 +130,7 @@ contract AccountsManager is IAccountsManager, Ownable, ValidValue, IUpdateAddres
         require(iStorage.getAddressValue(userHash) == sender, "AccountsManager deleteAccount 1");
         require(!iStorage.getStringValue(userHash).isEmptyString(), "AccountsManager deleteAccount 2");
         require(iStorage.getStringValue(userHash).compareString(rawData), "AccountsManager deleteAccount 3");
+        require(iPxl.balanceOf(sender) == 0, "AccountsManager deleteAccount 4");
 
         iStorage.deleteBooleanValue(email, DELETE_TAG);
         iStorage.deleteAddressValue(userHash, DELETE_TAG);

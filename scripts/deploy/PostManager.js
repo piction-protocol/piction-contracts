@@ -59,7 +59,7 @@ module.exports = async () => {
         await PictionNetwork('PostManager')
     }
 
-    if (process.env.projectStorage_ADDRESS) {
+    if (process.env.PROJECTSTORAGE_ADDRESS) {
         await ProjectStorage(instance.contractAddress)
     }
 
