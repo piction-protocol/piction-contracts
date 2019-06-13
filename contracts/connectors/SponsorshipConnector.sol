@@ -25,8 +25,8 @@ contract SponsorshipConnector is Ownable, ContractReceiver, ValidValue {
         address cp = data.toAddress(0);
         require(contentProvider[cp], "SponsorshipConnector receiveApproval 2");
 
-        iPxl.transferFrom(from, address(this), value);
-        iPxl.transfer(cp, value);
+        iPxl.transferFrom(from, cp, value);
+
         emit SponsorContentProvider(from, cp, value);
     }
 
