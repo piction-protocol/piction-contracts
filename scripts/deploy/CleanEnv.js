@@ -9,6 +9,7 @@ module.exports = async () => {
     process.env.ACCOUNTSSTORAGE_ADDRESS = '';
     process.env.PROJECTSTORAGE_ADDRESS = '';
     process.env.RELATIONSTORAGE_ADDRESS = '';
+    process.env.SUBSCRIPTIONSTORAGE_ADDRESS = '';
     process.env.ACCOUNTSMANAGER_ADDRESS = '';
     process.env.PROJECTMANAGER_ADDRESS = '';
     process.env.POSTMANAGER_ADDRESS = '';
@@ -46,6 +47,12 @@ module.exports = async () => {
             files: `.env.${process.env.NODE_ENV}`,
             from: /RELATIONSTORAGE_ADDRESS=.*/g,
             to: `RELATIONSTORAGE_ADDRESS=`
+        });
+
+        await replace({
+            files: `.env.${process.env.NODE_ENV}`,
+            from: /SUBSCRIPTIONSTORAGE_ADDRESS==.*/g,
+            to: `SUBSCRIPTIONSTORAGE_ADDRESS==`
         });
 
         await replace({
