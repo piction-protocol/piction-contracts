@@ -4,6 +4,7 @@ const PXL = require('./PXL');
 const AccountsStorage = require('./AccountsStorage');
 const ProjectStorage = require('./ProjectStorage');
 const RelationStorage = require('./RelationStorage');
+const SubscriptionStorage = require('./SubscriptionStorage');
 const AccountsManager = require('./AccountsManager');
 const ProjectManager = require('./ProjectManager');
 const PostManager = require('./PostManager');
@@ -24,6 +25,8 @@ module.exports = async () => {
     await ProjectStorage();
 
     await RelationStorage();
+
+    await SubscriptionStorage();
 
     await AccountsManager();
     

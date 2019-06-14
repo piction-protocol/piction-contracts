@@ -5,6 +5,7 @@ const replace = require('replace-in-file');
 const PictionNetwork = require('./PictionNetwork');
 const ProjectStorage = require('./ProjectStorage');
 const RelationStorage = require('./RelationStorage');
+const SubscriptionStorage = require('./SubscriptionStorage');
 
 module.exports = async () => {
     log(`>>>>>>>>>> [ProjectManager] <<<<<<<<<<`);
@@ -14,6 +15,7 @@ module.exports = async () => {
     const piction = process.env.PICTIONNETWORK_ADDRESS;
     const accountsStorage = process.env.ACCOUNTSSTORAGE_ADDRESS;
     const relationStorage = process.env.RELATIONSTORAGE_ADDRESS;
+    const subscriptionStorage = process.env.SUBSCRIPTIONSTORAGE_ADDRESS;
 
     if (!piction) {
         error('PictionNetwork is not deployed!! Please after PictionNetwork deployment.');
@@ -27,6 +29,11 @@ module.exports = async () => {
 
     if (!relationStorage) {
         error('Relation Storage is not deployed!! Please after Relation Storage deployment.');
+        return;
+    }
+
+    if (!subscriptionStorage) {
+        error('Subscription Storage is not deployed!! Please after Subscription Storage deployment.');
         return;
     }
 
@@ -65,5 +72,9 @@ module.exports = async () => {
 
     if (process.env.RELATIONSTORAGE_ADDRESS) {
         await RelationStorage(instance.contractAddress)
+    }
+
+    if (process.env.SUBSCRIPTIONSTORAGE_ADDRESS) {
+        await SubscriptionStorage(instance.contractAddress)
     }
 }

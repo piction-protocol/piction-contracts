@@ -60,6 +60,10 @@ async function init() {
         await setAddress('RelationStorage');
     }
 
+    if (process.env.SUBSCRIPTIONSTORAGE_ADDRESS) {
+        await setAddress('SubscriptionStorage');
+    }
+
     if (process.env.ACCOUNTSMANAGER_ADDRESS) {
         await setAddress('AccountsManager');
     }
@@ -128,6 +132,14 @@ async function setAddress(type) {
             break;
         }
         address = relationStorage;
+        break;
+    case 'SubscriptionStorage':
+        const subscriptionStorage = process.env.SUBSCRIPTIONSTORAGE_ADDRESS;
+        if (!subscriptionStorage) {
+            error('SUBSCRIPTION STORAGE is not deployed!! Please after SUBSCRIPTION STORAGE deployment.');
+            break;
+        }
+        address = subscriptionStorage;
         break;
     case 'AccountsManager':
         const accountsManager = process.env.ACCOUNTSMANAGER_ADDRESS;
