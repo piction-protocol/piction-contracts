@@ -65,7 +65,7 @@ contract ProjectManager is Ownable, ValidValue, IProjectManager, IUpdateAddress 
 
         require(projectStorage.getAddressValue(projectHash) == address(0), "ProjectManager createProject 1");
         require(projectStorage.getStringValue(projectHash).isEmptyString(), "ProjectManager createProject 2");
-        require(price >= 10 ** 18, "ProjectManager createProject 4");
+        require(price >= 10 ** 18, "ProjectManager createProject 3");
 
         projectStorage.setAddressValue(projectHash, msg.sender, CREATE_TAG);
         projectStorage.setStringValue(projectHash, rawData, CREATE_TAG);
