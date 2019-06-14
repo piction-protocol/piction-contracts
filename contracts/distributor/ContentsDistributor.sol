@@ -7,22 +7,25 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsRevenue.sol";
 import "../interfaces/IUpdateAddress.sol";
+import "../interfaces/IProjectManager.sol";
 import "../utils/BytesLib.sol";
 import "../utils/StringLib.sol";
 import "../utils/ValidValue.sol";
 
 contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     using SafeMath for uint256;
-    using BytesLib for bytes;
     using StringLib for string;
+    using BytesLib for bytes;
 
     IPictionNetwork private pictionNetwork;
     IERC20 public pxlToken;
     IContentsRevenue private contentsRevenue;
+    IProjectManager private projectManager;
     
     uint256 private constant DECIMALS = 10 ** 18;   
     string private constant CONTENTSREVENUE = "ContentsRevenue";
     string private constant PXL = "PXL";
+    string private constant PROJECTMANAGER = "ProjectManager";
 
     uint256 private stakingAmount;
     uint256 public distributionRate;
@@ -46,6 +49,7 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         pictionNetwork = IPictionNetwork(pictionNetworkAddress);
         pxlToken = IERC20(pictionNetwork.getAddress(PXL));
         contentsRevenue = IContentsRevenue(pictionNetwork.getAddress(CONTENTSREVENUE));
+        projectManager = IProjectManager(pictionNetwork.getAddress(PROJECTMANAGER));
         
         distributionRate = cdRate;
         stakingAmount = initialStaking;
@@ -59,8 +63,11 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
      * @param value 토큰 권리 위임 수량
      * @param token PXL 컨트랙트 주소
      * @param data 기타 파라미터 :
-                    [Content Hash 66]
-                    [Sale type 32]
+                    [subscription hash 32]
+                    [project Hash 32]
+                    [user Hash 32]
+
+                    [Sale type 32]  // TODO
      */
     function receiveApproval(
         address from,
@@ -73,21 +80,19 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         require(address(pxlToken) == token, "ContentsDistributor receiveApproval 0");
         require(value > 0, "ContentsDistributor receiveApproval 1");
         
-        string memory contentHash = string(data.slice(0, 66));
-        require(!contentHash.isEmptyString(), "ContentsDistributor receiveApproval 2");
-        
-        uint256 saleType = data.toUint(66);
+        string memory projectHash = string(data.slice(32, 32));
+        require(!projectHash.isEmptyString(), "ContentsDistributor receiveApproval 2"); 
         
         pxlToken.transferFrom(from, address(this), value);
+        projectManager.subscription(name, from, value, data);
 
-        (address[] memory addresses, uint256[] memory amounts) = contentsRevenue.calculateDistributionPxl(distributionRate, contentHash, value);
+        (address[] memory addresses, uint256[] memory amounts) = contentsRevenue.calculateDistributionPxl(distributionRate, projectHash, value);
         
         for (uint256 i = 0; i < addresses.length; i++) { 
             if (amounts[i] > 0) {
                 pxlToken.transfer(addresses[i], amounts[i]);
             }
         }
-        // projectManager.purchase(from, contentHash, saleType);
     }
 
      /**
