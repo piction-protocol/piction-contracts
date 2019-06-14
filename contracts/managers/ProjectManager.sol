@@ -141,7 +141,8 @@ contract ProjectManager is Ownable, ValidValue, IProjectManager, IUpdateAddress 
         
         require(accountManager.getUserAddress(userHash) == user, "ProjectManager subscription 1");
         require(projectStorage.getUintValue(projectHash) == amount, "ProjectManager subscription 2");
-        require(subscriptionStorage.getUintValue(subscriptionValue) == 0 || subscriptionStorage.getUintValue(subscriptionValue).div(1000) < now, "ProjectManager subscription 3");
+        require(projectStorage.getAddressValue(projectHash) != user, "ProjectManager subscription 3");
+        require(subscriptionStorage.getUintValue(subscriptionValue) == 0 || subscriptionStorage.getUintValue(subscriptionValue).div(1000) < now, "ProjectManager subscription 4");
 
         subscriptionStorage.setStringValue(subscriptionKey, subscriptionValue, "SUBSCRIPTION_TAG");
         subscriptionStorage.setUintValue(subscriptionValue, expirationDate, "SUBSCRIPTION_TAG");
