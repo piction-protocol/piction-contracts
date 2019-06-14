@@ -39,18 +39,18 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
     /**
      * @dev 전송된 PXL을 각 비율별로 계산
      * @param cdRate ContentsDistributor의 분배 비율
-     * @param contentHash 구매한 content의 hash
+     * @param projectHash 구독한 project의 hash
      * @param amount 전송받은 PXL 수량
      */
     function calculateDistributionPxl(
         uint256 cdRate, 
-        string contentHash, 
+        string projectHash, 
         uint256 amount
     )
         external 
         view
         validRate(cdRate)
-        validString(contentHash)
+        validString(projectHash)
         returns(address[] memory addresses, uint256[] memory amounts)
     {
         require(amount > 0, "ContentsRevenue calculateDistributionPxl 0");
@@ -58,10 +58,10 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
         addresses = new address[](4);
         amounts = new uint256[](4);
 
-        address contentsProvider = projectManager.getWriter(contentHash);
+        address contentsProvider = projectManager.getWriter(projectHash);
         require(contentsProvider != address(0), "ContentsRevenue calculateDistributionPxl 1");
 
-        uint256 supporterPoolRate = 0; // supporterPool.getSupporterPoolRate(contentHash).div(DECIMALS);
+        uint256 supporterPoolRate = 0; // supporterPool.getSupporterPoolRate(projectHash).div(DECIMALS);
 
         DistributionInfo memory distributionInfo = DistributionInfo(
             amount.mul(cdRate).div(DECIMALS),
