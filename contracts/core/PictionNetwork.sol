@@ -14,7 +14,7 @@ contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
     // Managers: AccountsManager, ProjectManager
     // Core: ContentsRevenue
     // Tokens: PXL
-    // Storages: AccountsStorage, ProjectStorage
+    // Storages: AccountsStorage, ProjectStorage, RelationStorage, SubscriptionStorage
     // Connectors: ELEConnector, PICConnector
     mapping (string => address) private addressList;
 
