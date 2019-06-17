@@ -144,6 +144,7 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         require(msg.sender == address(pictionNetwork), "ContentsDistributor updateAddress 0");
 
         contentsRevenue = IContentsRevenue(pictionNetwork.getAddress(CONTENTSREVENUE));
+        projectManager = IProjectManager(pictionNetwork.getAddress(PROJECTMANAGER));
     }
 
     event SetStaking(string name, uint256 value);
