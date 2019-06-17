@@ -141,7 +141,7 @@ contract ProjectManager is Ownable, ValidValue, IProjectManager, IUpdateAddress 
         
         require(accountManager.getUserAddress(userHash) == user, "ProjectManager subscription 1");
         require(projectStorage.getUintValue(projectHash) == amount, "ProjectManager subscription 2");
-        require(projectStorage.getAddressValue(projectHash) != user, "ProjectManager subscription 3");
+        require(projectStorage.getAddressValue(projectHash) != user && projectStorage.getAddressValue(projectHash) != address(0), "ProjectManager subscription 3");
         require(subscriptionStorage.getUintValue(subscriptionValue) == 0 || subscriptionStorage.getUintValue(subscriptionValue).div(1000) < now, "ProjectManager subscription 4");
 
         subscriptionStorage.setStringValue(subscriptionKey, subscriptionValue, "SUBSCRIPTION_TAG");
@@ -154,7 +154,7 @@ contract ProjectManager is Ownable, ValidValue, IProjectManager, IUpdateAddress 
      * @return bool 구독 여부
      */
     function isSubscribing(string projectUserHash) external view returns(bool) {
-        if(subscriptionStorage.getUintValue(projectUserHash) == 0 || subscriptionStorage.getUintValue(projectUserHash).div(1000) < now) {
+        if(subscriptionStorage.getUintValue(projectUserHash).div(1000) > now) {
             return true;
         }
     }
