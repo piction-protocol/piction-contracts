@@ -27,7 +27,7 @@ contract SponsorshipConnector is Ownable, ContractReceiver, ValidValue {
 
         iPxl.transferFrom(from, cp, value);
 
-        emit SponsorContentProvider(from, cp, value, now);
+        emit SponsorContentProvider(from, cp, value, now * 1000);
     }
 
     function putContentProvider(address cp) external onlyOwner validAddress(cp) {
