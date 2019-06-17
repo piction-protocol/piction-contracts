@@ -61,13 +61,13 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
         address contentsProvider = projectManager.getWriter(projectHash);
         require(contentsProvider != address(0), "ContentsRevenue calculateDistributionPxl 1");
 
-        uint256 supporterPoolRate = 0; // supporterPool.getSupporterPoolRate(projectHash).div(DECIMALS);
+        //uint256 supporterPoolRate = 0; // supporterPool.getSupporterPoolRate(projectHash).div(DECIMALS);
 
         DistributionInfo memory distributionInfo = DistributionInfo(
             amount.mul(cdRate).div(DECIMALS),
-            amount.mul(pictionNetwork.getRate(USERADOPTIONPOOL)).div(DECIMALS),
-            amount.mul(pictionNetwork.getRate(ECOSYSTEMFUND)).div(DECIMALS),
-            amount.mul(supporterPoolRate).div(DECIMALS)
+            0, //amount.mul(pictionNetwork.getRate(USERADOPTIONPOOL)).div(DECIMALS),
+            0, //amount.mul(pictionNetwork.getRate(ECOSYSTEMFUND)).div(DECIMALS),
+            0 //amount.mul(supporterPoolRate).div(DECIMALS)
         );
 
         addresses[0] = pictionNetwork.getAddress(USERADOPTIONPOOL);
@@ -76,7 +76,7 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
         addresses[1] = pictionNetwork.getAddress(ECOSYSTEMFUND);
         amounts[1] = distributionInfo.ecosystemFund;
 
-        addresses[2] = pictionNetwork.getAddress(SUPPORTERPOOL);
+        addresses[2] = owner();   //pictionNetwork.getAddress(SUPPORTERPOOL);
         amounts[2] = distributionInfo.supporterPool;
 
         addresses[3] = contentsProvider;
