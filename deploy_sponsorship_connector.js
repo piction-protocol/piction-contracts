@@ -16,7 +16,7 @@ global.gasLimit = 8000000
 
 console.log('current env: ' + process.env.NODE_ENV);
 
-const Compile = require('./scripts/deploy/pre_load/Compile');
+const Compile = require('./scripts/deploy/sponsorship/Compile');
 
 if (process.env.PRIVATE_KEY) {
     caver.klay.accounts.wallet.add('0x' + process.env.PRIVATE_KEY);
