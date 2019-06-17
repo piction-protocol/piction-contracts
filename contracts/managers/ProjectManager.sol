@@ -150,23 +150,10 @@ contract ProjectManager is Ownable, ValidValue, IProjectManager, IUpdateAddress 
 
     /**
      * @dev project 구독 여부 확인
-     * @param subscriptionHash project 구독 당시에 생성 된 hash
-     * @return bool 구독 여부
-     */
-    function isSubscribingByKey(string subscriptionHash) external view returns(bool) {
-        string memory subscriptionValue = subscriptionStorage.getStringValue(subscriptionHash);
-
-        if(subscriptionStorage.getUintValue(subscriptionValue) == 0 || subscriptionStorage.getUintValue(subscriptionValue).div(1000) < now) {
-            return true;
-        }
-    }
-
-    /**
-     * @dev project 구독 여부 확인
      * @param projectUserHash project, user로 생성한 hash
      * @return bool 구독 여부
      */
-    function isSubscribingByValue(string projectUserHash) external view returns(bool) {
+    function isSubscribing(string projectUserHash) external view returns(bool) {
         if(subscriptionStorage.getUintValue(projectUserHash) == 0 || subscriptionStorage.getUintValue(projectUserHash).div(1000) < now) {
             return true;
         }
