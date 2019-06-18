@@ -4,6 +4,7 @@ const contract = new caver.klay.Contract(input.abi);
 const replace = require('replace-in-file');
 const PictionNetwork = require('./PictionNetwork');
 const decimals = caver.utils.toBN(18);
+const pictionInput = JSON.parse(fs.readFileSync('build/contracts/PictionNetwork.json'));
 
 module.exports = async () => {
     log(`>>>>>>>>>> [ContentsDistributor] <<<<<<<<<<`);
@@ -36,8 +37,8 @@ module.exports = async () => {
     try {
         await replace({
             files: `.env.${process.env.NODE_ENV}`,
-            from: /CONTENTSDISTRIBUTOR_ADDRESS==.*/g,
-            to: `CONTENTSDISTRIBUTOR_ADDRESS==${instance.contractAddress}`
+            from: /CONTENTSDISTRIBUTOR_ADDRESS=.*/g,
+            to: `CONTENTSDISTRIBUTOR_ADDRESS=${instance.contractAddress}`
         });
     }
     catch (error) {
@@ -50,6 +51,6 @@ module.exports = async () => {
     log(`-------------------------------------------------------------------`);
 
     if (process.env.PICTIONNETWORK_ADDRESS) {
-        await PictionNetwork('ContentsDistributor', cdAddress, cdName)
+        await PictionNetwork('ContentsDistributor', instance.contractAddress, cdName)
     }
 }
