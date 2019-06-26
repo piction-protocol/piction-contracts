@@ -5,23 +5,19 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsRevenue.sol";
-import "../interfaces/IProjectManager.sol";
-import "../interfaces/IUpdateAddress.sol";
 // import "../interfaces/ISupporterPool.sol";
 import "../utils/ValidValue.sol";
 
-contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddress {
+contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue {
     using SafeMath for uint256;
 
     IPictionNetwork private pictionNetwork;
-    IProjectManager private projectManager;
     // ISupporterPool private supporterPool;
     
     uint256 private constant DECIMALS = 10 ** 18;
     string private constant USERADOPTIONPOOL = "UserAdoptionPool";
-    string private constant SUPPORTERPOOL = "SupporterPool";
     string private constant ECOSYSTEMFUND = "EcosystemFund";
-    string private constant PROJECTMANAGER = "ProjectManager";
+    //string private constant SUPPORTERPOOL = "SupporterPool";
 
     struct DistributionInfo {
         uint256 contentsDistributor;
@@ -32,34 +28,30 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
 
     constructor(address pictionNetworkAddress) public validAddress(pictionNetworkAddress) {
         pictionNetwork = IPictionNetwork(pictionNetworkAddress);
-        projectManager = IProjectManager(pictionNetwork.getAddress(PROJECTMANAGER));
         // supporterPool = ISupporterPool(pictionNetwork.getAddress(SUPPORTERPOOL));
     }
 
     /**
      * @dev 전송된 PXL을 각 비율별로 계산
      * @param cdRate ContentsDistributor의 분배 비율
-     * @param contentHash 구매한 content의 hash
+     * @param cp 구독한 project의 작가 주소
      * @param amount 전송받은 PXL 수량
      */
     function calculateDistributionPxl(
         uint256 cdRate, 
-        string contentHash, 
+        address cp, 
         uint256 amount
     )
         external 
         view
         validRate(cdRate)
-        validString(contentHash)
+        validAddress(cp)
         returns(address[] memory addresses, uint256[] memory amounts)
     {
         require(amount > 0, "ContentsRevenue calculateDistributionPxl 0");
         
         addresses = new address[](4);
         amounts = new uint256[](4);
-
-        address contentsProvider = projectManager.getWriter(contentHash);
-        require(contentsProvider != address(0), "ContentsRevenue calculateDistributionPxl 1");
 
         uint256 supporterPoolRate = 0; // supporterPool.getSupporterPoolRate(contentHash).div(DECIMALS);
 
@@ -76,23 +68,10 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue, IUpdateAddres
         addresses[1] = pictionNetwork.getAddress(ECOSYSTEMFUND);
         amounts[1] = distributionInfo.ecosystemFund;
 
-        addresses[2] = pictionNetwork.getAddress(SUPPORTERPOOL);
+        addresses[2] = owner();         // pictionNetwork.getAddress(SUPPORTERPOOL);
         amounts[2] = distributionInfo.supporterPool;
 
-        addresses[3] = contentsProvider;
+        addresses[3] = cp;
         amounts[3] = amount.sub(distributionInfo.contentsDistributor).sub(distributionInfo.userAdoptionPool).sub(distributionInfo.ecosystemFund).sub(distributionInfo.supporterPool);
-    }
-
-    /**
-     * @dev 저장된 주소를 업데이트
-     */
-    function updateAddress() external {
-        require(msg.sender == address(pictionNetwork), "ContentsRevenue updateAddress 0");
-        
-        address pManager = pictionNetwork.getAddress(PROJECTMANAGER);
-        emit UpdateAddress(address(projectManager), pManager);
-        projectManager = IProjectManager(pManager);
-
-        // supporterPool = ISupporterPool(pictionNetwork.getAddress(SUPPORTERPOOL));
     }
 }

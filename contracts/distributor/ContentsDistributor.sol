@@ -7,6 +7,7 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsRevenue.sol";
 import "../interfaces/IUpdateAddress.sol";
+import "../interfaces/IProject.sol";
 import "../utils/BytesLib.sol";
 import "../utils/StringLib.sol";
 import "../utils/ValidValue.sol";
@@ -59,8 +60,7 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
      * @param value 토큰 권리 위임 수량
      * @param token PXL 컨트랙트 주소
      * @param data 기타 파라미터 :
-                    [Content Hash 66]
-                    [Sale type 32]
+                    [Project Address 20]
      */
     function receiveApproval(
         address from,
@@ -72,22 +72,19 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     {
         require(address(pxlToken) == token, "ContentsDistributor receiveApproval 0");
         require(value > 0, "ContentsDistributor receiveApproval 1");
-        
-        string memory contentHash = string(data.slice(0, 66));
-        require(!contentHash.isEmptyString(), "ContentsDistributor receiveApproval 2");
-        
-        uint256 saleType = data.toUint(66);
+
+        address cp = IProject(data.toAddress(0)).getProjectOwner();
+        require(cp != address(0), "ContentsDistributor receiveApproval 2");
         
         pxlToken.transferFrom(from, address(this), value);
 
-        (address[] memory addresses, uint256[] memory amounts) = contentsRevenue.calculateDistributionPxl(distributionRate, contentHash, value);
+        (address[] memory addresses, uint256[] memory amounts) = contentsRevenue.calculateDistributionPxl(distributionRate, cp, value);
         
         for (uint256 i = 0; i < addresses.length; i++) { 
             if (amounts[i] > 0) {
                 pxlToken.transfer(addresses[i], amounts[i]);
             }
         }
-        // projectManager.purchase(from, contentHash, saleType);
     }
 
      /**
