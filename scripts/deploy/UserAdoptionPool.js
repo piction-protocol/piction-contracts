@@ -3,6 +3,7 @@ const input = JSON.parse(fs.readFileSync('build/contracts/UserAdoptionPool.json'
 const contract = new caver.klay.Contract(input.abi);
 const replace = require('replace-in-file');
 const PictionNetwork = require('./PictionNetwork');
+const pictionInput = JSON.parse(fs.readFileSync('build/contracts/PictionNetwork.json'));
 
 module.exports = async () => {
     log(`>>>>>>>>>> [UserAdoptionPool] <<<<<<<<<<`);
@@ -15,6 +16,9 @@ module.exports = async () => {
         error('PictionNetwork is not deployed!! Please after PictionNetwork deployment.');
         return;
     }
+
+    const name = 'UserAdoptionPool';
+    const rate = 0;
 
     let instance = await contract.deploy({
         data: input.bytecode,
@@ -44,4 +48,13 @@ module.exports = async () => {
     if (process.env.PICTIONNETWORK_ADDRESS) {
         await PictionNetwork('UserAdoptionPool')
     }
+
+    info(`> ${name} set rate: ${rate}`)
+    
+    const pictionContract = new caver.klay.Contract(pictionInput.abi, piction);
+    await pictionContract.methods.setRate(name, rate).send({
+        from: caver.klay.accounts.wallet[0].address,
+        gas: gasLimit,
+        gasPrice: gasPrice
+    });
 }

@@ -6,7 +6,7 @@ const PictionNetwork = require('./PictionNetwork');
 const ProjectStorage = require('./ProjectStorage');
 const RelationStorage = require('./RelationStorage');
 
-module.exports = async () => {
+module.exports = async (stage) => {
     log(`>>>>>>>>>> [ProjectManager] <<<<<<<<<<`);
     
     console.log('> Deploying ProjectManager.');
@@ -20,12 +20,12 @@ module.exports = async () => {
         return;
     }
 
-    if (!accountsStorage) {
+    if (!stage && !accountsStorage) {
         error('Project Storage is not deployed!! Please after Project Storage deployment.');
         return;
     }
 
-    if (!relationStorage) {
+    if (!stage && !relationStorage) {
         error('Relation Storage is not deployed!! Please after Relation Storage deployment.');
         return;
     }
@@ -59,11 +59,11 @@ module.exports = async () => {
         await PictionNetwork('ProjectManager')
     }
 
-    if (process.env.PROJECTSTORAGE_ADDRESS) {
+    if (!stage && process.env.PROJECTSTORAGE_ADDRESS) {
         await ProjectStorage(instance.contractAddress)
     }
 
-    if (process.env.RELATIONSTORAGE_ADDRESS) {
+    if (!stage && process.env.RELATIONSTORAGE_ADDRESS) {
         await RelationStorage(instance.contractAddress)
     }
 }

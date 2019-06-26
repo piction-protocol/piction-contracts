@@ -83,6 +83,10 @@ async function init() {
     if (process.env.ECOSYSTEMFUND_ADDRESS) {
         await setAddress('EcosystemFund');
     }
+
+    if (process.env.AIRDROP_ADDRESS) {
+        await setAddress('Airdrop');
+    }
 }
 
 async function setAddress(type) {
@@ -176,6 +180,14 @@ async function setAddress(type) {
             break;
         }
         address = ecosystemFund;
+        break;
+    case 'Airdrop':
+        const airdrop = process.env.AIRDROP_ADDRESS;
+        if (!airdrop) {
+            error('AIRDROP is not deployed!! Please after AIRDROP deployment.');
+            break;
+        }
+        address = airdrop;
         break;
     default:
         error('type is undefined.')
