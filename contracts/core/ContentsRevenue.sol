@@ -47,9 +47,7 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue {
         validRate(cdRate)
         validAddress(cp)
         returns(address[] memory addresses, uint256[] memory amounts)
-    {
-        require(amount > 0, "ContentsRevenue calculateDistributionPxl 0");
-        
+    {   
         addresses = new address[](4);
         amounts = new uint256[](4);
 
