@@ -73,7 +73,7 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         require(address(pxlToken) == token, "ContentsDistributor receiveApproval 0");
         require(value > 0, "ContentsDistributor receiveApproval 1");
 
-        address cp = IProject(data.toAddress(0)).getProjectOwner();
+        address cp = IProject(data.slice(0, 20).toAddress(0)).getProjectOwner();
         require(cp != address(0), "ContentsDistributor receiveApproval 2");
         
         pxlToken.transferFrom(from, address(this), value);
