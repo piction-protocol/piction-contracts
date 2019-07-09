@@ -1,6 +1,6 @@
 const Enquirer = require('enquirer');
 
-module.exports = async () => {
+module.exports = async (stage) => {
     const enquirer = new Enquirer();
     const questions = [{
         type: 'radio',
@@ -10,6 +10,6 @@ module.exports = async () => {
     }];
     enquirer.register('radio', require('prompt-radio'));
     enquirer.ask(questions)
-        .then((answers) => require(`./${answers.result}.js`)())
+        .then((answers) => require(`./${answers.result}.js`)(stage))
         .catch((err) => log(err));
 };

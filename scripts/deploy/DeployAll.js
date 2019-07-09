@@ -11,31 +11,41 @@ const ContentsRevenue = require('./ContentsRevenue');
 const ContentsDistributor = require('./ContentsDistributor');
 const UserAdoptionPool = require('./UserAdoptionPool');
 const EcosystemFund = require('./EcosystemFund');
+const Airdrop = require('./Airdrop');
 
-module.exports = async () => {
+module.exports = async (stage) => {
     await CleanEnv();
 
-    await PictionNetwork();
+    await PictionNetwork('deploy', stage);
 
-    await PXL();
+    await PXL(stage);
 
-    await AccountsStorage();
-
-    await ProjectStorage();
-
-    await RelationStorage();
-
-    await AccountsManager();
-    
-    await ProjectManager();
-    
-    await PostManager();
-
-    await ContentsRevenue();
-
-    await ContentsDistributor();
-
-    await UserAdoptionPool();
-
-    await EcosystemFund();
+    switch(stage) {
+        case 'baobab':
+            await ProjectManager(stage);
+        
+            await ContentsRevenue();
+        
+            await ContentsDistributor();
+        
+            await UserAdoptionPool(stage);
+        
+            await EcosystemFund(stage);
+        
+            await Airdrop(stage);
+            break;
+        case 'cypress':
+            await ProjectManager(stage);
+            
+            await ContentsRevenue();
+        
+            await ContentsDistributor();
+        
+            await UserAdoptionPool(stage);
+        
+            await EcosystemFund(stage);
+            break;
+        default:
+            error("stage is null, please check process argv.")
+    }    
 };

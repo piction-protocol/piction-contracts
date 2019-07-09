@@ -49,7 +49,7 @@ module.exports = async () => {
     log(`-------------------------------------------------------------------`);
 
     if (process.env.PICTIONNETWORK_ADDRESS) {
-        await PictionNetwork('AccountsManager')
+        await PictionNetwork('setting', 'AccountsManager')
     }
 
     if (process.env.ACCOUNTSSTORAGE_ADDRESS) {

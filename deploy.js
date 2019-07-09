@@ -1,4 +1,16 @@
-require('dotenv-flow').config({default_node_env: 'klaytn'});
+
+var stage;
+
+if(process.argv.length <= 2) {
+    console.error(`Please check parameter. ex) node deploy.js cypress[baobab]`)
+    return;
+}
+
+stage = process.argv[2];
+console.log('current env: ' + stage);
+
+
+require('dotenv-flow').config({default_node_env: stage});
 const colors = require('colors');
 const BigNumber = require('bignumber.js');
 const Compile = require('./scripts/deploy/Compile');
@@ -13,8 +25,8 @@ global.ether = (value) => new BigNumber(value * Math.pow(10, 18));
 global.gasPrice = '25000000000'
 global.gasLimit = 8000000
 
+log('current RPC_NODE: ' + process.env.RPC_NODE);
 
-console.log('current env: ' + process.env.NODE_ENV);
 
 if (process.env.PRIVATE_KEY) {
     caver.klay.accounts.wallet.add('0x' + process.env.PRIVATE_KEY);
@@ -24,4 +36,4 @@ if (process.env.PRIVATE_KEY) {
     process.exit(0)
 }
 
-Compile()
+Compile(stage)

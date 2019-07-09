@@ -3,21 +3,26 @@ const input = JSON.parse(fs.readFileSync('build/contracts/PictionNetwork.json'))
 const contract = new caver.klay.Contract(input.abi);
 const replace = require('replace-in-file');
 
-module.exports = async (type, cdAddress, cdName) => {
+module.exports = async (type, name, cdAddress, cdName) => {
     log(`>>>>>>>>>> [Piction Network] <<<<<<<<<<`);
 
-    if (!type) {
-        await init();
-    } else if (type == 'ContentsDistributor') {
-        await setCD(cdAddress, cdName);
+    if (type == 'deploy') {
+        await init(name);
+    } else if (type == 'setting') {
+        if(name == 'ContentsDistributor') {
+            await setCD(cdAddress, cdName);
+        } else {
+            await setAddress(name);
+        }
     } else {
-        await setAddress(type);
+        error('Invalid parameter, please check parameter.');
+        return;
     }
 
     log(`-------------------------------------------------------------------`);
 };
 
-async function init() {
+async function init(name) {
     console.log('> Deploying Piction Network.');
 
     let instance = await contract.deploy({
@@ -43,6 +48,20 @@ async function init() {
     }  
 
     info(`PICTIONNETWORK_ADDRESS: ${instance.contractAddress}`);
+
+
+    if(name == 'cypress' || name == 'baobab') {
+        log(`PICTIONNETWORK add owner: ${process.env.PICTIONNETWORK_OWNER}`)
+        const pictionNetwork = new caver.klay.Contract(input.abi, process.env.PICTIONNETWORK_ADDRESS);
+        await pictionNetwork.methods.addOwner(process.env.PICTIONNETWORK_OWNER).send({
+            from: caver.klay.accounts.wallet[0].address,
+            gas: gasLimit,
+            gasPrice: gasPrice
+        });
+
+        const isPictionOwner = await pictionNetwork.methods.owners(process.env.PICTIONNETWORK_OWNER).call();
+        log(`PICTIONNETWORK contract add owner result: ${isPictionOwner}`)
+    }
 
     if (process.env.PXL_ADDRESS) {
         await setAddress('PXL');
@@ -82,6 +101,10 @@ async function init() {
 
     if (process.env.ECOSYSTEMFUND_ADDRESS) {
         await setAddress('EcosystemFund');
+    }
+
+    if (process.env.AIRDROP_ADDRESS) {
+        await setAddress('Airdrop');
     }
 }
 
@@ -176,6 +199,14 @@ async function setAddress(type) {
             break;
         }
         address = ecosystemFund;
+        break;
+    case 'Airdrop':
+        const airdrop = process.env.AIRDROP_ADDRESS;
+        if (!airdrop) {
+            error('AIRDROP is not deployed!! Please after AIRDROP deployment.');
+            break;
+        }
+        address = airdrop;
         break;
     default:
         error('type is undefined.')
