@@ -34,7 +34,7 @@ contract ProjectManager is ValidValue {
      * @param uri 프로젝트 고유한 uri 정보
      * @return uri 중복 여부
      */
-    function isExisteduri(string uri) external view returns(bool) {
+    function isExistedUri(string uri) external view returns(bool) {
         return uriChecker[uri];
     }
 
