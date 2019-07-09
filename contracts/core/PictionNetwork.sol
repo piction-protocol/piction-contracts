@@ -1,11 +1,11 @@
 pragma solidity ^0.4.24;
 
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IUpdateAddress.sol";
 import "../utils/ValidValue.sol";
+import "../utils/ExtendsOwnable.sol";
 
-contract PictionNetwork is IPictionNetwork, Ownable, ValidValue {
+contract PictionNetwork is IPictionNetwork, ExtendsOwnable, ValidValue {
 
     mapping (string => bool) private registeredAddress;
     mapping (string => bool) private registeredRate;
