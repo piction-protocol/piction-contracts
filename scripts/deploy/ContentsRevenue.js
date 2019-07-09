@@ -42,6 +42,6 @@ module.exports = async () => {
     log(`-------------------------------------------------------------------`);
 
     if (process.env.PICTIONNETWORK_ADDRESS) {
-        await PictionNetwork('ContentsRevenue')
+        await PictionNetwork('setting', 'ContentsRevenue')
     }
 }

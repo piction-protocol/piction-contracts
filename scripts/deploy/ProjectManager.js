@@ -56,7 +56,7 @@ module.exports = async (stage) => {
     log(`-------------------------------------------------------------------`);
 
     if (process.env.PICTIONNETWORK_ADDRESS) {
-        await PictionNetwork('ProjectManager')
+        await PictionNetwork('setting', 'ProjectManager')
     }
 
     if (!stage && process.env.PROJECTSTORAGE_ADDRESS) {

@@ -2,7 +2,7 @@ const Enquirer = require('enquirer');
 const SelectDeploy = require('./SelectDeploy');
 var exec = require('child_process').exec;
 
-module.exports = async () => {
+module.exports = async (stage) => {
   const enquirer = new Enquirer();
   const questions = [{
       type: 'radio',
@@ -18,10 +18,10 @@ module.exports = async () => {
           exec("truffle compile", function(error, stdout, stderr) {
             console.log(stdout);
             log(`-------------------------------------------------------------------`);
-            SelectDeploy();
+            SelectDeploy(stage);
           });
         } else {
-          SelectDeploy();
+          SelectDeploy(stage);
         }
       })
       .catch((err) => log(err));

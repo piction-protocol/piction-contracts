@@ -41,7 +41,7 @@ module.exports = async (stage) => {
     log(`-------------------------------------------------------------------`);
 
     if (process.env.PICTIONNETWORK_ADDRESS) {
-        await PictionNetwork('Airdrop')
+        await PictionNetwork('setting', 'Airdrop')
     }
 
     log(`Send PXL to Airdrop contract.`);

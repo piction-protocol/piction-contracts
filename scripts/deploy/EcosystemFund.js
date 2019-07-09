@@ -1,11 +1,11 @@
 const fs = require('fs');
-const input = JSON.parse(fs.readFileSync('build/contracts/ProjectStorage.json'));
+const input = JSON.parse(fs.readFileSync('build/contracts/EcosystemFund.json'));
 const contract = new caver.klay.Contract(input.abi);
 const replace = require('replace-in-file');
 const PictionNetwork = require('./PictionNetwork');
 const pictionInput = JSON.parse(fs.readFileSync('build/contracts/PictionNetwork.json'));
 
-module.exports = async () => {
+module.exports = async (stage) => {
     log(`>>>>>>>>>> [EcosystemFund] <<<<<<<<<<`);
     
     console.log('> Deploying EcosystemFund.');
@@ -32,6 +32,22 @@ module.exports = async () => {
         gasPrice: gasPrice
     }); 
 
+    const ecosystemContract = new caver.klay.Contract(input.abi, instance.contractAddress);
+
+    if(stage == 'cypress') {
+        log('> Ecosystem Fund contract transferOwnership: ' + process.env.ECOSYSTEMFUND_OWNER);
+        await ecosystemContract.methods.transferOwnership(process.env.ECOSYSTEMFUND_OWNER).send({
+            from: caver.klay.accounts.wallet[0].address,
+            gas: gasLimit,
+            gasPrice: gasPrice
+        });
+
+        const isEcosystemOwner = await ecosystemContract.methods.isOwner().call({
+            from: process.env.ECOSYSTEMFUND_OWNER
+        });
+        log(`Ecosystem Fund contract transfer owership result: ${isEcosystemOwner}`)
+    }
+
     try {
         await replace({
             files: `.env.${process.env.NODE_ENV}`,
@@ -49,7 +65,7 @@ module.exports = async () => {
     log(`-------------------------------------------------------------------`);
 
     if (process.env.PICTIONNETWORK_ADDRESS) {
-        await PictionNetwork(name)
+        await PictionNetwork('setting', name)
     }
 
     info(`> ${name} set rate: ${rate}`)

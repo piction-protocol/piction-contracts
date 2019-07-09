@@ -52,7 +52,7 @@ async function init() {
     log(`-------------------------------------------------------------------`);
 
     if (process.env.PICTIONNETWORK_ADDRESS) {
-        await PictionNetwork('RelationStorage')
+        await PictionNetwork('setting', 'RelationStorage')
     }
 }
 
