@@ -25,6 +25,7 @@ contract ProjectManager is ValidValue {
         require(!uriChecker[uri], "ProjectManager createProject 0");
 
         address project = new Project(uri, title, subscriptionPrice, msg.sender);
+        uriChecker[uri] = true;
 
         emit DeployProject(msg.sender, project, now * 1000);
     }

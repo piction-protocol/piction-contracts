@@ -26,7 +26,7 @@ module.exports = async (stage) => {
         
             await ContentsRevenue();
         
-            await ContentsDistributor();
+            await ContentsDistributor(stage);
         
             await UserAdoptionPool(stage);
         
@@ -39,7 +39,7 @@ module.exports = async (stage) => {
             
             await ContentsRevenue();
         
-            await ContentsDistributor();
+            await ContentsDistributor(stage);
         
             await UserAdoptionPool(stage);
         
