@@ -4,6 +4,7 @@ const contract = new caver.klay.Contract(input.abi);
 const replace = require('replace-in-file');
 const PictionNetwork = require('./PictionNetwork');
 const decimals = caver.utils.toBN(18);
+const pictionInput = JSON.parse(fs.readFileSync('build/contracts/PictionNetwork.json'));
 
 module.exports = async (stage) => {
     log(`>>>>>>>>>> [ContentsDistributor] <<<<<<<<<<`);
@@ -68,4 +69,17 @@ module.exports = async (stage) => {
     if (process.env.PICTIONNETWORK_ADDRESS) {
         await PictionNetwork('setting', 'ContentsDistributor', instance.contractAddress, cdName)
     }
+
+    const distributeRate = 10;
+    const distributeRateBN = caver.utils.toBN(rate);
+    const distributeRateHex = '0x' + rateBN.mul(caver.utils.toBN(10).pow(caver.utils.toBN(16))).toString('hex');
+
+    info(`> ContentsDistributor set rate: ${rate}`)
+    
+    const pictionContract = new caver.klay.Contract(pictionInput.abi, piction);
+    await pictionContract.methods.setRate('ContentsDistributor', distributeRateHex).send({
+        from: caver.klay.accounts.wallet[0].address,
+        gas: gasLimit,
+        gasPrice: gasPrice
+    });
 }
