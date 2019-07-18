@@ -71,10 +71,10 @@ module.exports = async (stage) => {
     }
 
     const distributeRate = 10;
-    const distributeRateBN = caver.utils.toBN(rate);
-    const distributeRateHex = '0x' + rateBN.mul(caver.utils.toBN(10).pow(caver.utils.toBN(16))).toString('hex');
+    const distributeRateBN = caver.utils.toBN(distributeRate);
+    const distributeRateHex = '0x' + distributeRateBN.mul(caver.utils.toBN(10).pow(caver.utils.toBN(16))).toString('hex');
 
-    info(`> ContentsDistributor set rate: ${rate}`)
+    info(`> ContentsDistributor set rate: ${distributeRate}`)
     
     const pictionContract = new caver.klay.Contract(pictionInput.abi, piction);
     await pictionContract.methods.setRate('ContentsDistributor', distributeRateHex).send({
