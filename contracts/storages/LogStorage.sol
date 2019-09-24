@@ -39,6 +39,13 @@ contract LogStorage is IProxy, ExtendsOwnable {
         emit Like(project, user, postId, platform); 
     }
 
+    function sponsorship(address sponsor, address creator, uint256 amount, string platform) external {
+        require(sponsor != address(0), "LogStorage sponsorship 0");
+        require(creator != address(0), "LogStorage sponsorship 1");
+
+        emit Sponsorship(sponsor, creator, amount, platform);
+    }
+
     event SignIn(address indexed user, string platform);
     event SignUp(address indexed user, string platform);
     event View(address indexed project, address indexed user, uint256 postId, string platform);
