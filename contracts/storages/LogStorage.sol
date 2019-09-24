@@ -1,6 +1,7 @@
 pragma solidity ^0.4.24;
 
 import "../interfaces/IProxy.sol";
+import "../interfaces/IProject.sol";
 import "../utils/ExtendsOwnable.sol";
 
 
