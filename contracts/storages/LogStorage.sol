@@ -15,6 +15,12 @@ contract LogStorage is IProxy, ExtendsOwnable {
         emit SignUp(user, platform);
     }
 
+    function viewCount(address project, address user, uint256 postId, string platform) external {
+        require(IProject(project).getProjectOwner() != address(0), "LogStorage viewCount 0");
+
+        emit View(project, user, postId, platform); 
+    }
+
     event SignIn(address indexed user, string platform);
     event SignUp(address indexed user, string platform);
     event View(address indexed project, address indexed user, uint256 postId, string platform);
