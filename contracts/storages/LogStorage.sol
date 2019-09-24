@@ -15,43 +15,41 @@ contract LogStorage is IProxy, ExtendsOwnable {
         emit SignUp(user, platform);
     }
 
-    function viewCount(address project, address user, uint256 postId, string platform) external {
+    function viewCount(address project, uint256 postId, string platform) external {
         require(IProject(project).getProjectOwner() != address(0), "LogStorage viewCount 0");
 
-        emit View(project, user, postId, platform); 
+        emit View(project, msg.sender, postId, platform); 
     }
 
-    function subscription(address project, address user, uint256 price, string platform) external {
+    function subscription(address project, uint256 price, string platform) external {
         require(IProject(project).getProjectOwner() != address(0), "LogStorage subscription 0");
 
-        emit Subscription(project, user, price, platform); 
+        emit Subscription(project, msg.sender, price, platform); 
     }
 
-    function unSubscription(address project, address user, string platform) external {
+    function unSubscription(address project, string platform) external {
         require(IProject(project).getProjectOwner() != address(0), "LogStorage unSubscription 0");
 
-        emit UnSubscription(project, user, platform); 
+        emit UnSubscription(project, msg.sender, platform); 
     }
 
-    function like(address project, address user, uint256 postId, string platform) external {
+    function like(address project, uint256 postId, string platform) external {
         require(IProject(project).getProjectOwner() != address(0), "LogStorage like 0");
 
-        emit Like(project, user, postId, platform); 
+        emit Like(project, msg.sender, postId, platform); 
     }
 
-    function sponsorship(address sponsor, address creator, uint256 amount, string platform) external {
-        require(sponsor != address(0), "LogStorage sponsorship 0");
-        require(creator != address(0), "LogStorage sponsorship 1");
+    function sponsorship(address creator, uint256 amount, string platform) external {
+        require(creator != address(0), "LogStorage sponsorship 0");
 
-        emit Sponsorship(sponsor, creator, amount, platform);
+        emit Sponsorship(msg.sender, creator, amount, platform);
     }
 
-    function tag(uint256 tagId, address user, string tag, string platform) external {
+    function tag(uint256 tagId, string tag, string platform) external {
         require(tagId > 0, "LogStorage tag 0");
-        require(user != address(0), "LogStorage sponsorship 1");
-        require(bytes(tag).length > 0, "LogStorage sponsorship 2");
+        require(bytes(tag).length > 0, "LogStorage sponsorship 1");
 
-        emit SearchTag(tagId, user, tag, platform);
+        emit SearchTag(tagId, msg.sender, tag, platform);
     }
 
     event SignIn(address indexed user, string platform);
