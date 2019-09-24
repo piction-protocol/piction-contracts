@@ -27,6 +27,12 @@ contract LogStorage is IProxy, ExtendsOwnable {
         emit Subscription(project, user, price, platform); 
     }
 
+    function unSubscription(address project, address user, string platform) external {
+        require(IProject(project).getProjectOwner() != address(0), "LogStorage unSubscription 0");
+
+        emit UnSubscription(project, user, platform); 
+    }
+
     event SignIn(address indexed user, string platform);
     event SignUp(address indexed user, string platform);
     event View(address indexed project, address indexed user, uint256 postId, string platform);
