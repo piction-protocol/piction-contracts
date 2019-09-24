@@ -56,5 +56,16 @@ contract("Test LogStorage with Proxy contract", async function (accounts){
         await await proxy.setTargetAddress(logStorage.address, {from: owner});
     });
 
-    
+    it("Test sign up and sign in", async() => {
+        const proxyContract = LogStorage.at(proxy.address);
+
+        let result;
+        result = await proxyContract.signUp(creator, "test", {from: owner});
+        result.receipt.status.should.be.equals("0x1");
+
+        result = await proxyContract.signIn(creator, "test", {from: owner});
+        result.receipt.status.should.be.equals("0x1");
+
+        await proxyContract.signIn(creator, "test", {from: invalidUser}).should.be.rejected;
+    });
 });
