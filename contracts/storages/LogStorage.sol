@@ -46,6 +46,14 @@ contract LogStorage is IProxy, ExtendsOwnable {
         emit Sponsorship(sponsor, creator, amount, platform);
     }
 
+    function tag(uint256 tagId, address user, string tag, string platform) external {
+        require(tagId > 0, "LogStorage tag 0");
+        require(user != address(0), "LogStorage sponsorship 1");
+        require(bytes(tag).length > 0, "LogStorage sponsorship 2");
+
+        emit SearchTag(tagId, user, tag, platform);
+    }
+
     event SignIn(address indexed user, string platform);
     event SignUp(address indexed user, string platform);
     event View(address indexed project, address indexed user, uint256 postId, string platform);
