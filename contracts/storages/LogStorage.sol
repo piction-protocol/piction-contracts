@@ -1,5 +1,7 @@
 pragma solidity ^0.4.24;
 
-contract LogStorage {
+import "../interfaces/IProxy.sol";
+
+contract LogStorage is IProxy {
 
 }
