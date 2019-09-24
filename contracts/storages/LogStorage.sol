@@ -10,6 +10,10 @@ contract LogStorage is IProxy, ExtendsOwnable {
         emit SignIn(user, platform);
     }
 
+    function signUp(address user, string platform) external onlyOwner {
+        emit SignUp(user, platform);
+    }
+
     event SignIn(address indexed user, string platform);
     event SignUp(address indexed user, string platform);
     event View(address indexed project, address indexed user, uint256 postId, string platform);
