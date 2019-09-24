@@ -6,6 +6,9 @@ import "../utils/ExtendsOwnable.sol";
 
 contract LogStorage is IProxy, ExtendsOwnable {
 
+    function signIn(address user, string platform) external onlyOwner {
+        emit SignIn(user, platform);
+    }
 
     event SignIn(address indexed user, string platform);
     event SignUp(address indexed user, string platform);
