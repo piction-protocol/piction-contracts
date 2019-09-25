@@ -107,10 +107,10 @@ contract("Test LogStorage with Proxy contract", async function (accounts){
         const proxyContract = LogStorage.at(proxy.address);
 
         let result;
-        result = await proxyContract.tag(user, 1, "test", "test", {from: user});
+        result = await proxyContract.tag(1, "test", "test", {from: user});
         result.receipt.status.should.be.equals("0x1");
 
-        await proxyContract.tag(user, 0, "test", "test", {from: user}).should.be.rejected;
-        await proxyContract.tag(user, 1, "", "test", {from: user}).should.be.rejected;
+        await proxyContract.tag(0, "test", "test", {from: user}).should.be.rejected;
+        await proxyContract.tag(1, "", "test", {from: user}).should.be.rejected;
     });
 });
