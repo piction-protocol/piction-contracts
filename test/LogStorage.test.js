@@ -78,39 +78,39 @@ contract("Test LogStorage with Proxy contract", async function (accounts){
         const proxyContract = LogStorage.at(proxy.address);
 
         let result;
-        result = await proxyContract.viewCount(project.address, 1, "test", {from: user});
+        result = await proxyContract.viewCount(user, project.address, 1, "test", {from: user});
         result.receipt.status.should.be.equals("0x1");
 
-        result = await proxyContract.subscription(project.address, 1, "test", {from: user});
+        result = await proxyContract.subscription(user, project.address, 1, "test", {from: user});
         result.receipt.status.should.be.equals("0x1");
 
-        result = await proxyContract.unSubscription(project.address, "test", {from: user});
+        result = await proxyContract.unSubscription(user, project.address, "test", {from: user});
         result.receipt.status.should.be.equals("0x1");
 
-        result = await proxyContract.like(project.address, 1, "test", {from: user});
+        result = await proxyContract.like(user, project.address, 1, "test", {from: user});
         result.receipt.status.should.be.equals("0x1");
 
-        await proxyContract.like(invalidUser, 1, "test", {from: user}).should.be.rejected;
+        await proxyContract.like(user, invalidUser, 1, "test", {from: user}).should.be.rejected;
     });
 
     it("Test sponsorship", async() => {
         const proxyContract = LogStorage.at(proxy.address);
 
         let result;
-        result = await proxyContract.sponsorship(creator, 1, "test", {from: user});
+        result = await proxyContract.sponsorship(user, creator, 1, "test", {from: user});
         result.receipt.status.should.be.equals("0x1");
 
-        await proxyContract.sponsorship('0x0', 1, "test", {from: user}).should.be.rejected;
+        await proxyContract.sponsorship(user, '0x0', 1, "test", {from: user}).should.be.rejected;
     });
 
     it("Test tag search", async() => {
         const proxyContract = LogStorage.at(proxy.address);
 
         let result;
-        result = await proxyContract.tag(1, "test", "test", {from: user});
+        result = await proxyContract.tag(user, 1, "test", "test", {from: user});
         result.receipt.status.should.be.equals("0x1");
 
-        await proxyContract.tag(0, "test", "test", {from: user}).should.be.rejected;
-        await proxyContract.tag(1, "", "test", {from: user}).should.be.rejected;
+        await proxyContract.tag(user, 0, "test", "test", {from: user}).should.be.rejected;
+        await proxyContract.tag(user, 1, "", "test", {from: user}).should.be.rejected;
     });
 });
