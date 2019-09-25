@@ -7,6 +7,7 @@ const ContentsDistributor = require('./ContentsDistributor');
 const UserAdoptionPool = require('./UserAdoptionPool');
 const EcosystemFund = require('./EcosystemFund');
 const Airdrop = require('./Airdrop');
+const Proxy = require('./Proxy');
 
 module.exports = async (stage) => {
     await CleanEnv();
@@ -14,6 +15,8 @@ module.exports = async (stage) => {
     await PictionNetwork('deploy', stage);
 
     await PXL(stage);
+
+    await Proxy();
 
     switch(stage) {
         case 'baobab':

@@ -106,6 +106,10 @@ async function init(name) {
     if (process.env.AIRDROP_ADDRESS) {
         await setAddress('Airdrop');
     }
+
+    if (process.env.PROXY_ADDRESS) {
+        await setAddress('Proxy');
+    }
 }
 
 async function setAddress(type) {
@@ -207,6 +211,14 @@ async function setAddress(type) {
             break;
         }
         address = airdrop;
+        break;
+    case 'Proxy':
+        const proxy = process.env.PROXY_ADDRESS;
+        if (!proxy) {
+            error('PROXY is not deployed!! Please after PROXY deployment.');
+            break;
+        }
+        address = proxy;
         break;
     default:
         error('type is undefined.')
