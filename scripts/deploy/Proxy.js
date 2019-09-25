@@ -3,6 +3,7 @@ const input = JSON.parse(fs.readFileSync('build/contracts/Proxy.json'));
 const contract = new caver.klay.Contract(input.abi);
 const replace = require('replace-in-file');
 const PictionNetwork = require('./PictionNetwork');
+const PictionNetworkInput = JSON.parse(fs.readFileSync('build/contracts/PictionNetwork.json'));
 
 module.exports = async () => {
     log(`>>>>>>>>>> [Proxy] <<<<<<<<<<`);
@@ -44,4 +45,18 @@ module.exports = async () => {
     if (process.env.PICTIONNETWORK_ADDRESS) {
         await PictionNetwork('setting', 'Proxy')
     }
+
+    const pictionNetwork = new caver.klay.Contract(PictionNetworkInput.abi, process.env.PICTIONNETWORK_ADDRESS);
+    const logStorageAddress = await pictionNetwork.methods.getAddress("LogStorage").call({
+        from: caver.klay.accounts.wallet[0].address,
+        gas: gasLimit,
+        gasPrice: gasPrice
+    });
+
+    const proxyContract = new caver.klay.Contract(input.abi, instance.contractAddress);
+    proxyContract.methods.setTargetAddress(logStorageAddress).send({
+        from: caver.klay.accounts.wallet[0].address,
+        gas: gasLimit,
+        gasPrice: gasPrice
+    });
 }

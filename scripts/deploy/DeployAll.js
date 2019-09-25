@@ -17,9 +17,9 @@ module.exports = async (stage) => {
 
     await PXL(stage);
 
-    await Proxy();
-
     await LogStorage();
+
+    await Proxy();
 
     switch(stage) {
         case 'baobab':

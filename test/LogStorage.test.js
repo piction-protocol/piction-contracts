@@ -58,7 +58,7 @@ contract("Test LogStorage with Proxy contract", async function (accounts){
         console.log("Completed address setting: " + project.address);
 
         console.log("Set target address for proxy contract");
-        await await proxy.setTargetAddress(logStorage.address, {from: owner});
+        await proxy.setTargetAddress(logStorage.address, {from: owner});
     });
 
     it("Test sign up and sign in", async() => {
