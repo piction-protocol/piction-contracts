@@ -97,4 +97,15 @@ contract("Test LogStorage with Proxy contract", async function (accounts){
 
         await proxyContract.sponsorship('0x0', 1, "test", {from: user}).should.be.rejected;
     });
+
+    it("Test tag search", async() => {
+        const proxyContract = LogStorage.at(proxy.address);
+
+        let result;
+        result = await proxyContract.tag(1, "test", "test", {from: user});
+        result.receipt.status.should.be.equals("0x1");
+
+        await proxyContract.tag(0, "test", "test", {from: user}).should.be.rejected;
+        await proxyContract.tag(1, "", "test", {from: user}).should.be.rejected;
+    });
 });
