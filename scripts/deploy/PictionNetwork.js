@@ -110,6 +110,10 @@ async function init(name) {
     if (process.env.PROXY_ADDRESS) {
         await setAddress('Proxy');
     }
+
+    if (process.env.LOGSTORAGE_ADDRESS) {
+        await setAddress('LogStorage');
+    }
 }
 
 async function setAddress(type) {
@@ -219,6 +223,14 @@ async function setAddress(type) {
             break;
         }
         address = proxy;
+        break;
+    case 'LogStorage':
+        const logStorage = process.env.LOGSTORAGE_ADDRESS;
+        if (!logStorage) {
+            error('LOGSTORAGE is not deployed!! Please after LOGSTORAGE deployment.');
+            break;
+        }
+        address = logStorage;
         break;
     default:
         error('type is undefined.')

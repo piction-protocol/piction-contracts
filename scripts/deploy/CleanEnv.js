@@ -95,6 +95,11 @@ module.exports = async () => {
             from: /PROXY_ADDRESS=.*/g,
             to: `PROXY_ADDRESS=`
         });
+        await replace({
+            files: `.env.${process.env.NODE_ENV}`,
+            from: /LOGSTORAGE_ADDRESS=.*/g,
+            to: `LOGSTORAGE_ADDRESS=`
+        });
     }
     catch (error) {
         console.error('Error occurred: ', error);

@@ -8,6 +8,7 @@ const UserAdoptionPool = require('./UserAdoptionPool');
 const EcosystemFund = require('./EcosystemFund');
 const Airdrop = require('./Airdrop');
 const Proxy = require('./Proxy');
+const LogStorage = require('./LogStorage');
 
 module.exports = async (stage) => {
     await CleanEnv();
@@ -17,6 +18,8 @@ module.exports = async (stage) => {
     await PXL(stage);
 
     await Proxy();
+
+    await LogStorage();
 
     switch(stage) {
         case 'baobab':
