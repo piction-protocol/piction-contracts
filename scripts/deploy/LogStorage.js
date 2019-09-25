@@ -36,7 +36,7 @@ module.exports = async () => {
         console.error('Error occurred: ', error);
     } 
 
-    process.env.PROJECTMANAGER_ADDRESS = instance.contractAddress;
+    process.env.LOGSTORAGE_ADDRESS = instance.contractAddress;
 
     info(`LogStorage_ADDRESS: ${instance.contractAddress}`);
     log(`-------------------------------------------------------------------`);
