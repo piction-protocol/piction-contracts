@@ -47,6 +47,11 @@ contract("Test LogStorage with Proxy contract", async function (accounts){
         console.log("Completed address setting: " + await pictionNetwork.getAddress("LogStorage", {from: owner}));
         console.log();
 
+        console.log("Set proxy address to piction network contract")
+        await pictionNetwork.setAddress("Proxy", proxy.address, {from: owner});
+        console.log("Completed address setting: " + await pictionNetwork.getAddress("Proxy", {from: owner}));
+        console.log();
+
         console.log("Deploy project contract")
         const receipt = await projectManager.createProject("testuri", "testtitle", 0, {from: creator});
         project = Project.at(receipt.receipt.logs[0].address);
