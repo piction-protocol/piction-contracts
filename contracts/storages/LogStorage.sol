@@ -2,16 +2,15 @@ pragma solidity ^0.4.24;
 
 import "../interfaces/IProxy.sol";
 import "../interfaces/IProject.sol";
-import "../utils/ExtendsOwnable.sol";
 
 
-contract LogStorage is IProxy, ExtendsOwnable {
+contract LogStorage is IProxy {
 
-    function signIn(address user, string platform) external onlyOwner {
+    function signIn(address user, string platform) external {
         emit SignIn(user, platform);
     }
 
-    function signUp(address user, string platform) external onlyOwner {
+    function signUp(address user, string platform) external {
         emit SignUp(user, platform);
     }
 
