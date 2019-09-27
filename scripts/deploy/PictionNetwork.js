@@ -106,6 +106,14 @@ async function init(name) {
     if (process.env.AIRDROP_ADDRESS) {
         await setAddress('Airdrop');
     }
+
+    if (process.env.PROXY_ADDRESS) {
+        await setAddress('Proxy');
+    }
+
+    if (process.env.LOGSTORAGE_ADDRESS) {
+        await setAddress('LogStorage');
+    }
 }
 
 async function setAddress(type) {
@@ -207,6 +215,22 @@ async function setAddress(type) {
             break;
         }
         address = airdrop;
+        break;
+    case 'Proxy':
+        const proxy = process.env.PROXY_ADDRESS;
+        if (!proxy) {
+            error('PROXY is not deployed!! Please after PROXY deployment.');
+            break;
+        }
+        address = proxy;
+        break;
+    case 'LogStorage':
+        const logStorage = process.env.LOGSTORAGE_ADDRESS;
+        if (!logStorage) {
+            error('LOGSTORAGE is not deployed!! Please after LOGSTORAGE deployment.');
+            break;
+        }
+        address = logStorage;
         break;
     default:
         error('type is undefined.')

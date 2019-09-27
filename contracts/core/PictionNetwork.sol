@@ -12,8 +12,9 @@ contract PictionNetwork is IPictionNetwork, ExtendsOwnable, ValidValue {
     mapping (string => address) private contentsDistributor;
 
     // Managers: ProjectManager
-    // Core: ContentsRevenue, Airdrop
+    // Core: ContentsRevenue, Airdrop, Proxy
     // Tokens: PXL
+    // Storage: LogStorage
     mapping (string => address) private addressList;
 
     // UserAdoptionPool, EcosystemFund
