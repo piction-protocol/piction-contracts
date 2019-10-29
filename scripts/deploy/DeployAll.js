@@ -9,6 +9,7 @@ const EcosystemFund = require('./EcosystemFund');
 const Airdrop = require('./Airdrop');
 const Proxy = require('./Proxy');
 const LogStorage = require('./LogStorage');
+const ProxyBC = require('./ProxyBC');
 const LogStorageBC = require('./LogStorageBC');
 
 module.exports = async (stage) => {
@@ -23,6 +24,8 @@ module.exports = async (stage) => {
     await LogStorageBC();
 
     await Proxy();
+
+    await ProxyBC();
 
     switch(stage) {
         case 'baobab':
