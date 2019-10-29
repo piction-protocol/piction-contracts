@@ -9,6 +9,7 @@ const EcosystemFund = require('./EcosystemFund');
 const Airdrop = require('./Airdrop');
 const Proxy = require('./Proxy');
 const LogStorage = require('./LogStorage');
+const LogStorageBC = require('./LogStorageBC');
 
 module.exports = async (stage) => {
     await CleanEnv();
@@ -18,6 +19,8 @@ module.exports = async (stage) => {
     await PXL(stage);
 
     await LogStorage();
+
+    await LogStorageBC();
 
     await Proxy();
 

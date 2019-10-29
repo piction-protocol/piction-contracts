@@ -114,6 +114,14 @@ async function init(name) {
     if (process.env.LOGSTORAGE_ADDRESS) {
         await setAddress('LogStorage');
     }
+
+    if (process.env.PROXYBC_ADDRESS) {
+        await setAddress('ProxyBC');
+    }
+
+    if (process.env.LOGSTORAGEBC_ADDRESS) {
+        await setAddress('LogStorageBc');
+    }
 }
 
 async function setAddress(type) {
@@ -231,6 +239,22 @@ async function setAddress(type) {
             break;
         }
         address = logStorage;
+        break;
+    case 'ProxyBC':
+        const proxyBC = process.env.PROXYBC_ADDRESS;
+        if (!proxyBC) {
+            error('PROXYBC is not deployed!! Please after PROXYBC deployment.');
+            break;
+        }
+        address = proxyBC;
+        break;
+    case 'LogStorageBC':
+        const logStorageBC = process.env.LOGSTORAGEBC_ADDRESS;
+        if (!logStorageBC) {
+            error('LOGSTORAGEBC is not deployed!! Please after LOGSTORAGEBC deployment.');
+            break;
+        }
+        address = logStorageBC;
         break;
     default:
         error('type is undefined.')
