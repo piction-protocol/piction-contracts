@@ -100,6 +100,12 @@ module.exports = async () => {
             from: /LOGSTORAGE_ADDRESS=.*/g,
             to: `LOGSTORAGE_ADDRESS=`
         });
+
+        await replace({
+            files: `.env.${process.env.NODE_ENV}`,
+            from: /LOGSTORAGEBC_ADDRESS=.*/g,
+            to: `LOGSTORAGEBC_ADDRESS=`
+        });
     }
     catch (error) {
         console.error('Error occurred: ', error);

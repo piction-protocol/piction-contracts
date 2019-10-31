@@ -6,7 +6,7 @@ module.exports = async (stage) => {
         type: 'radio',
         name: 'result',
         message: 'Which contract would you like to distribute?',
-        choices: ['DeployAll', 'PictionNetwork', 'PXL', 'AccountsStorage', 'ProjectStorage', 'RelationStorage', 'AccountsManager', 'ProjectManager', 'PostManager', 'ContentsRevenue', 'ContentsDistributor', 'UserAdoptionPool', 'EcosystemFund', 'CleanEnv', 'Proxy', 'LogStorage']
+        choices: ['DeployAll', 'PictionNetwork', 'PXL', 'AccountsStorage', 'ProjectStorage', 'RelationStorage', 'AccountsManager', 'ProjectManager', 'PostManager', 'ContentsRevenue', 'ContentsDistributor', 'UserAdoptionPool', 'EcosystemFund', 'CleanEnv', 'Proxy', 'LogStorage', 'ProxyBC', 'LogStorageBC']
     }];
     enquirer.register('radio', require('prompt-radio'));
     enquirer.ask(questions)
