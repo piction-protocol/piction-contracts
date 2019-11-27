@@ -1,43 +1,58 @@
 pragma solidity ^0.4.24;
 
 import "../utils/ValidValue.sol";
-import "./Project.sol";
+import "../utils/ExtendsOwnable.sol";
 
-contract ProjectManager is ValidValue {
 
-    mapping(string => bool) private uriChecker;
+contract ProjectManager is ExtendsOwnable, ValidValue {
 
-    /**
-     * @dev 프로젝트 생성 
-     * @param uri 프로젝트 고유한 uri 정보
-     * @param title 프로젝트 이름
-     * @param subscriptionPrice 프로젝트 구독 가격
-     */
-    function createProject(
-        string uri, 
-        string title, 
-        uint256 subscriptionPrice
-    ) 
-        external
-        validString(uri) 
-        validString(title)
-    {
-        require(!uriChecker[uri], "ProjectManager createProject 0");
-
-        address project = new Project(uri, title, subscriptionPrice, msg.sender);
-        uriChecker[uri] = true;
-
-        emit DeployProject(msg.sender, project, now * 1000);
+    struct project {
+        bool isRegistered;
+        address wallet;
+        string uri;
     }
 
-    /**
-     * @dev 프로젝트 uri 중복 확인
-     * @param uri 프로젝트 고유한 uri 정보
-     * @return uri 중복 여부
-     */
-    function isExistedUri(string uri) external view returns(bool) {
-        return uriChecker[uri];
+    mapping (string => project) projects;
+    mapping (string => bool) isDuplicateString;
+
+    function deploy(string hash, string uri) external validString(hash) validString(uri) {
+        require(!projects[hash].isRegistered, "ProjectManager deploy 0");
+        require(!isDuplicateString[uri], "ProjectManager deploy 1");
+
+        projects[hash].isRegistered = true;
+        projects[hash].wallet = msg.sender;
+        projects[hash].uri = uri;
+
+        isDuplicateString[uri] = true;
+
+        emit Deploy(msg.sender, hash, uri);
     }
 
-    event DeployProject(address indexed sender, address indexed projectAddress, uint256 timestamp);
+    function migration(address user, string hash, string uri) external onlyOwner validString(hash) validString(uri) {
+        require(!projects[hash].isRegistered, "ProjectManager migration 0");
+        require(!isDuplicateString[uri], "ProjectManager migration 1");
+
+        projects[hash].isRegistered = true;
+        projects[hash].wallet = user;
+        projects[hash].uri = uri;
+
+        isDuplicateString[uri] = true;
+
+        emit Migration(msg.sender, user, hash, uri);
+    }
+
+    function stringValidation(string str) external view returns(bool) {
+        return isDuplicateString[str];
+    }
+
+    function getProjectOwner(string hash) external view returns(address) {
+        return projects[hash].wallet;
+    }
+
+    function getProject(string hash) external view returns(bool, address, string) {
+        return (projects[hash].isRegistered, projects[hash].wallet, projects[hash].uri);
+    }
+
+    event Deploy(address indexed sender, string hash, string uri);
+    event Migration(address indexed sender, address indexed user, string hash, string uri);
 }
