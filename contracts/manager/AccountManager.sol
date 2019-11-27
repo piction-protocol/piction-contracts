@@ -2,6 +2,7 @@ pragma solidity ^0.4.24;
 
 import "../utils/ValidValue.sol";
 import "../utils/ExtendsOwnable.sol";
+import "../interfaces/IPictionNetwork.sol";
 
 
 contract AccountManager is ExtendsOwnable, ValidValue {
@@ -14,6 +15,12 @@ contract AccountManager is ExtendsOwnable, ValidValue {
 
     mapping (address => account) accounts;
     mapping (string => bool) isDuplicateString;
+
+    IPictionNetwork private pictionNetwork;
+
+    constructor(address pictionNetworkAddress) public validAddress(pictionNetworkAddress) {
+        pictionNetwork = IPictionNetwork(pictionNetworkAddress);
+    }
 
     function signup(string loginId, string email) external validString(loginId)  validString(email) {
         require(!accounts[msg.sender].isRegistered, "AccountManager signup 0");
