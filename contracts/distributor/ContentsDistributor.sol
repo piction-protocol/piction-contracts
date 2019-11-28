@@ -79,7 +79,8 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         require(address(pxlToken) == token, "ContentsDistributor receiveApproval 0");
         require(value > 0, "ContentsDistributor receiveApproval 1");
 
-        address cp = IManager(pictionNetwork.getAddress(PROJECTMANAGER)).getProjectOwner(string(data.slice(0, 66)));
+        string memory projectHash = string(data.slice(0, 66));
+        address cp = IManager(pictionNetwork.getAddress(PROJECTMANAGER)).getProjectOwner(projectHash);
         require(cp != address(0), "ContentsDistributor receiveApproval 2");
         
         pxlToken.transferFrom(from, address(this), value);
@@ -91,6 +92,8 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
                 pxlToken.transfer(addresses[i], amounts[i]);
             }
         }
+
+        emit Subscription(from, cp, projectHash, value);
     }
 
      /**
@@ -148,4 +151,5 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     event SetRate(string name, uint256 rate);
     event SetCDAddress(string name, address cdAddress);
     event WithdrawPXL(string name, uint256 value);
+    event Subscription(address indexed buyer, address indexed creator, string hash, uint256 price);
 }
