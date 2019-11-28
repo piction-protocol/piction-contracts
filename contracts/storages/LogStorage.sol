@@ -2,6 +2,7 @@ pragma solidity ^0.4.24;
 
 import "../interfaces/IProxy.sol";
 import "../interfaces/IProject.sol";
+import "../interfaces/IProjectManager.sol";
 
 
 contract LogStorage is IProxy {
@@ -13,7 +14,7 @@ contract LogStorage is IProxy {
     function signUp(address user, string platform) external {
         emit SignUp(user, platform);
     }
-
+    
     function viewCount(address user, address project, uint256 postId, string platform) external {
         require(IProject(project).getProjectOwner() != address(0), "LogStorage viewCount 0");
 
@@ -51,6 +52,23 @@ contract LogStorage is IProxy {
         emit SearchTag(tagId, tagName, platform);
     }
 
+    // 컨트랙트 구조 개편 내용 적용
+    function viewCount(address user, string hash, uint256 postId, string platform) external {
+        emit View(user, hash, postId, platform); 
+    }
+
+    function subscription(address user, string hash, uint256 price, string platform) external {
+        emit Subscription(user, hash, price, platform); 
+    }
+
+    function unSubscription(address user, string hash, string platform) external {
+        emit UnSubscription(user, hash, platform); 
+    }
+
+    function like(address user, string hash, uint256 postId, string platform) external {
+        emit Like(user, hash, postId, platform); 
+    }
+
     event SignIn(address indexed user, string platform);
     event SignUp(address indexed user, string platform);
     event View(address indexed project, address indexed user, uint256 postId, string platform);
@@ -59,4 +77,10 @@ contract LogStorage is IProxy {
     event Like(address indexed project, address indexed user, uint256 postId, string platform);
     event Sponsorship(address indexed sponsor, address indexed creator, uint256 amount, string platform);
     event SearchTag(uint256 indexed tagId, string tag, string platform);
+
+    // 컨트랙트 구조 개편 내용 적용
+    event View(address indexed user, string hash, uint256 postId, string platform);
+    event Subscription(address indexed user, string hash, uint256 price, string platform);
+    event UnSubscription(address indexed user, string hash, string platform);
+    event Like(address indexed user, string hash, uint256 postId, string platform);
 }
