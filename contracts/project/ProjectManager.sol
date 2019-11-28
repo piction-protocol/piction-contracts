@@ -44,7 +44,7 @@ contract ProjectManager is ExtendsOwnable, ValidValue {
 
         isDuplicateString[uri] = true;
 
-        emit Deploy(msg.sender, hash, uri);
+        emit CreateProject(msg.sender, hash, uri);
     }
 
     /**
@@ -94,6 +94,6 @@ contract ProjectManager is ExtendsOwnable, ValidValue {
         return (projects[hash].isRegistered, projects[hash].wallet, projects[hash].uri);
     }
 
-    event Deploy(address indexed sender, string hash, string uri);
+    event CreateProject(address indexed sender, string hash, string uri);
     event Migration(address indexed sender, address indexed user, string hash, string uri);
 }
