@@ -48,28 +48,24 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue {
         addresses = new address[](4);
         amounts = new uint256[](4);
 
-        // TODO: PIC 투자에 따른 수수료 비율 조정 
+        // TODO: PIC, DepositPool 등의 컨트랙트 수수료 적용
         DistributionInfo memory distributionInfo = DistributionInfo(
             amount.mul(cdRate).div(DECIMALS),
-            0,          //amount.mul(pictionNetwork.getRate(USERADOPTIONPOOL)).div(DECIMALS),
-            0,          //amount.mul(pictionNetwork.getRate(ECOSYSTEMFUND)).div(DECIMALS),
-            0           //amount.mul(pictionNetwork.getRate(SUPPORTERPOOL)).div(DECIMALS) 
+            amount.mul(pictionNetwork.getRate(USERADOPTIONPOOL)).div(DECIMALS),
+            amount.mul(pictionNetwork.getRate(ECOSYSTEMFUND)).div(DECIMALS),
+            amount.mul(pictionNetwork.getRate(SUPPORTERPOOL)).div(DECIMALS) 
         );
 
-        addresses[0] = cp;
-        amounts[0] = amount.sub(distributionInfo.contentsDistributor);
-
-        // TODO: PIC 투자에 따른 수수료 비율 조정 
-        // addresses[0] = pictionNetwork.getAddress(USERADOPTIONPOOL);
-        // amounts[0] = distributionInfo.userAdoptionPool;
+        addresses[0] = pictionNetwork.getAddress(USERADOPTIONPOOL);
+        amounts[0] = distributionInfo.userAdoptionPool;
         
-        // addresses[1] = pictionNetwork.getAddress(ECOSYSTEMFUND);
-        // amounts[1] = distributionInfo.ecosystemFund;
+        addresses[1] = pictionNetwork.getAddress(ECOSYSTEMFUND);
+        amounts[1] = distributionInfo.ecosystemFund;
 
-        // addresses[2] = pictionNetwork.getAddress(SUPPORTERPOOL);
-        // amounts[2] = distributionInfo.supporterPool;
+        addresses[2] = pictionNetwork.getAddress(SUPPORTERPOOL);
+        amounts[2] = distributionInfo.supporterPool;
 
-        // addresses[3] = cp;
-        // amounts[3] = amount.sub(distributionInfo.contentsDistributor).sub(distributionInfo.userAdoptionPool).sub(distributionInfo.ecosystemFund).sub(distributionInfo.supporterPool);
+        addresses[3] = cp;
+        amounts[3] = amount.sub(distributionInfo.contentsDistributor).sub(distributionInfo.userAdoptionPool).sub(distributionInfo.ecosystemFund).sub(distributionInfo.supporterPool);
     }
 }
