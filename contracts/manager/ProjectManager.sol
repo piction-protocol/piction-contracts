@@ -2,22 +2,23 @@ pragma solidity ^0.4.24;
 
 import "../utils/ValidValue.sol";
 import "../utils/ExtendsOwnable.sol";
-import "../interfaces/IValidation.sol";
+import "../interfaces/IAccountManager.sol";
+import "../interfaces/IProjectmanager.sol";
 import "../interfaces/IPictionNetwork.sol";
 
 /**
  * @title ProjectManager
  * @dev 작가가 생성한 Project 관리
  */
-contract ProjectManager is ExtendsOwnable, ValidValue {
+contract ProjectManager is ExtendsOwnable, ValidValue, IProjectManager {
 
-    struct project {
+    struct Project {
         bool isRegistered;
-        address wallet;
+        address owner;
         string uri;
     }
 
-    mapping (string => project) projects;
+    mapping (string => Project) projects;
     mapping (string => bool) isDuplicateString;
 
     IPictionNetwork private pictionNetwork;
@@ -34,16 +35,7 @@ contract ProjectManager is ExtendsOwnable, ValidValue {
       * @param uri unique uri
       */
     function create(string hash, string uri) external validString(hash) validString(uri) {
-        require(IValidation(pictionNetwork.getAddress(ACCOUNTMANAGER)).accountValidation(msg.sender), "ProjectManager deploy 0");
-        require(!projects[hash].isRegistered, "ProjectManager deploy 1");
-        require(!isDuplicateString[uri], "ProjectManager deploy 2");
-
-        projects[hash].isRegistered = true;
-        projects[hash].wallet = msg.sender;
-        projects[hash].uri = uri;
-
-        isDuplicateString[uri] = true;
-
+        createProject(msg.sender, hash, uri);
         emit CreateProject(msg.sender, hash, uri);
     }
 
@@ -54,17 +46,26 @@ contract ProjectManager is ExtendsOwnable, ValidValue {
       * @param uri unique uri
       */
     function migration(address user, string hash, string uri) external onlyOwner validString(hash) validString(uri) {
-        require(IValidation(pictionNetwork.getAddress(ACCOUNTMANAGER)).accountValidation(user), "ProjectManager migration 0");
-        require(!projects[hash].isRegistered, "ProjectManager migration 1");
-        require(!isDuplicateString[uri], "ProjectManager migration 2");
+        createProject(user, hash, uri);
+        emit Migration(msg.sender, user, hash, uri);
+    }
+
+    /**
+      * @dev 프로젝트 생성 내부 함수
+      * @param user 사용자 public address
+      * @param hash unique hash
+      * @param uri unique uri
+      */
+    function createProject(address user, string hash, string uri) private {
+        require(IAccountManager(pictionNetwork.getAddress(ACCOUNTMANAGER)).accountValidation(user), "ProjectManager createProject 0");
+        require(!projects[hash].isRegistered, "ProjectManager createProject 1");
+        require(!isDuplicateString[uri], "ProjectManager createProject 2");
 
         projects[hash].isRegistered = true;
-        projects[hash].wallet = user;
+        projects[hash].owner = user;
         projects[hash].uri = uri;
 
         isDuplicateString[uri] = true;
-
-        emit Migration(msg.sender, user, hash, uri);
     }
 
     /**
@@ -82,7 +83,7 @@ contract ProjectManager is ExtendsOwnable, ValidValue {
       * @return creator public address
       */
     function getProjectOwner(string hash) external view returns(address) {
-        return projects[hash].wallet;
+        return projects[hash].owner;
     }
 
     /**
@@ -91,7 +92,7 @@ contract ProjectManager is ExtendsOwnable, ValidValue {
       * @return 프로젝트 상세 정보
       */
     function getProject(string hash) external view returns(bool, address, string) {
-        return (projects[hash].isRegistered, projects[hash].wallet, projects[hash].uri);
+        return (projects[hash].isRegistered, projects[hash].owner, projects[hash].uri);
     }
 
     event CreateProject(address indexed sender, string hash, string uri);
