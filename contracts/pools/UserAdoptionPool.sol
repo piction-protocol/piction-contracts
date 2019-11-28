@@ -19,9 +19,12 @@ contract UserAdoptionPool is Ownable, IUserAdoptionPool, ValidValue {
         iPxl = IERC20(iPictionNetwork.getAddress(PXL));
     }
     
-    function refundPxl() external onlyOwner {
+    function withdrawPXL() external onlyOwner {
         uint256 amount = iPxl.balanceOf(address(this));
-
         iPxl.transfer(msg.sender, amount);
+
+        emit WithdrawPXL(msg.sender, amount);
     }
+
+    event WithdrawPXL(address indexed sender, uint256 value);
 }
