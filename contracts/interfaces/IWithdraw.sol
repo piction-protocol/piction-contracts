@@ -1,5 +1,5 @@
 pragma solidity ^0.4.24;
 
-interface IUserAdoptionPool {
+interface IWithdraw {
     function withdrawPXL() external;
 }
