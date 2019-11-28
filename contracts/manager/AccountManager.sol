@@ -3,21 +3,21 @@ pragma solidity ^0.4.24;
 import "../utils/ValidValue.sol";
 import "../utils/ExtendsOwnable.sol";
 import "../interfaces/IPictionNetwork.sol";
+import "../interfaces/IAccountManager.sol";
 
 /**
  * @title AccountManager
  * @dev Piction 계정 정보 관리
  */
-contract AccountManager is ExtendsOwnable, ValidValue {
+contract AccountManager is ExtendsOwnable, ValidValue, IAccountManager {
 
-    struct account {
+    struct Account {
         bool isRegistered;
         string loginId;
         string email;
     }
 
-    mapping (address => account) accounts;
-    mapping (string => bool) isDuplicateString;
+    mapping (address => Account) accounts;
 
     IPictionNetwork private pictionNetwork;
 
@@ -31,17 +31,7 @@ contract AccountManager is ExtendsOwnable, ValidValue {
       * @param email 사용자 email 주소
       */
     function signup(string loginId, string email) external validString(loginId)  validString(email) {
-        require(!accounts[msg.sender].isRegistered, "AccountManager signup 0");
-        require(!isDuplicateString[loginId], "AccountManager signup 1");
-        require(!isDuplicateString[email], "AccountManager signup 2");
-        
-        accounts[msg.sender].isRegistered = true;
-        accounts[msg.sender].loginId = loginId;
-        accounts[msg.sender].email = email;
-
-        isDuplicateString[loginId] = true;
-        isDuplicateString[email] = true;
-
+        createAccount(msg.sender, loginId, email);
         emit Signup(msg.sender, loginId, email);
     }
 
@@ -52,18 +42,22 @@ contract AccountManager is ExtendsOwnable, ValidValue {
       * @param email 사용자 email 주소
       */
     function migration(address user, string loginId, string email) external onlyOwner validString(loginId) validString(email) {
-        require(!accounts[user].isRegistered, "AccountManager migration 0");
-        require(!isDuplicateString[loginId], "AccountManager migration 1");
-        require(!isDuplicateString[email], "AccountManager migration 2");
+        createAccount(user, loginId, email);
+        emit Migration(msg.sender, user, loginId, email);
+    }
 
+    /**
+      * @dev 유저 생성 내부 함수
+      * @param user 사용자 public address
+      * @param loginId 사용자 login id
+      * @param email 사용자 email 주소
+      */
+    function createAccount(address user, string loginId, string email) private {
+        require(!accounts[user].isRegistered, "AccountManager createAccount 0");
+        
         accounts[user].isRegistered = true;
         accounts[user].loginId = loginId;
         accounts[user].email = email;
-
-        isDuplicateString[loginId] = true;
-        isDuplicateString[email] = true;
-
-        emit Migration(msg.sender, user, loginId, email);
     }
 
     /**
@@ -73,15 +67,6 @@ contract AccountManager is ExtendsOwnable, ValidValue {
       */
     function accountValidation(address user) external view returns (bool) {
         return accounts[user].isRegistered;
-    }
-
-    /**
-      * @dev Piction에 가입한 정보 확인
-      * @param str 사용자 login id 또는 email 주소
-      * @return 사용자 고유 정보 중복 여부
-      */
-    function stringValidation(string str) external view returns (bool) {
-        return isDuplicateString[str];
     }
 
     /**
