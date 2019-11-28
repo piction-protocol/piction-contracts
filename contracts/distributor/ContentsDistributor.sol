@@ -7,7 +7,7 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsRevenue.sol";
 import "../interfaces/IUpdateAddress.sol";
-import "../interfaces/IManager.sol";
+import "../interfaces/IProjectManager.sol";
 import "../utils/BytesLib.sol";
 import "../utils/StringLib.sol";
 import "../utils/ValidValue.sol";
@@ -80,7 +80,7 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         require(value > 0, "ContentsDistributor receiveApproval 1");
 
         string memory projectHash = string(data.slice(0, 66));
-        address cp = IManager(pictionNetwork.getAddress(PROJECTMANAGER)).getProjectOwner(projectHash);
+        address cp = IProjectManager(pictionNetwork.getAddress(PROJECTMANAGER)).getProjectOwner(projectHash);
         require(cp != address(0), "ContentsDistributor receiveApproval 2");
         
         pxlToken.transferFrom(from, address(this), value);
