@@ -13,8 +13,6 @@ contract("AccountManager", function(accounts) {
     const user = accounts[1];
     const user2 = accounts[2];
     const migrationUser = accounts[3];
-    
-    const addressZero = '0x0000000000000000000000000000000000000000';
 
     const managerName = 'AccountManager';
 
@@ -29,13 +27,15 @@ contract("AccountManager", function(accounts) {
     let pictionNetwork;
     let accountManager;
 
-    describe("AccountManager", () => {
-        it("deploy contracts and initial setting contracts", async() => {
-            pictionNetwork = await PictionNetwork.new({from: owner}).should.be.fulfilled;
-            accountManager = await AccountManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
-            await pictionNetwork.setAddress(managerName, accountManager.address, {from: owner}).should.be.fulfilled;
-        }); 
+    before("deploy contracts and initial setting contracts", async () => {
+        
+        //Deploy and setting address
+        pictionNetwork = await PictionNetwork.new({from: owner}).should.be.fulfilled;
+        accountManager = await AccountManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
+        await pictionNetwork.setAddress(managerName, accountManager.address, {from: owner}).should.be.fulfilled;
+    });
 
+    describe("AccountManager", () => {
         it("check piction network registration address ", async() => {
             const managerAddress = await pictionNetwork.getAddress(managerName).should.be.fulfilled;
             managerAddress.should.be.equal(accountManager.address);

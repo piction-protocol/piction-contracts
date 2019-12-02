@@ -36,25 +36,26 @@ contract("projectManager", function(accounts) {
     let projectManager;
     let accountManager;
 
+    before("deploy contracts and initial setting contracts", async () => {
+
+        //Deploy and setting address
+        pictionNetwork = await PictionNetwork.new({from: owner}).should.be.fulfilled;
+
+        accountManager = await AccountManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
+        await pictionNetwork.setAddress("AccountManager", accountManager.address, {from: owner}).should.be.fulfilled;
+
+        projectManager = await ProjectManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
+        await pictionNetwork.setAddress("ProjectManager", projectManager.address, {from: owner}).should.be.fulfilled;
+
+        //signup
+        await accountManager.signup(loginId, email, {from: creator}).should.be.fulfilled;
+    });
+
     describe("ProjectManager", () => {
-        it("deploy contracts and initial setting contracts", async() => {
-            pictionNetwork = await PictionNetwork.new({from: owner}).should.be.fulfilled;
-            projectManager = await ProjectManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
-            accountManager = await AccountManager.new(pictionNetwork.address, {from: owner}).should.be.fulfilled;
-            await pictionNetwork.setAddress(projectManagerName, projectManager.address, {from: owner}).should.be.fulfilled;
-            await pictionNetwork.setAddress(accountManagerName, accountManager.address, {from: owner}).should.be.fulfilled;
-        }); 
 
         it("check piction network registration address ", async() => {
             const managerAddress = await pictionNetwork.getAddress(projectManagerName).should.be.fulfilled;
             managerAddress.should.be.equal(projectManager.address);
-        });
-
-        it("sign up creator", async() => {
-            await accountManager.signup(loginId, email, {from: creator}).should.be.fulfilled;
-
-            const isRegistered = await accountManager.accountValidation(creator, {from: creator});
-            isRegistered.should.be.equal(true);
         });
 
         it("create project", async() => {
