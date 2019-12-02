@@ -2,6 +2,8 @@ pragma solidity ^0.4.24;
 
 import "../utils/ValidValue.sol";
 import "../utils/ExtendsOwnable.sol";
+import "../utils/StringLib.sol";
+
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IAccountManager.sol";
 
@@ -10,6 +12,7 @@ import "../interfaces/IAccountManager.sol";
  * @dev Piction 계정 정보 관리
  */
 contract AccountManager is ExtendsOwnable, ValidValue, IAccountManager {
+    using StringLib for string;
 
     struct Account {
         bool isRegistered;
@@ -47,6 +50,19 @@ contract AccountManager is ExtendsOwnable, ValidValue, IAccountManager {
     }
 
     /**
+      * @dev 유저 정보 수정
+      * @param loginId 사용자 login id
+      * @param email 사용자 email 주소
+      */
+    function updateAccount(string loginId, string email) external validString(loginId) validString(email) {
+        require(accounts[msg.sender].isRegistered, "AccountManager updateAccount 0");
+        require(accounts[msg.sender].loginId.compareString(loginId), "AccountManager updateAccount 1");
+
+        accounts[msg.sender].email = email;
+        emit UpdateAccount(msg.sender, email);
+    }
+
+    /**
       * @dev 유저 생성 내부 함수
       * @param user 사용자 public address
       * @param loginId 사용자 login id
@@ -79,5 +95,6 @@ contract AccountManager is ExtendsOwnable, ValidValue, IAccountManager {
     }
 
     event Signup(address indexed sender, string loginId, string email);
+    event UpdateAccount(address indexed sender, string email);
     event Migration(address indexed sender, address indexed user, string loginId, string email);
 }
