@@ -69,9 +69,18 @@ contract ProjectManager is ExtendsOwnable, ValidValue, IProjectManager {
     }
 
     /**
+      * @dev 프로젝트 등록 여부 확인
+      * @param str hash
+      * @return hash 등록 결과
+      */
+    function hashValidation(string str) external view returns(bool) {
+        return projects[str].isRegistered;
+    }
+
+    /**
       * @dev 프로젝트 고유 값 확인
-      * @param str hash or uri
-      * @return 고유 정보 중복 여부
+      * @param str uri
+      * @return 고유 정보 중복 결과
       */
     function stringValidation(string str) external view returns(bool) {
         return isDuplicateString[str];
