@@ -63,6 +63,15 @@ contract AccountManager is ExtendsOwnable, ValidValue, IAccountManager {
     }
 
     /**
+      * @dev 유저 정보 삭제 - Piction 계정 실행
+      * @param user 사용자 public address
+      */
+    function deleteAccount(address user) external onlyOwner {
+        accounts[user].isRegistered = false;
+        emit DeleteAccount(msg.sender, user);
+    }
+
+    /**
       * @dev 유저 생성 내부 함수
       * @param user 사용자 public address
       * @param loginId 사용자 login id
@@ -96,5 +105,6 @@ contract AccountManager is ExtendsOwnable, ValidValue, IAccountManager {
 
     event Signup(address indexed sender, string loginId, string email);
     event UpdateAccount(address indexed sender, string email);
+    event DeleteAccount(address indexed sender, address indexed deleteUser);
     event Migration(address indexed sender, address indexed user, string loginId, string email);
 }
