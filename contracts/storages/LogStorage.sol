@@ -53,20 +53,20 @@ contract LogStorage is IProxy {
     }
 
     // 컨트랙트 구조 개편 내용 적용
-    function viewCount(address user, string hash, uint256 postId, string platform) external {
-        emit View(user, hash, postId, platform); 
+    function viewCount(address user, string hash, string uri, uint256 postId, string platform) external {
+        emit View(user, hash, uri, postId, platform); 
     }
 
-    function subscription(address user, string hash, uint256 price, string platform) external {
-        emit Subscription(user, hash, price, platform); 
+    function subscription(address user, string hash, string uri, uint256 price, string platform) external {
+        emit Subscription(user, hash, uri, price, platform); 
     }
 
-    function unSubscription(address user, string hash, string platform) external {
-        emit UnSubscription(user, hash, platform); 
+    function unSubscription(address user, string hash, string uri, string platform) external {
+        emit UnSubscription(user, hash, uri, platform); 
     }
 
-    function like(address user, string hash, uint256 postId, string platform) external {
-        emit Like(user, hash, postId, platform); 
+    function like(address user, string hash, string uri, uint256 postId, string platform) external {
+        emit Like(user, hash, uri, postId, platform); 
     }
 
     event SignIn(address indexed user, string platform);
@@ -79,8 +79,8 @@ contract LogStorage is IProxy {
     event SearchTag(uint256 indexed tagId, string tag, string platform);
 
     // 컨트랙트 구조 개편 내용 적용
-    event View(address indexed user, string hash, uint256 postId, string platform);
-    event Subscription(address indexed user, string hash, uint256 price, string platform);
-    event UnSubscription(address indexed user, string hash, string platform);
-    event Like(address indexed user, string hash, uint256 postId, string platform);
+    event View(address indexed user, string hash, string uri, uint256 postId, string platform);
+    event Subscription(address indexed user, string hash, string uri, uint256 price, string platform);
+    event UnSubscription(address indexed user, string hash, string uri, string platform);
+    event Like(address indexed user, string hash, string uri, uint256 postId, string platform);
 }
