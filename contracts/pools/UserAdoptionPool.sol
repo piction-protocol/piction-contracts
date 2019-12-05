@@ -4,10 +4,10 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "../interfaces/IPictionNetwork.sol";
-import "../interfaces/IUserAdoptionPool.sol";
+import "../interfaces/IWithdraw.sol";
 import "../utils/ValidValue.sol";
 
-contract UserAdoptionPool is Ownable, IUserAdoptionPool, ValidValue {
+contract UserAdoptionPool is Ownable, IWithdraw, ValidValue {
 
     string private constant PXL = "PXL";
 
@@ -19,9 +19,10 @@ contract UserAdoptionPool is Ownable, IUserAdoptionPool, ValidValue {
         iPxl = IERC20(iPictionNetwork.getAddress(PXL));
     }
     
-    function refundPxl() external onlyOwner {
+    function withdrawPXL() external onlyOwner {
         uint256 amount = iPxl.balanceOf(address(this));
-
         iPxl.transfer(msg.sender, amount);
+
+        emit WithdrawPXL(msg.sender, amount);
     }
 }

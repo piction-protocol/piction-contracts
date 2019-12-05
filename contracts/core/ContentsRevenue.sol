@@ -5,19 +5,17 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsRevenue.sol";
-// import "../interfaces/ISupporterPool.sol";
 import "../utils/ValidValue.sol";
 
 contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue {
     using SafeMath for uint256;
 
     IPictionNetwork private pictionNetwork;
-    // ISupporterPool private supporterPool;
     
     uint256 private constant DECIMALS = 10 ** 18;
     string private constant USERADOPTIONPOOL = "UserAdoptionPool";
     string private constant ECOSYSTEMFUND = "EcosystemFund";
-    //string private constant SUPPORTERPOOL = "SupporterPool";
+    string private constant SUPPORTERPOOL = "SupporterPool";
 
     struct DistributionInfo {
         uint256 contentsDistributor;
@@ -28,7 +26,6 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue {
 
     constructor(address pictionNetworkAddress) public validAddress(pictionNetworkAddress) {
         pictionNetwork = IPictionNetwork(pictionNetworkAddress);
-        // supporterPool = ISupporterPool(pictionNetwork.getAddress(SUPPORTERPOOL));
     }
 
     /**
@@ -51,13 +48,12 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue {
         addresses = new address[](4);
         amounts = new uint256[](4);
 
-        uint256 supporterPoolRate = 0; // supporterPool.getSupporterPoolRate(contentHash).div(DECIMALS);
-
+        // TODO: PIC, DepositPool 등의 컨트랙트 수수료 적용
         DistributionInfo memory distributionInfo = DistributionInfo(
             amount.mul(cdRate).div(DECIMALS),
             amount.mul(pictionNetwork.getRate(USERADOPTIONPOOL)).div(DECIMALS),
             amount.mul(pictionNetwork.getRate(ECOSYSTEMFUND)).div(DECIMALS),
-            amount.mul(supporterPoolRate).div(DECIMALS)
+            amount.mul(pictionNetwork.getRate(SUPPORTERPOOL)).div(DECIMALS) 
         );
 
         addresses[0] = pictionNetwork.getAddress(USERADOPTIONPOOL);
@@ -66,7 +62,7 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue {
         addresses[1] = pictionNetwork.getAddress(ECOSYSTEMFUND);
         amounts[1] = distributionInfo.ecosystemFund;
 
-        addresses[2] = owner();         // pictionNetwork.getAddress(SUPPORTERPOOL);
+        addresses[2] = pictionNetwork.getAddress(SUPPORTERPOOL);
         amounts[2] = distributionInfo.supporterPool;
 
         addresses[3] = cp;

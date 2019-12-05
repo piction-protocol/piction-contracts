@@ -3,8 +3,6 @@ const input = JSON.parse(fs.readFileSync('build/contracts/ProjectManager.json'))
 const contract = new caver.klay.Contract(input.abi);
 const replace = require('replace-in-file');
 const PictionNetwork = require('./PictionNetwork');
-const ProjectStorage = require('./ProjectStorage');
-const RelationStorage = require('./RelationStorage');
 
 module.exports = async (stage) => {
     log(`>>>>>>>>>> [ProjectManager] <<<<<<<<<<`);
@@ -12,21 +10,9 @@ module.exports = async (stage) => {
     console.log('> Deploying ProjectManager.');
 
     const piction = process.env.PICTIONNETWORK_ADDRESS;
-    const accountsStorage = process.env.ACCOUNTSSTORAGE_ADDRESS;
-    const relationStorage = process.env.RELATIONSTORAGE_ADDRESS;
 
     if (!piction) {
         error('PictionNetwork is not deployed!! Please after PictionNetwork deployment.');
-        return;
-    }
-
-    if (!stage && !accountsStorage) {
-        error('Project Storage is not deployed!! Please after Project Storage deployment.');
-        return;
-    }
-
-    if (!stage && !relationStorage) {
-        error('Relation Storage is not deployed!! Please after Relation Storage deployment.');
         return;
     }
 
@@ -52,18 +38,10 @@ module.exports = async (stage) => {
 
     process.env.PROJECTMANAGER_ADDRESS = instance.contractAddress;
 
-    info(`ProjectManager_ADDRESS: ${instance.contractAddress}`);
+    info(`PROJECTMANAGER_ADDRESS: ${instance.contractAddress}`);
     log(`-------------------------------------------------------------------`);
 
     if (process.env.PICTIONNETWORK_ADDRESS) {
         await PictionNetwork('setting', 'ProjectManager')
-    }
-
-    if (!stage && process.env.PROJECTSTORAGE_ADDRESS) {
-        await ProjectStorage(instance.contractAddress)
-    }
-
-    if (!stage && process.env.RELATIONSTORAGE_ADDRESS) {
-        await RelationStorage(instance.contractAddress)
     }
 }

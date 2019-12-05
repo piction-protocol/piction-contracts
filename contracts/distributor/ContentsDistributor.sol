@@ -7,12 +7,13 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsRevenue.sol";
 import "../interfaces/IUpdateAddress.sol";
-import "../interfaces/IProject.sol";
+import "../interfaces/IProjectManager.sol";
+import "../interfaces/IWithdraw.sol";
 import "../utils/BytesLib.sol";
 import "../utils/StringLib.sol";
 import "../utils/ValidValue.sol";
 
-contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
+contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress, IWithdraw {
     using SafeMath for uint256;
     using BytesLib for bytes;
     using StringLib for string;
@@ -23,6 +24,7 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     
     uint256 private constant DECIMALS = 10 ** 18;   
     string private constant CONTENTSREVENUE = "ContentsRevenue";
+    string private constant PROJECTMANAGER = "ProjectManager";
     string private constant PXL = "PXL";
 
     uint256 private stakingAmount;
@@ -54,13 +56,18 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         name = cdName;
     }
 
+    modifier onlyContentsDistributor() {
+        require(msg.sender == contentsDistributor, "onlyContentsDistributor: caller is not the contentsDistributor");
+        _;
+    }
+
     /**
      * @dev 위임된 권한을 이용하여 토큰 사용
      * @param from 발신자 주소
      * @param value 토큰 권리 위임 수량
      * @param token PXL 컨트랙트 주소
      * @param data 기타 파라미터 :
-                    [Project Address 20]
+                    [Project hash 66]
      */
     function receiveApproval(
         address from,
@@ -73,7 +80,8 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         require(address(pxlToken) == token, "ContentsDistributor receiveApproval 0");
         require(value > 0, "ContentsDistributor receiveApproval 1");
 
-        address cp = IProject(data.slice(0, 20).toAddress(0)).getProjectOwner();
+        string memory projectHash = string(data.slice(0, 66));
+        address cp = IProjectManager(pictionNetwork.getAddress(PROJECTMANAGER)).getProjectOwner(projectHash);
         require(cp != address(0), "ContentsDistributor receiveApproval 2");
         
         pxlToken.transferFrom(from, address(this), value);
@@ -85,6 +93,8 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
                 pxlToken.transfer(addresses[i], amounts[i]);
             }
         }
+
+        emit Subscription(from, cp, projectHash, value);
     }
 
      /**
@@ -118,15 +128,15 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     }
 
     /**
-     * @dev ContentsDistributor에 분배된 토큰을 전송
+     * @dev ContentsDistributor에 분배된 PXL 출금
      */
-    function sendToContentsDistributor() external onlyOwner {
+    function withdrawPXL() external onlyContentsDistributor {
         uint256 balance = pxlToken.balanceOf(address(this));
         require(balance > stakingAmount, "ContentsDistributor sendToContentsDistributor 0");
         
         pxlToken.transfer(contentsDistributor, balance.sub(stakingAmount));
 
-        emit SendToContentsDistributor(name, balance.sub(stakingAmount));
+        emit WithdrawPXL(msg.sender, balance.sub(stakingAmount));
     }
 
     /**
@@ -141,5 +151,5 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     event SetStaking(string name, uint256 value);
     event SetRate(string name, uint256 rate);
     event SetCDAddress(string name, address cdAddress);
-    event SendToContentsDistributor(string name, uint256 value);
+    event Subscription(address indexed buyer, address indexed creator, string hash, uint256 price);
 }
