@@ -79,11 +79,11 @@ contract ProjectManager is ExtendsOwnable, ValidValue, IProjectManager {
 
     /**
       * @dev 프로젝트 고유 값 확인
-      * @param str uri
+      * @param uri uri
       * @return 고유 정보 중복 결과
       */
-    function uriValidation(string str) external view returns(bool) {
-        return isDuplicateString[str];
+    function uriValidation(string uri) external view returns(bool) {
+        return isDuplicateString[uri];
     }
 
     /**
