@@ -41,28 +41,28 @@ contract ProjectManager is ExtendsOwnable, ValidValue, IProjectManager {
 
     /**
       * @dev 기존에 생성 된 프로젝트 migration - Piction 계정 실행
-      * @param user creator public address
+      * @param creator creator public address
       * @param hash unique hash
       * @param uri unique uri
       */
-    function migration(address user, string hash, string uri) external onlyOwner validString(hash) validString(uri) {
-        createProject(user, hash, uri);
-        emit Migration(msg.sender, user, hash, uri);
+    function migration(address creator, string hash, string uri) external onlyOwner validString(hash) validString(uri) {
+        createProject(creator, hash, uri);
+        emit Migration(msg.sender, creator, hash, uri);
     }
 
     /**
       * @dev 프로젝트 생성 내부 함수
-      * @param user 사용자 public address
+      * @param creator 사용자 public address
       * @param hash unique hash
       * @param uri unique uri
       */
-    function createProject(address user, string hash, string uri) private {
-        require(IAccountManager(pictionNetwork.getAddress(ACCOUNTMANAGER)).accountValidation(user), "ProjectManager createProject 0");
+    function createProject(address creator, string hash, string uri) private {
+        require(IAccountManager(pictionNetwork.getAddress(ACCOUNTMANAGER)).accountValidation(creator), "ProjectManager createProject 0");
         require(!projects[hash].isRegistered, "ProjectManager createProject 1");
         require(!isDuplicateString[uri], "ProjectManager createProject 2");
 
         projects[hash].isRegistered = true;
-        projects[hash].owner = user;
+        projects[hash].owner = creator;
         projects[hash].uri = uri;
 
         isDuplicateString[uri] = true;
@@ -105,5 +105,5 @@ contract ProjectManager is ExtendsOwnable, ValidValue, IProjectManager {
     }
 
     event CreateProject(address indexed sender, string hash, string uri);
-    event Migration(address indexed sender, address indexed user, string hash, string uri);
+    event Migration(address indexed sender, address indexed creator, string hash, string uri);
 }
