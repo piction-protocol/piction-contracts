@@ -17,7 +17,6 @@ contract AccountManager is ExtendsOwnable, ValidValue, IAccountManager {
     struct Account {
         bool isRegistered;
         string loginId;
-        string email;
     }
 
     mapping (address => Account) accounts;
@@ -31,35 +30,20 @@ contract AccountManager is ExtendsOwnable, ValidValue, IAccountManager {
     /**
       * @dev Piction 회원 가입
       * @param loginId 사용자 login id
-      * @param email 사용자 email 주소
       */
-    function signup(string loginId, string email) external validString(loginId)  validString(email) {
-        createAccount(msg.sender, loginId, email);
-        emit Signup(msg.sender, loginId, email);
+    function signup(string loginId) external validString(loginId) {
+        createAccount(msg.sender, loginId);
+        emit Signup(msg.sender, loginId);
     }
 
     /**
       * @dev 기존 가입 유저 migration - Piction 계정 실행
       * @param user 사용자 public address
       * @param loginId 사용자 login id
-      * @param email 사용자 email 주소
       */
-    function migration(address user, string loginId, string email) external onlyOwner validString(loginId) validString(email) {
-        createAccount(user, loginId, email);
-        emit Migration(msg.sender, user, loginId, email);
-    }
-
-    /**
-      * @dev 유저 정보 수정
-      * @param loginId 사용자 login id
-      * @param email 사용자 email 주소
-      */
-    function updateAccount(string loginId, string email) external validString(loginId) validString(email) {
-        require(accounts[msg.sender].isRegistered, "AccountManager updateAccount 0");
-        require(accounts[msg.sender].loginId.compareString(loginId), "AccountManager updateAccount 1");
-
-        accounts[msg.sender].email = email;
-        emit UpdateAccount(msg.sender, email);
+    function migration(address user, string loginId) external onlyOwner validString(loginId) {
+        createAccount(user, loginId);
+        emit Migration(msg.sender, user, loginId);
     }
 
     /**
@@ -75,14 +59,12 @@ contract AccountManager is ExtendsOwnable, ValidValue, IAccountManager {
       * @dev 유저 생성 내부 함수
       * @param user 사용자 public address
       * @param loginId 사용자 login id
-      * @param email 사용자 email 주소
       */
-    function createAccount(address user, string loginId, string email) private {
+    function createAccount(address user, string loginId) private {
         require(!accounts[user].isRegistered, "AccountManager createAccount 0");
         
         accounts[user].isRegistered = true;
         accounts[user].loginId = loginId;
-        accounts[user].email = email;
     }
 
     /**
@@ -99,12 +81,11 @@ contract AccountManager is ExtendsOwnable, ValidValue, IAccountManager {
       * @param user 사용자 public address
       * @return 사용자 계정 정보
       */
-    function getAccount(address user) external view returns (bool, string, string) {
-        return (accounts[user].isRegistered, accounts[user].loginId, accounts[user].email);
+    function getAccount(address user) external view returns (bool, string) {
+        return (accounts[user].isRegistered, accounts[user].loginId);
     }
 
-    event Signup(address indexed sender, string loginId, string email);
-    event UpdateAccount(address indexed sender, string email);
+    event Signup(address indexed sender, string loginId);
     event DeleteAccount(address indexed sender, address indexed deleteUser);
-    event Migration(address indexed sender, address indexed user, string loginId, string email);
+    event Migration(address indexed sender, address indexed user, string loginId);
 }
