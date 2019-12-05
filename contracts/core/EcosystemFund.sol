@@ -24,6 +24,4 @@ contract EcosystemFund is Ownable, IWithdraw, ValidValue {
 
         emit WithdrawPXL(msg.sender, amount);
     }
-
-    event WithdrawPXL(address indexed sender, uint256 value);
 }
