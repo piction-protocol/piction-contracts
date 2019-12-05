@@ -8,11 +8,12 @@ import "../interfaces/IPictionNetwork.sol";
 import "../interfaces/IContentsRevenue.sol";
 import "../interfaces/IUpdateAddress.sol";
 import "../interfaces/IProjectManager.sol";
+import "../interfaces/IWithdraw.sol";
 import "../utils/BytesLib.sol";
 import "../utils/StringLib.sol";
 import "../utils/ValidValue.sol";
 
-contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
+contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress, IWithdraw {
     using SafeMath for uint256;
     using BytesLib for bytes;
     using StringLib for string;
@@ -135,7 +136,7 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
         
         pxlToken.transfer(contentsDistributor, balance.sub(stakingAmount));
 
-        emit WithdrawPXL(name, balance.sub(stakingAmount));
+        emit WithdrawPXL(msg.sender, balance.sub(stakingAmount));
     }
 
     /**
@@ -150,6 +151,5 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress {
     event SetStaking(string name, uint256 value);
     event SetRate(string name, uint256 rate);
     event SetCDAddress(string name, address cdAddress);
-    event WithdrawPXL(string name, uint256 value);
     event Subscription(address indexed buyer, address indexed creator, string hash, uint256 price);
 }
