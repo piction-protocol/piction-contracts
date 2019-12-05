@@ -19,7 +19,7 @@ contract ProjectManager is ExtendsOwnable, ValidValue, IProjectManager {
     }
 
     mapping (string => Project) projects;
-    mapping (string => bool) isDuplicateString;
+    mapping (string => bool) isRegisteredUri;
 
     IPictionNetwork private pictionNetwork;
 
@@ -59,13 +59,13 @@ contract ProjectManager is ExtendsOwnable, ValidValue, IProjectManager {
     function createProject(address creator, string hash, string uri) private {
         require(IAccountManager(pictionNetwork.getAddress(ACCOUNTMANAGER)).accountValidation(creator), "ProjectManager createProject 0");
         require(!projects[hash].isRegistered, "ProjectManager createProject 1");
-        require(!isDuplicateString[uri], "ProjectManager createProject 2");
+        require(!isRegisteredUri[uri], "ProjectManager createProject 2");
 
         projects[hash].isRegistered = true;
         projects[hash].owner = creator;
         projects[hash].uri = uri;
 
-        isDuplicateString[uri] = true;
+        isRegisteredUri[uri] = true;
     }
 
     /**
@@ -83,7 +83,7 @@ contract ProjectManager is ExtendsOwnable, ValidValue, IProjectManager {
       * @return 고유 정보 중복 결과
       */
     function uriValidation(string uri) external view returns(bool) {
-        return isDuplicateString[uri];
+        return isRegisteredUri[uri];
     }
 
     /**
