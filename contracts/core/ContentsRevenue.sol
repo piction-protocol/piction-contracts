@@ -48,12 +48,12 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue {
         addresses = new address[](4);
         amounts = new uint256[](4);
 
-        // TODO: PIC, DepositPool 등의 컨트랙트 수수료 적용
+        // TODO: 주석 내용 처리, PIC, DepositPool 등의 컨트랙트 수수료 적용
         DistributionInfo memory distributionInfo = DistributionInfo(
             amount.mul(cdRate).div(DECIMALS),
-            amount.mul(pictionNetwork.getRate(USERADOPTIONPOOL)).div(DECIMALS),
-            amount.mul(pictionNetwork.getRate(ECOSYSTEMFUND)).div(DECIMALS),
-            amount.mul(pictionNetwork.getRate(SUPPORTERPOOL)).div(DECIMALS) 
+            0,// amount.mul(pictionNetwork.getRate(USERADOPTIONPOOL)).div(DECIMALS),
+            0,// amount.mul(pictionNetwork.getRate(ECOSYSTEMFUND)).div(DECIMALS),
+            0// amount.mul(pictionNetwork.getRate(SUPPORTERPOOL)).div(DECIMALS) 
         );
 
         addresses[0] = pictionNetwork.getAddress(USERADOPTIONPOOL);
@@ -62,7 +62,8 @@ contract ContentsRevenue is Ownable, IContentsRevenue, ValidValue {
         addresses[1] = pictionNetwork.getAddress(ECOSYSTEMFUND);
         amounts[1] = distributionInfo.ecosystemFund;
 
-        addresses[2] = pictionNetwork.getAddress(SUPPORTERPOOL);
+        //TODO: 등록되지 않은 주소를 조회할 경우 revert, PIC가 설계되면 코드 수정 필요
+        addresses[2] = owner();         // pictionNetwork.getAddress(SUPPORTERPOOL);
         amounts[2] = distributionInfo.supporterPool;
 
         addresses[3] = cp;
