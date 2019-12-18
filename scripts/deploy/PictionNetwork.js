@@ -50,7 +50,7 @@ async function init(name) {
     info(`PICTIONNETWORK_ADDRESS: ${instance.contractAddress}`);
 
 
-    if(name == 'cypress' || name == 'baobab') {
+    if(name == 'cypress' || name == 'baobab' || name == 'local') {
         log(`PICTIONNETWORK add owner: ${process.env.PICTIONNETWORK_OWNER}`)
         const pictionNetwork = new caver.klay.Contract(input.abi, process.env.PICTIONNETWORK_ADDRESS);
         await pictionNetwork.methods.addOwner(process.env.PICTIONNETWORK_OWNER).send({
@@ -67,28 +67,12 @@ async function init(name) {
         await setAddress('PXL');
     }
 
-    if (process.env.ACCOUNTSSTORAGE_ADDRESS) {
-        await setAddress('AccountsStorage');
-    }
-
-    if (process.env.PROJECTSTORAGE_ADDRESS) {
-        await setAddress('ProjectStorage');
-    }
-
-    if (process.env.RELATIONSTORAGE_ADDRESS) {
-        await setAddress('RelationStorage');
-    }
-
-    if (process.env.ACCOUNTSMANAGER_ADDRESS) {
-        await setAddress('AccountsManager');
+    if (process.env.ACCOUNTMANAGER_ADDRESS) {
+        await setAddress('AccountManager');
     }
 
     if (process.env.PROJECTMANAGER_ADDRESS) {
         await setAddress('ProjectManager');
-    }
-
-    if (process.env.POSTMANAGER_ADDRESS) {
-        await setAddress('PostManager');
     }
 
     if (process.env.CONTENTSREVENUE_ADDRESS) {
@@ -120,7 +104,7 @@ async function init(name) {
     }
 
     if (process.env.LOGSTORAGEBC_ADDRESS) {
-        await setAddress('LogStorageBc');
+        await setAddress('LogStorageBC');
     }
 }
 
@@ -144,37 +128,13 @@ async function setAddress(type) {
         }
         address = pxl;
         break;
-    case 'AccountsStorage':
-        const accountsStorage = process.env.ACCOUNTSSTORAGE_ADDRESS;
-        if (!accountsStorage) {
-            error('ACCOUNTS STORAGE is not deployed!! Please after ACCOUNTS STORAGE deployment.');
+    case 'AccountManager':
+        const accountManager = process.env.ACCOUNTMANAGER_ADDRESS;
+        if (!accountManager) {
+            error('ACCOUNT MANAGER is not deployed!! Please after ACCOUNT MANAGER deployment.');
             break;
         }
-        address = accountsStorage;
-        break;
-    case 'ProjectStorage':
-        const projectStorage = process.env.PROJECTSTORAGE_ADDRESS;
-        if (!projectStorage) {
-            error('PROJECT STORAGE is not deployed!! Please after PROJECT STORAGE deployment.');
-            break;
-        }
-        address = projectStorage;
-        break;
-    case 'RelationStorage':
-        const relationStorage = process.env.RELATIONSTORAGE_ADDRESS;
-        if (!relationStorage) {
-            error('RELATION STORAGE is not deployed!! Please after RELATION STORAGE deployment.');
-            break;
-        }
-        address = relationStorage;
-        break;
-    case 'AccountsManager':
-        const accountsManager = process.env.ACCOUNTSMANAGER_ADDRESS;
-        if (!accountsManager) {
-            error('ACCOUNTS MANAGER is not deployed!! Please after ACCOUNTS MANAGER deployment.');
-            break;
-        }
-        address = accountsManager;
+        address = accountManager;
         break;
     case 'ProjectManager':
         const projectManager = process.env.PROJECTMANAGER_ADDRESS;
