@@ -28,6 +28,19 @@ module.exports = async (stage) => {
     await ProxyBC();
 
     switch(stage) {
+        case 'local':
+            await ProjectManager(stage);
+        
+            await ContentsRevenue();
+        
+            await ContentsDistributor(stage);
+        
+            await UserAdoptionPool(stage);
+        
+            await EcosystemFund(stage);
+        
+            await Airdrop(stage);
+            break;
         case 'baobab':
             await ProjectManager(stage);
         
