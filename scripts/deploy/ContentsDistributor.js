@@ -20,7 +20,7 @@ module.exports = async (stage) => {
 
     const initialStaking = caver.utils.toBN(1);
     const initialStakingHex = '0x' + initialStaking.mul(caver.utils.toBN(10).pow(decimals)).toString('hex');
-    const cdRate = caver.utils.toBN(10);
+    const cdRate = caver.utils.toBN(8);
     const cdRateHex = '0x' + cdRate.mul(caver.utils.toBN(10).pow(caver.utils.toBN(16))).toString('hex');
     const cdAddress = process.env.CONTENTSDISTRIBUTOR_OWNER;
     const cdName = 'PictionNetworkCD';
@@ -70,7 +70,7 @@ module.exports = async (stage) => {
         await PictionNetwork('setting', 'ContentsDistributor', instance.contractAddress, cdName)
     }
 
-    const distributeRate = 10;
+    const distributeRate = 8;
     const distributeRateBN = caver.utils.toBN(distributeRate);
     const distributeRateHex = '0x' + distributeRateBN.mul(caver.utils.toBN(10).pow(caver.utils.toBN(16))).toString('hex');
 
