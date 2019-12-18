@@ -8,7 +8,7 @@ const PXLInput = JSON.parse(fs.readFileSync('build/contracts/PXL.json'));
 module.exports = async (stage) => {
     log(`>>>>>>>>>> [Airdrop] <<<<<<<<<<`);
 
-    if(stage != 'baobab') {
+    if(stage != 'baobab' && stage != 'local') {
         error('AIRDROP is only available on test(baobab) net.');
         return;
     }
