@@ -80,7 +80,7 @@ contract ContentsDistributor is Ownable, ValidValue, IUpdateAddress, IWithdraw {
         require(address(pxlToken) == token, "ContentsDistributor receiveApproval 0");
         require(value > 0, "ContentsDistributor receiveApproval 1");
 
-        string memory projectHash = string(data.slice(0, 66));
+        string memory projectHash = string(data);
         address cp = IProjectManager(pictionNetwork.getAddress(PROJECTMANAGER)).getProjectOwner(projectHash);
         require(cp != address(0), "ContentsDistributor receiveApproval 2");
         
