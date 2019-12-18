@@ -18,7 +18,7 @@ module.exports = async (stage) => {
     }
 
     const name = 'EcosystemFund';
-    const rate = 10;
+    const rate = 0;
     const rateBN = caver.utils.toBN(rate);
     const RateHex = '0x' + rateBN.mul(caver.utils.toBN(10).pow(caver.utils.toBN(16))).toString('hex');
     

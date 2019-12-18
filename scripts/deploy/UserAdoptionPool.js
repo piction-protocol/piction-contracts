@@ -18,7 +18,7 @@ module.exports = async (stage) => {
     }
 
     const name = 'UserAdoptionPool';
-    const rate = 2;
+    const rate = 0;
     const rateBN = caver.utils.toBN(rate);
     const RateHex = '0x' + rateBN.mul(caver.utils.toBN(10).pow(caver.utils.toBN(16))).toString('hex');
 
